@@ -41,8 +41,8 @@ const Header = () => {
         <div className="navigation">
           <ul>
             {
-              navigationList.map(({ link, label }) =>
-                <li>
+              navigationList.map(({ link, label }, i) =>
+                <li key={i}>
                   <Link href={link}>{label}</Link>
                 </li>
               )
