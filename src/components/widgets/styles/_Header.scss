@@ -1,0 +1,59 @@
+.Header{
+  @apply pb-8;
+  display: grid;
+  // justify-items: center;
+  
+  img{
+    justify-self: center;
+    @screen xx_sm{
+      justify-self: unset;
+    }
+  }
+  
+  nav{
+    .navigation{
+      @apply bg-green-900 text-white p-5;
+      ul{
+        display: none;        
+
+        @screen lg{
+          display: grid;
+          grid-template-columns: repeat(5, auto) 1fr;
+        }
+        
+        a, li{
+          padding: 0 10px;
+          @apply text-xs;
+          
+          &:last-of-type{
+            justify-self: end;
+          }
+        }
+      }
+    }
+  }
+  
+  .search-products{
+    @apply p-4 bg-slate-200 md:pr-12;
+    
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    
+    @screen sm{
+      grid-template-columns: 200px 1fr;
+    }
+    
+    @screen md{
+      grid-template-columns: 200px 1fr auto;
+    }
+    
+    & > span{
+      align-self: center;
+    }
+    
+    button{
+      @apply px-5 py-3 text-sm;
+    }
+  }
+}

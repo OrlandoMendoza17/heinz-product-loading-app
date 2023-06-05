@@ -1,0 +1,19 @@
+.Product{
+  @apply p-4 bg-gray-100 rounded-lg;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 10px;
+  
+  .image-container {
+    @apply bg-white rounded-lg grid items-center;
+    img{
+      @apply rounded-lg;
+      object-fit: cover;
+    }
+  }
+  
+  &-info{
+    display: grid;
+    grid-template-rows: 1fr auto;
+  }
+}

@@ -1,0 +1,14 @@
+@import "./globals.scss";
+
+//pages
+@import "../app/home.scss";
+@import "../app/login/login.scss";
+
+// components
+@import "../components/styles/Product";
+
+// widgets
+@import "../components/widgets/styles/Button";
+@import "../components/widgets/styles/Header";
+@import "../components/widgets/styles/Input";
+@import "../components/widgets/styles/Spinner";
