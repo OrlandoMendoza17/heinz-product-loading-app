@@ -3,7 +3,7 @@ import { NextPage } from 'next'
 import Link from 'next/link';
 import Header from "@/components/widgets/Header";
 import getProducts from "@/utils/getProducts";
-import ProductItem from "@/components/pages/Product";
+import ProductItem from "@/components/pages/ProductItem";
 import Aside from '@/components/pages/Aside';
 
 const Home: NextPage = () => {

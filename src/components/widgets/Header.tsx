@@ -34,14 +34,24 @@ const navigationList = [
 ]
 
 const Header = () => {
-  
+
   const { cart } = useContext(CartContext)
-  
+
   return (
     <header className="Header">
-      <Picture className="w-48" url="https://i.imgur.com/hkIgVIM.png" />
+      <div className="flex justify-between">
+        <Link href="/">
+          <Picture className="w-48" url="https://i.imgur.com/hkIgVIM.png" />
+        </Link>
+        <div className="flex justify-end py-5">
+          <Link href="/cart" className="font-bold text-2xl">
+            🛒 <span className="text-xl">{cart.length}</span>
+          </Link>
+        </div>
+      </div>
+
       <nav className="">
-        
+
         <div className="navigation">
           <ul>
             {
@@ -53,7 +63,7 @@ const Header = () => {
             }
           </ul>
         </div>
-        
+
         <form className="search-products">
           <Select title="" defaultOption="Categorías" options={[{ name: "", value: "" }]} />
           <div className="xx_sm:flex items-center">
@@ -62,13 +72,7 @@ const Header = () => {
           </div>
           <span>Bienvenido <strong className="text-cyan-600">Orlando</strong></span>
         </form>
-        
-        <div>
-          <span className="text-cyan-400 font-bold">
-            Cart ⮕ <span className="text-red-500">{cart.length}</span>
-          </span>
-        </div>
-        
+
       </nav>
     </header>
   )

@@ -35,7 +35,7 @@ const ProductItem = ({ product }: Props) => {
         </div>
         <button
           onClick={handleClick}
-          className={`px-3 py-2 ${found ? "bg-gray-800" : "bg-green-500"}  text-white text-xs font-bold uppercase rounded`}
+          className={`px-3 py-2 ${found ? "bg-green-500" : "bg-gray-800"} text-white text-xs font-bold uppercase rounded`}
         >
           {found ? "Añadido" : "Añadir"}
         </button>
