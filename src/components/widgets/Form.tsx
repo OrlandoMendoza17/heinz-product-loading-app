@@ -2,7 +2,7 @@
 import React, { useRef, FormHTMLAttributes } from 'react'
 
 interface Props extends FormHTMLAttributes<HTMLFormElement> {
-  children: React.ReactNode
+  children: React.ReactNode | JSX.Element[] | JSX.Element
 }
 
 const Form = ({ children, ...formProps }: Props) => {

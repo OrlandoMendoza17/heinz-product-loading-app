@@ -1,11 +1,11 @@
-@import "./globals.scss";
+@import "./libs/reset";
 
 //pages
-@import "../app/home.scss";
-@import "../app/login/login.scss";
+@import "./pages/index";
+@import "./pages/login";
 
 // components
-@import "../components/styles/Product";
+@import "../components/pages/styles/Product";
 
 // widgets
 @import "../components/widgets/styles/Button";

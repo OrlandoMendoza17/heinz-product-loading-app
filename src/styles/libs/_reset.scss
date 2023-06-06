@@ -1,0 +1,23 @@
+*{
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 62.5%;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+}
+
+p, div {
+  @apply text-base;
+}
+
+label,
+span,
+input {
+  @apply text-sm;
+}

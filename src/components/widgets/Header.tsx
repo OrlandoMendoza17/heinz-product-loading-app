@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import CartContext from '@/context/CartContext';
+import Link from 'next/link';
 import Picture from './Picture'
 import Input from './Input';
 import Button from './Button';
 import Select from './Select';
-import Link from 'next/link';
 
 const navigationList = [
   {
@@ -33,6 +34,9 @@ const navigationList = [
 ]
 
 const Header = () => {
+  
+  const { cart } = useContext(CartContext)
+  
   return (
     <header className="Header">
       <Picture className="w-48" url="https://i.imgur.com/hkIgVIM.png" />
@@ -58,6 +62,12 @@ const Header = () => {
           </div>
           <span>Bienvenido <strong className="text-cyan-600">Orlando</strong></span>
         </form>
+        
+        <div>
+          <span className="text-cyan-400 font-bold">
+            Cart ⮕ <span className="text-red-500">{cart.length}</span>
+          </span>
+        </div>
         
       </nav>
     </header>

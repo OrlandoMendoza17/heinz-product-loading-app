@@ -5,7 +5,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   color?: "danger" | "warning" | "success" | "info" | "primary" | "secondary" ,
   loading?: boolean,
   noSpinner?: boolean,
-  children: ReactNode,
+  children: ReactNode | JSX.Element[] | JSX.Element,
 }
 
 const bg_type = {
