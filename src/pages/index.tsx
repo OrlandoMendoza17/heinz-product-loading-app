@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { NextPage } from 'next'
 import Link from 'next/link';
 import Header from "@/components/widgets/Header";
 import getProducts from "@/utils/getProducts";
 import ProductItem from "@/components/pages/ProductItem";
 import Aside from '@/components/pages/Aside';
+import CartContext from '@/context/CartContext';
 
 const Home: NextPage = () => {
 
+  const { cart } = useContext(CartContext)
+  
   const options = [{ name: "", value: "" }]
-
   const products = getProducts()
 
   return (
@@ -19,15 +21,15 @@ const Home: NextPage = () => {
         <p className="pb-8">Se ha encontrado 1 item(s) por el SKU: 15297</p>
         <div className="main_container">
 
-          <Aside/>
-          
+          <Aside />
+
           <section>
             {
               products.map(product =>
                 <ProductItem key={product.sku} product={product} />
               )
             }
-          </section> 
+          </section>
 
         </div>
       </main>

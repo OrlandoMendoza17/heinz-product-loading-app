@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import CartContext from '../../context/CartContext'
+import formatMoney from '@/utils/formatMoney'
 
 type Props = {
   product: Product,
@@ -9,7 +10,7 @@ const ProductItem = ({ product }: Props) => {
 
   const { cart, saveProduct, removeProduct } = useContext(CartContext)
 
-  const { name, sku, quantity, price, image } = product
+  const { name, sku, available, price, image } = product
 
   const found = Boolean(cart.find(item => item.sku === sku))
 
@@ -29,9 +30,15 @@ const ProductItem = ({ product }: Props) => {
       <div className="Product-info">
         <div className="">
           <h4 className="text-base text-gray-900 font-bold pb-2">{name}</h4>
-          <small className="block text-sm">SKU: <span className="font-bold">{sku}</span></small>
-          <small className="block text-sm">Disponible: <span className="font-bold">{quantity}</span></small>
-          <small className="block text-gray-700 text-sm">Precio: <span className="font-bold">${price}</span></small>
+          <small className="block text-sm">
+            SKU: <span className="font-bold">{sku}</span>
+          </small>
+          <small className="block text-sm">
+            Disponible: <span className="font-bold">{available}</span>
+          </small>
+          <small className="block text-gray-700 text-sm">
+            Precio: <span className="font-bold">{formatMoney(price)}</span>
+          </small>
         </div>
         <button
           onClick={handleClick}

@@ -3,6 +3,7 @@ type Product = {
   sku: number,
   price: number,
   quantity: number,
+  available: number,
   discount: number,
   image: string,
 }

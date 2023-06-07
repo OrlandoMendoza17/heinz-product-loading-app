@@ -10,24 +10,46 @@ const CartContextProvider = ({ children }: Props) => {
 
   const [cart, setCart] = useState<Product[]>([])
 
+  const emptyCart = () => {
+    setCart([])
+  }
+
   const saveProduct = (product: Product) => {
     const found = Boolean(cart.find(item => item.sku === product.sku))
-    
-    if(!found){
-      setCart([...cart, product])      
+
+    if (!found) {
+      setCart([...cart, product])
     }
   }
 
-  const removeProduct = (productSKU: Product["sku"]) =>{
+  const updateProduct = (updated: Product) => {
+    setCart(
+      cart.map(product => {
+        return (product.sku === updated.sku) ? updated : product
+      })
+    )
+  }
+
+  const deleteGroup = (productGroup: string[]) => {
+    const filteredCart = cart.filter(product => {
+      return !productGroup.includes(product.sku.toString())
+    })
+    setCart(filteredCart)
+  }
+
+  const removeProduct = (productSKU: Product["sku"]) => {
     setCart(cart.filter(item => item.sku !== productSKU))
   }
-  
+
   const value = {
     cart,
+    emptyCart,
     saveProduct,
+    updateProduct,
+    deleteGroup,
     removeProduct,
   }
-  
+
   return (
     <CartContext.Provider value={value}>
       {children}
