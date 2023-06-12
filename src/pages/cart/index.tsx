@@ -6,20 +6,30 @@ import formatMoney from '@/utils/formatMoney'
 import Checkbox from '@/components/widgets/Checkbox'
 import Button from '@/components/widgets/Button'
 import ProductRow from '@/components/pages/ProductRow'
+import useNotification from '@/hooks/useNotification'
+import ConfirmModal from '@/components/widgets/ConfirmModal'
 
+const fields = [
+  "SKU",
+  "Descripcion",
+  "Cantidad",
+  "Precio Base",
+  "Descuento",
+  "Subtotal",
+  // "Editar",
+]
 const Cart: NextPage = () => {
   const { cart, emptyCart, deleteGroup, removeProduct } = useContext(CartContext)
 
-  const fields = [
-    "SKU",
-    "Descripcion",
-    "Cantidad",
-    "Precio Base",
-    "Descuento",
-    "Subtotal",
-    // "Editar",
-  ]
+  const { notification, handleNotification } = useNotification()
 
+  const handleOpenModal = () => {
+    handleNotification.open({
+      type: "warning",
+      title: "Advertencia",
+      message: "¿Estás seguro de eliminar el producto del carrito?"
+    })
+  }
 
   const $form = useRef<HTMLFormElement>(null)
 
@@ -73,7 +83,8 @@ const Cart: NextPage = () => {
     }
   }
 
-  const handleDelete: MouseEventHandler<HTMLButtonElement> = ({ currentTarget }) => {
+  const handleDelete = () => {
+    setProducts([])
     if (selectedAll) {
       emptyCart()
     } else {
@@ -86,7 +97,7 @@ const Cart: NextPage = () => {
       return accumulator + product.quantity
     }, 0)
   )
-  
+
   const bill = formatMoney(
     cart.reduce((accumulator, product) => {
       return accumulator + (product.quantity * product.price)
@@ -103,7 +114,9 @@ const Cart: NextPage = () => {
             <h1 className="text-2xl font-bold pb-10">🛒 Carrito de Compras <span>({cart.length} items)</span></h1>
             {
               Boolean(selectedProducts.length) &&
-              <Button onClick={handleDelete} className="font-bold !py-2" color="danger">Eliminar</Button>
+              <Button onClick={handleOpenModal} className="font-bold !py-2" color="danger">
+                Eliminar
+              </Button>
             }
           </div>
 
@@ -136,6 +149,7 @@ const Cart: NextPage = () => {
                   />
                 )
               }
+              {/*Bill Footer */}
               <tr>
                 <td className=" font-medium text-gray-900 dark:text-white whitespace-nowrap">
                   -
@@ -157,6 +171,13 @@ const Cart: NextPage = () => {
             </tbody>
           </table>
         </form>
+
+        <ConfirmModal
+          button2
+          notification={notification}
+          acceptAction={handleDelete}
+          closeModal={handleNotification.close}
+        />
       </main>
     </div >
   )
