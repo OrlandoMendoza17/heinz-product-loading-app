@@ -20,7 +20,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
     handleNotification.open({
       type: "warning",
       title: "Advertencia",
-      message: "¿Estás seguro de eliminar el todos los productos del carrito?"
+      message: "¿Estás seguro de eliminar el producto del carrito?"
     })
   }
   

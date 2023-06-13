@@ -19,7 +19,7 @@ const Portal = ({ type, children }: Props) => {
   }, [])
 
   const rootElement = (mounted ? document.getElementById(type) : <div></div>) as Element | DocumentFragment 
-  console.log('rootElement', rootElement)
+  // console.log('rootElement', rootElement)
   
   return (
     mounted ?

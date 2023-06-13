@@ -18,6 +18,7 @@ const fields = [
   // "Editar",
 ]
 const Cart: NextPage = () => {
+  
   const { cart, emptyCart, deleteGroup, removeProduct } = useContext(CartContext)
 
   const { notification, handleNotification } = useNotification()
@@ -26,7 +27,7 @@ const Cart: NextPage = () => {
     handleNotification.open({
       type: "warning",
       title: "Advertencia",
-      message: "¿Estás seguro de eliminar el producto del carrito?"
+      message: "¿Estás seguro de eliminar del carrito los productos seleccionados?"
     })
   }
 

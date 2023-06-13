@@ -1,10 +1,12 @@
-import React, { useContext } from 'react'
+import React, { ChangeEventHandler, FormEventHandler, useContext, useRef, useState } from 'react'
 import CartContext from '@/context/CartContext';
 import Link from 'next/link';
 import Picture from './Picture'
 import Input from './Input';
 import Button from './Button';
 import Select from './Select';
+import { useRouter } from 'next/router';
+import { filterByNumbers } from '@/utils';
 
 const navigationList = [
   {
@@ -34,8 +36,31 @@ const navigationList = [
 ]
 
 const Header = () => {
+  const [search, setSearch] = useState<number | "">("")
 
+  const router = useRouter()
   const { cart } = useContext(CartContext)
+
+  const $form = useRef<HTMLFormElement>(null)
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault()
+    router.push({
+      pathname: "/",
+      query: {
+        search,
+      }
+    })
+  }
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+    if(target.value === ""){
+      setSearch(target.value)
+    }else{
+      const value = filterByNumbers(target.value)
+      setSearch(!isNaN(value) ? value : search)
+    }
+  }
 
   return (
     <header className="Header">
@@ -64,11 +89,18 @@ const Header = () => {
           </ul>
         </div>
 
-        <form className="search-products">
-          <Select title="" defaultOption="Categorías" options={[{ name: "", value: "" }]} />
+        <form ref={$form} className="search-products" onSubmit={handleSubmit}>
+          <Select title="" defaultOption="Categorías" options={[{ name: "", value: "" }]} required={false} />
           <div className="xx_sm:flex items-center">
-            <Input id="search" title="" className="w-full" placeholder="🔍 Product SKU" />
-            <Button color="info" className="w-full xx_sm:w-auto !px-8 !rounded-none">Buscar</Button>
+            <Input
+              id="search"
+              title=""
+              value={search}
+              className="w-full"
+              placeholder="🔍 Product SKU"
+              onChange={handleChange}
+            />
+            <Button type="submit" color="info" className="w-full xx_sm:w-auto !px-8 !rounded-none">Buscar</Button>
           </div>
           <span>Bienvenido <strong className="text-cyan-600">Orlando</strong></span>
         </form>

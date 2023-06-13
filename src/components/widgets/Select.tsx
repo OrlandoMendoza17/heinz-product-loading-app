@@ -31,6 +31,9 @@ const Select = (props: Props) => {
         </span>
       }
       <select name={name} id={name} required={required} {...rest}>
+        <option disabled value="">
+          {defaultOption}
+        </option>
         {
           selectsOptions.map(({ name, value }, i) =>
             <option value={value} key={`name-${i}`}>
