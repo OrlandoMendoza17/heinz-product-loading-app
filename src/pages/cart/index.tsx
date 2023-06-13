@@ -14,7 +14,6 @@ const fields = [
   "Descripcion",
   "Cantidad",
   "Precio Base",
-  "Descuento",
   "Subtotal",
   // "Editar",
 ]
@@ -107,7 +106,7 @@ const Cart: NextPage = () => {
   return (
     <div className="px-4 md:px-24 pb-20">
       <Header />
-      <main className="Home grid justify-start">
+      <main className="Home grid justify-center">
 
         <form ref={$form}>
           <div className="flex justify-between items-center">
@@ -161,7 +160,6 @@ const Cart: NextPage = () => {
                   {boxQuantity}
                 </td>
                 <td className=""></td>
-                <td></td>
                 <td className="text-end font-bold text-secondary">
                   {bill}
                 </td>

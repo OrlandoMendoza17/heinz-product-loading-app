@@ -59,9 +59,6 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
           {formatMoney(price)}
         </td>
         <td className="text-end">
-          % {discount}
-        </td>
-        <td className="text-end">
           {formatMoney(quantity * price)}
         </td>
         <td className="atext-right">

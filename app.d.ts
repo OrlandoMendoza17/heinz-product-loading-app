@@ -7,3 +7,8 @@ type Product = {
   available: number,
   discount: number,
 }
+
+type Employee = {
+  ficha: number;
+  name: string;
+}

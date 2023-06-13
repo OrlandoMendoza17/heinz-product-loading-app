@@ -4,9 +4,11 @@
 @import "./pages/index";
 @import "./pages/login";
 @import "./pages/cart";
+@import "./pages/seleccionar-empleados";
 
 // components
 @import "../components/pages/styles/Product";
+@import "../components/pages/selecionar-empleados/styles/ListItem";
 
 // widgets
 @import "../components/widgets/styles/Button";

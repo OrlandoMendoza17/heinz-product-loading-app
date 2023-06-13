@@ -1,0 +1,27 @@
+.List {
+  @apply p-2 overflow-x-auto rounded-xl border border-gray-400;
+  text-overflow: clip;
+  display: grid;
+  gap: 5px;
+  align-content: start;
+  max-height: 350px;
+  overflow-y: auto;
+  
+  // grid-template-columns: minmax(auto, 300px);
+  & > .list-item{
+    @apply p-2 font-semibold bg-slate-200 hover:bg-blue-300 rounded-xl;
+    cursor: pointer;
+
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+    
+    &.found{
+      @apply bg-green-600;
+    }
+    &.selected{
+      @apply text-white bg-blue-400;
+    }
+  }
+}
