@@ -51,6 +51,7 @@ const Header = () => {
         search,
       }
     })
+    setSearch("")
   }
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
@@ -64,9 +65,10 @@ const Header = () => {
 
   return (
     <header className="Header">
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <Link href="/">
-          <Picture className="w-48" url="https://i.imgur.com/hkIgVIM.png" />
+          <Picture className="w-48" url="https://i.imgur.com/j4F3kJ3.png" />
+          {/* <Picture className="w-48" url="https://i.imgur.com/hkIgVIM.png" /> */}
         </Link>
         <div className="flex justify-end py-5">
           <Link href="/cart" className="font-bold text-2xl">

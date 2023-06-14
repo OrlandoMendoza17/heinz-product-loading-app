@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext, useEffect } from 'react'
+import React, { MouseEventHandler, useContext, useEffect, useState } from 'react'
 import { NextPage } from 'next'
 import Header from "@/components/widgets/Header";
 import getProducts from "@/utils/getProducts";
@@ -11,6 +11,7 @@ import useNotification from '@/hooks/useNotification';
 import ConfirmModal from '@/components/widgets/ConfirmModal';
 import { useRouter } from 'next/router';
 import { log } from 'console';
+import ProductSkeleton from '@/components/pages/ProductSkeleton';
 
 const { isArray } = Array
 
@@ -18,8 +19,14 @@ const Home: NextPage = () => {
 
   const { cart } = useContext(CartContext)
 
+  const [products, setProducts] = useState<Product[]>([])
+
+  const [searching, setSearching] = useState<boolean>(false)
+  const [searchedProducts, setSearchedProducts] = useState<Product[]>([])
+
+  const [loading, setLoading] = useState(true)
+
   const options = [{ name: "", value: "" }]
-  const products = getProducts()
 
   const router = useRouter()
   console.log('router', router)
@@ -29,10 +36,18 @@ const Home: NextPage = () => {
 
     const searchProducts = (search: string) => {
       const sku = parseInt(search) //parseInt("2734string") => 2734
+      // setLoading(true)
 
       if (isFinite(sku)) {
         console.log("Valid Number");
+        // setTimeout(() => {
+        //   const found = products.find(product => product.sku === sku)
+        //   setLoading(false)
+        //   console.log('found', [found])
+        // }, 1000)
+
       } else {
+        setLoading(false)
         console.log("Not valid Number");
       }
     }
@@ -46,25 +61,57 @@ const Home: NextPage = () => {
 
   }, [router.query])
 
+  useEffect(() => {
+    setLoading(true)
+    setTimeout(() => {
+      const products = getProducts()
+      setProducts(products)
+      setLoading(false)
+    }, 3000)
+  }, [])
 
   const { notification, handleNotification } = useNotification()
+
+  const skelentonProducts = new Array(12).fill(0)
 
   return (
     <div className="px-4 md:px-24 pb-20">
       <Header />
 
       <main className="Home">
-        <p className="pb-8">Se ha encontrado 1 item(s) por el SKU: 15297</p>
+        {/* <p className="pb-8">Se ha encontrado 1 item(s) por el SKU: 15297</p> */}
         <div className="main_container">
 
           <Aside />
-
+          
           <section>
             {
-              products.map(product =>
-                <ProductItem key={product.sku} product={product} />
+              loading &&
+              skelentonProducts.map((item, i) =>
+                <ProductSkeleton key={i}/>
               )
             }
+            {
+              !loading && (
+                <>
+                  {
+                    !searching ?
+                      products.map(product =>
+                        <ProductItem key={product.sku} product={product} />
+                      )
+                      :
+                      searchedProducts.map(product =>
+                        <ProductItem key={product.sku} product={product} />
+                      )
+                  }
+                  {
+                    (!Boolean(products.length) || (searching && !Boolean(searchedProducts.length))) &&
+                    <div>No se ha encontrado ningún producto</div>
+                  }
+                </>
+              )
+            }
+
           </section>
 
           <NotificationModal

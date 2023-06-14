@@ -12,7 +12,9 @@
   
   nav{
     .navigation{
+      // @apply bg-primary text-white p-5;
       @apply bg-secondary text-white p-5;
+      
       ul{
         display: none;        
 

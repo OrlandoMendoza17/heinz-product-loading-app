@@ -23,11 +23,11 @@ const ProductItem = ({ product }: Props) => {
   }
 
   return (
-    <div className="Product ">
+    <div className="ProductItem">
       <div className="image-container">
         <img src={image} alt="" />
       </div>
-      <div className="Product-info">
+      <div className="ProductItem-info">
         <div className="">
           <h4 className="text-base text-gray-900 font-bold pb-2">{name}</h4>
           <small className="block text-sm">
@@ -48,7 +48,6 @@ const ProductItem = ({ product }: Props) => {
         </button>
       </div>
     </div>
-
   )
 }
 
