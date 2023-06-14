@@ -15,5 +15,9 @@
   &-info{
     display: grid;
     grid-template-rows: 1fr auto;
+    
+    &-details{
+      @apply pb-4;
+    }
   }
 }

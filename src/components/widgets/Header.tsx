@@ -36,35 +36,13 @@ const navigationList = [
 ]
 
 const Header = () => {
-  const [search, setSearch] = useState<number | "">("")
 
   const router = useRouter()
   const { cart } = useContext(CartContext)
 
-  const $form = useRef<HTMLFormElement>(null)
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault()
-    router.push({
-      pathname: "/",
-      query: {
-        search,
-      }
-    })
-    setSearch("")
-  }
-
-  const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
-    if(target.value === ""){
-      setSearch(target.value)
-    }else{
-      const value = filterByNumbers(target.value)
-      setSearch(!isNaN(value) ? value : search)
-    }
-  }
-
   return (
     <header className="Header">
+      
       <div className="flex justify-between items-center">
         <Link href="/">
           <Picture className="w-48" url="https://i.imgur.com/j4F3kJ3.png" />
@@ -91,24 +69,16 @@ const Header = () => {
           </ul>
         </div>
 
-        <form ref={$form} className="search-products" onSubmit={handleSubmit}>
-          <Select title="" defaultOption="Categorías" options={[{ name: "", value: "" }]} required={false} />
-          <div className="xx_sm:flex items-center">
-            <Input
-              id="search"
-              title=""
-              value={search}
-              className="w-full"
-              placeholder="🔍 Product SKU"
-              onChange={handleChange}
-            />
-            <Button type="submit" color="info" className="w-full xx_sm:w-auto !px-8 !rounded-none">Buscar</Button>
+        {
+          router.pathname !== "/" &&
+          <div className="Header__default">
+            🍔
+            <span>Bienvenido <strong className="text-cyan-600">Orlando</strong></span>
           </div>
-          <span>Bienvenido <strong className="text-cyan-600">Orlando</strong></span>
-        </form>
+        }
 
       </nav>
-    </header>
+    </header >
   )
 }
 

@@ -1,4 +1,29 @@
 .Home{
+  @apply pt-8;
+  
+  .search-products{
+    @apply p-4 bg-slate-200 md:pr-12;
+    
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    
+    @screen sm{
+      grid-template-columns: 200px 1fr;
+    }
+    
+    @screen md{
+      grid-template-columns: 200px 1fr auto;
+    }
+    
+    & > span{
+      align-self: center;
+    }
+    
+    button{
+      @apply px-5 py-3 text-sm;
+    }
+  }
   
   .main_container{
     display: grid;

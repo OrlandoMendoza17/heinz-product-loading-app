@@ -28,7 +28,7 @@ const ProductItem = ({ product }: Props) => {
         <img src={image} alt="" />
       </div>
       <div className="ProductItem-info">
-        <div className="">
+        <div className="ProductItem-info-details">
           <h4 className="text-base text-gray-900 font-bold pb-2">{name}</h4>
           <small className="block text-sm">
             SKU: <span className="font-bold">{sku}</span>
