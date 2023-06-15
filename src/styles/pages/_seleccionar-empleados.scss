@@ -5,20 +5,24 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10px;
+  }
+  
+  .Input{
+    span{
+      @apply font-semibold;
+    }
     
-    .Input{
-      span{
-        @apply font-semibold;
-      }
-      
-      input, select{
-        @apply py-2;
-      }
+    input, select{
+      @apply py-2;
     }
   }
   
+  textarea{
+    min-height: 150px;
+  }
   
-  .List-grid{
+  .Employee-grid{
+    @apply pb-10;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;

@@ -6,7 +6,7 @@ interface Props extends FormHTMLAttributes<HTMLFormElement> {
 }
 
 const Form = ({ children, ...formProps }: Props) => {
-  // onInvalid={() => $form.current.classList.add("validated")}
+
   const $form = useRef<HTMLFormElement>(null)
   
   const handleInvalid = () =>{

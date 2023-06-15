@@ -1,14 +1,18 @@
+import React, { ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react'
 import Employees from '@/components/pages/selecionar-empleados/Employees'
-import ListItem from '@/components/pages/selecionar-empleados/ListItem'
 import Header from '@/components/widgets/Header'
 import Input from '@/components/widgets/Input'
 import Select from '@/components/widgets/Select'
 import { filterByNumbers } from '@/utils'
 import getEmployees from '@/utils/getEmployees'
-import React, { ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react'
+import Textarea from '@/components/widgets/Textarea'
+import Button from '@/components/widgets/Button'
+import { useRouter } from 'next/router'
 
 const SelectEmployees = () => {
 
+	const router = useRouter()
+	
 	const [employees, setEmployees] = useState<Employee[]>([])
 	const [searching, setSearching] = useState<boolean>(false)
 	const [searchedEmployees, setSearchedEmployees] = useState<Employee[]>([])
@@ -70,7 +74,7 @@ const SelectEmployees = () => {
 				<h1 className="text-3xl font-bold">Selecionar Empleados</h1>
 				<div>
 					<div className="input-list">
-						<Input id="ficha-search" title="Buscar por ficha" placeholder="💼 Employee SKU" value={search} onChange={handleChange} />
+						<Input id="ficha-search" title="Buscar por ficha" placeholder="💼 Employee's ID" value={search} onChange={handleChange} />
 						<Input id="purchase-order" title="Orden de Compra" placeholder="📄 12-12052023" />
 						<Input id="purchase-date" title="Fecha de recepción" type="date" />
 
@@ -80,16 +84,19 @@ const SelectEmployees = () => {
 					</div>
 				</div>
 
-				<div className="List-grid">
+				<div className="Employee-grid">
 					{
 						searching ?
+							// Siempre aparecerá el botón de limpiar
 							<Employees
+								showDeleteButton={true}
 								title={employeeListTitle}
 								handleClean={handleClean.search}
 								employees={searchedEmployees}
 								{...employeesProps}
 							/>
 							:
+							// No aparecerá el botón de limpiar
 							<Employees
 								title={employeeListTitle}
 								employees={employees}
@@ -98,14 +105,27 @@ const SelectEmployees = () => {
 					}
 
 					<Employees
+						// Botón de limpiar aparecerá cuando hayan items en la lista
 						title={<>Seleccionados <small>({selectedEmployees.length})</small></>}
 						handleClean={handleClean.selected}
+						showDeleteButton={Boolean(selectedEmployees.length)}
 						employees={selectedEmployees}
 						{...selectedEmployeesProps}
 					/>
 
 				</div>
 
+				<Textarea
+					id="textarea"
+					title="Observaciones"
+					placeholder="📝 ..."
+				/>
+
+				<div className="flex justify-end pt-8">
+					<Button onClick={() => router.push("/")} color="info" className="font-bold !px-10">
+						Siguiente →
+					</Button>
+				</div>
 			</main>
 			<footer></footer>
 		</div>

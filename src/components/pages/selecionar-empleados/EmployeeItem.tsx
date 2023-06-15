@@ -7,7 +7,7 @@ type Props = {
   setSelectedEmployees: Dispatch<SetStateAction<Employee[]>>
 }
 
-const ListItem = ({ employee, selectedList, selectedEmployees, setSelectedEmployees }: Props) => {
+const EmployeeItem = ({ employee, selectedList, selectedEmployees, setSelectedEmployees }: Props) => {
 
   const found = selectedEmployees.find(item => item.ficha === employee.ficha)
 
@@ -25,8 +25,8 @@ const ListItem = ({ employee, selectedList, selectedEmployees, setSelectedEmploy
 
   const { ficha, name } = employee
   return (
-    <div className={`list-item ${(selectedList) ? "selected" : ""}`} onClick={handleSelect}>
-      <p>{ficha} {name}</p>
+    <div className={`EmployeeItem ${(selectedList) ? "selected" : ""}`} onClick={handleSelect}>
+      <p><span>{ficha}</span> - {name}</p>
       {
         selectedList &&
         <button onClick={handleDelete} className="py-1 px-3 text-xs rounded-lg bg-gray-600 hover:bg-red-400">
@@ -41,4 +41,4 @@ const ListItem = ({ employee, selectedList, selectedEmployees, setSelectedEmploy
   )
 }
 
-export default ListItem;
+export default EmployeeItem;

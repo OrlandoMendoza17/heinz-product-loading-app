@@ -1,7 +1,8 @@
 form.validated {
 
   input,
-  select {
+  select,
+  textarea {
     &:valid {
       @apply border-green-300;
     }
@@ -19,7 +20,8 @@ form.validated {
   gap: 7px;
 
   input,
-  select {
+  select,
+  textarea {
     transition: .3s;
     outline: none;
     @apply text-sm;

@@ -8,6 +8,7 @@ import Button from '@/components/widgets/Button'
 import ProductRow from '@/components/pages/ProductRow'
 import useNotification from '@/hooks/useNotification'
 import ConfirmModal from '@/components/widgets/ConfirmModal'
+import { useRouter } from 'next/router'
 
 const fields = [
   "SKU",
@@ -18,9 +19,9 @@ const fields = [
   // "Editar",
 ]
 const Cart: NextPage = () => {
-  
-  const { cart, emptyCart, deleteGroup, removeProduct } = useContext(CartContext)
 
+  const router = useRouter()
+  const { cart, emptyCart, deleteGroup } = useContext(CartContext)
   const { notification, handleNotification } = useNotification()
 
   const handleOpenModal = () => {
@@ -169,7 +170,12 @@ const Cart: NextPage = () => {
               </tr>
             </tbody>
           </table>
+
         </form>
+
+        <div className="flex justify-end pt-8">
+          <Button onClick={() => router.push("/seleccionar-empleados")} color="info" className="font-bold !px-10">Siguiente →</Button>
+        </div>
 
         <ConfirmModal
           button2
