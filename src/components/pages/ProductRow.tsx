@@ -26,9 +26,11 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
   
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     if (target.name === "product_quantity") {
+      const quantity = parseFloat(target.value) 
+      const EMPTY_VALUE = 0
       updateProduct({
         ...product,
-        quantity: parseFloat(target.value),
+        quantity: (quantity >= 0) ? quantity : EMPTY_VALUE,
       })
     }
   }
@@ -47,6 +49,8 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
         <td className="">
           <input
             id=""
+            min={0}
+            step="0.25"
             name="product_quantity"
             type="number"
             value={quantity}

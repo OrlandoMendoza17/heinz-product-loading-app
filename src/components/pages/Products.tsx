@@ -8,7 +8,7 @@ type Props = {
   children?: React.ReactNode,
 }
 
-const RenderProducts = ({ loading, condition, products }: Props) => {
+const Products = ({ loading, condition, products }: Props) => {
   
   condition = condition ?? Boolean(products.length)
   
@@ -29,4 +29,4 @@ const RenderProducts = ({ loading, condition, products }: Props) => {
   )
 }
 
-export default RenderProducts
+export default Products

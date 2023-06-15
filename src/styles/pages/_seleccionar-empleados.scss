@@ -1,17 +1,26 @@
 .SelectEmployees{
-  .Input{
-    span{
-      @apply font-semibold;
-    }
+  
+  .input-list{
+    @apply py-10;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
     
-    input, select{
-      @apply py-2;
+    .Input{
+      span{
+        @apply font-semibold;
+      }
+      
+      input, select{
+        @apply py-2;
+      }
     }
   }
   
+  
   .List-grid{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
   }
 }

@@ -12,7 +12,7 @@
   nav{
     .navigation{
       // @apply bg-primary text-white p-5;
-      @apply bg-secondary text-white p-5;
+      @apply bg-secondary text-white py-5 px-10;
       
       ul{
         display: none;        
@@ -20,10 +20,11 @@
         @screen lg{
           display: grid;
           grid-template-columns: repeat(5, auto) 1fr;
+          gap: 20px;
         }
         
         a, li{
-          padding: 0 10px;
+          // padding: 0 10px;
           @apply text-xs;
           
           &:last-of-type{
