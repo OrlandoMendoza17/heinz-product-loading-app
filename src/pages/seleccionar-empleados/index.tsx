@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, FormEventHandler, MouseEventHandler, useEffect, useState } from 'react'
+import React, { ChangeEventHandler, FormEventHandler, MouseEventHandler, useContext, useEffect, useState } from 'react'
 import Employees from '@/components/pages/selecionar-empleados/Employees'
 import Header from '@/components/widgets/Header'
 import Input from '@/components/widgets/Input'
@@ -11,6 +11,7 @@ import { useRouter } from 'next/router'
 import Form from '@/components/widgets/Form'
 import NotificationModal from '@/components/widgets/NotificationModal'
 import useNotification from '@/hooks/useNotification'
+import CartContext from '@/context/CartContext'
 
 type HandleFormProps = {
 	submit: FormEventHandler<HTMLFormElement>,
@@ -20,6 +21,7 @@ type HandleFormProps = {
 const SelectEmployees = () => {
 
 	const router = useRouter()
+	const { cart } = useContext(CartContext)
 
 	const [employees, setEmployees] = useState<Employee[]>([])
 	const [searching, setSearching] = useState<boolean>(false)
@@ -34,15 +36,28 @@ const SelectEmployees = () => {
 		const employees = getEmployees()
 		setEmployees(employees)
 	}, [])
-	
+
 	const handleForm: HandleFormProps = {
 		submit: (event) => {
 			event.preventDefault()
 
-			if (selectedEmployees.length) {
-				router.push("/")
-			} else {
+			if (!selectedEmployees.length) {
+				
+				debugger
 				handleForm.invalid()
+				
+			} else if (!cart.length) {
+				debugger
+				handleNotification.open({
+					type: "danger",
+					title: "Carrito Vacío",
+					message: "Debes tener al menos 1 producto en el carrito para poder avanzar",
+				})
+				
+			} else {
+				
+				router.push("/")
+				
 			}
 		},
 		invalid: () => {
@@ -156,14 +171,13 @@ const SelectEmployees = () => {
 
 						</div>
 
-						<Textarea id="textarea" title="Observaciones" placeholder="📝 ..." />
+						<Textarea id="textarea" title="Observaciones" placeholder="📝 ..." required={false} />
 
 						<div className="flex justify-end pt-8">
 							<Button
 								color="info"
 								type="submit"
 								className="font-bold !px-10"
-							// onClick={() => router.push("/")}
 							>
 								Siguiente →
 							</Button>
