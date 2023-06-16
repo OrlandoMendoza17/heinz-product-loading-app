@@ -11,6 +11,8 @@ export type OpenProps = Omit<NotificationProps, "show">
 
 const useNotification = () => {
 
+  const [timeoutID, setTimeoutID] = useState<NodeJS.Timeout>()
+
   const [notification, setNotification] = useState<NotificationProps>({
     show: false,
     type: "warning",
@@ -20,17 +22,14 @@ const useNotification = () => {
 
   const handleNotification = {
     open: (notification: OpenProps): void => {
-      setNotification({
-        ...notification,
-        show: true,
-      })
-      setTimeout(() => (close as () => void)(), 10000)
+      setNotification({ ...notification, show: true })
+      
+      clearTimeout(timeoutID)
+      setTimeoutID(setTimeout(() => handleNotification.close(), 7000))
+      
     },
     close: () => {
-      setNotification({
-        ...notification,
-        show: false,
-      })
+      setNotification({ ...notification, show: false })
     },
   }
 
