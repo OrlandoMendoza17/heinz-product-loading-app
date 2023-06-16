@@ -10,24 +10,16 @@ import { filterByNumbers } from '@/utils';
 
 const navigationList = [
   {
-    link: "/",
-    label: "Ketchup y Condimentos",
+    link: "/mis-ordenes",
+    label: "📄 Mis Ordenes",
+  },  
+  {
+    link: "/activar-ficha",
+    label: "💼 Activar Ficha",
   },
   {
-    link: "/",
-    label: "Alimentos Infantiles",
-  },
-  {
-    link: "/",
-    label: "Otros Productos",
-  },
-  {
-    link: "/",
-    label: "Institucionales",
-  },
-  {
-    link: "/",
-    label: "Todas las Categorias",
+    link: "/activar-producto",
+    label: "🥫 Activar Producto",
   },
   {
     link: "/login",
@@ -42,13 +34,13 @@ const Header = () => {
 
   return (
     <header className="Header">
-      
+
       <div className="flex justify-between items-center">
         <Link href="/">
           <Picture className="w-48" url="https://i.imgur.com/j4F3kJ3.png" />
           {/* <Picture className="w-48" url="https://i.imgur.com/hkIgVIM.png" /> */}
         </Link>
-        <div className="flex justify-end py-5">
+        <div className="py-5">
           <Link href="/cart" className="font-bold text-2xl">
             🛒 <span className="text-xl">{cart.length}</span>
           </Link>
@@ -57,7 +49,7 @@ const Header = () => {
 
       <nav className="">
 
-        <div className="navigation">
+        <div className="navigation font-bold">
           <ul>
             {
               navigationList.map(({ link, label }, i) =>

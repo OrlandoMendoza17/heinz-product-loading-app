@@ -24,7 +24,7 @@ const Home: NextPage = () => {
       const products = getProducts()
       setProducts(products)
       setLoading(false)
-    }, 3000)
+    }, 1000)
   }, [])
 
   const { notification, handleNotification } = useNotification()
