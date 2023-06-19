@@ -5,6 +5,7 @@
 @import "./pages/login";
 @import "./pages/cart";
 @import "./pages/seleccionar-empleados";
+@import "./pages/mis-ordenes";
 
 // components
 @import "../components/pages/styles/ProductItem";
@@ -17,6 +18,7 @@
 @import "../components/widgets/styles/Button";
 @import "../components/widgets/styles/Header";
 @import "../components/widgets/styles/Input";
+@import "../components/widgets/styles/Switch";
 @import "../components/widgets/styles/Spinner";
 @import "../components/widgets/styles/Modal";
 @import "../components/widgets/styles/NotificationModal";

@@ -49,7 +49,7 @@ const ProductFinder = ({ loading, products, setSearching, setSearchedProducts, D
       <form className="ProductFinder">
         {/* <Select title="" defaultOption="Categorías" options={options} required={false} /> */}
         <span className="hidden sm:block font-bold">Buscar Producto</span>
-        <div className="xx_sm:flex items-center">
+        <div className="flex items-center">
           <Input
             id="search"
             title=""

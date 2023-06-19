@@ -12,7 +12,7 @@ const navigationList = [
   {
     link: "/mis-ordenes",
     label: "📄 Mis Ordenes",
-  },  
+  },
   {
     link: "/activar-ficha",
     label: "💼 Activar Ficha",
@@ -21,12 +21,12 @@ const navigationList = [
     link: "/activar-producto",
     label: "🥫 Activar Producto",
   },
-  {
-    link: "/login",
-    label: "Cerrar Sesión",
-  },
 ]
 
+// {
+//   link: "/login",
+//   label: "Cerrar Sesión",
+// },
 const Header = () => {
 
   const router = useRouter()
@@ -47,29 +47,26 @@ const Header = () => {
         </div>
       </div>
 
-      <nav className="">
-
-        <div className="navigation font-bold">
-          <ul>
-            {
-              navigationList.map(({ link, label }, i) =>
-                <li key={i}>
-                  <Link href={link}>{label}</Link>
-                </li>
-              )
-            }
-          </ul>
-        </div>
-
-        {
-          router.pathname !== "/" &&
-          <div className="Header__default">
-            🍔
-            <span>Bienvenido <strong className="text-cyan-600">Orlando</strong></span>
-          </div>
-        }
-
+      <nav className="font-bold">
+        <span className="sm:hidden">🍔</span>
+        <ul>
+          {
+            navigationList.map(({ link, label }, i) =>
+              <li key={i}>
+                <Link href={link}>{label}</Link>
+              </li>
+            )
+          }
+        </ul>
+        <Link href="/login">➡ Cerrar Sesión</Link>
       </nav>
+      {
+        router.pathname !== "/" &&
+        <div className="Header__default">
+          <span></span>
+          <span>Bienvenido <strong className="text-cyan-600">Orlando</strong></span>
+        </div>
+      }
     </header >
   )
 }

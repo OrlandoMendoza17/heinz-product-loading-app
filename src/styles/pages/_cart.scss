@@ -1,10 +1,11 @@
 .Table{
   @apply text-sm text-gray-500 dark:text-gray-400 shadow-md sm:rounded-lg;
-  // width: 100%;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
   
   thead{
-    @apply text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400;
-    
+    @apply text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400;
     th{
       @apply text-left;
     }

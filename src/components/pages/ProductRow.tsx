@@ -15,7 +15,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
   const { updateProduct, removeProduct } = useContext(CartContext)
 
   const { notification, handleNotification } = useNotification()
-  
+
   const handleOpenModal = () => {
     handleNotification.open({
       type: "warning",
@@ -23,10 +23,10 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
       message: "¿Estás seguro de eliminar el producto del carrito?"
     })
   }
-  
+
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     if (target.name === "product_quantity") {
-      const quantity = parseFloat(target.value) 
+      const quantity = parseFloat(target.value)
       const EMPTY_VALUE = 0
       updateProduct({
         ...product,
@@ -40,7 +40,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
   return (
     <>
       <tr key={`${name.split(" ").join("-")}-${sku}`}>
-        <td className=" font-medium text-gray-900 dark:text-white whitespace-nowrap">
+        <td className="font-medium text-gray-900 dark:text-white whitespace-nowrap">
           {sku}
         </td>
         <td className="font-bold">
@@ -56,22 +56,22 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
             value={quantity}
             placeholder='0.00'
             onChange={handleChange}
-            className="border-gray-300 pl-2 py-1 text-right border rounded-md w-28"
+            className="border-gray-300 px-2 py-1 border rounded-md w-28"
           />
         </td>
-        <td className="text-end">
+        <td className="">
           {formatMoney(price)}
         </td>
-        <td className="text-end">
+        <td className="">
           {formatMoney(quantity * price)}
         </td>
         <td className="atext-right">
-          <button type="button" onClick={handleOpenModal}>
+          <button type="button" tabIndex={-1} onClick={handleOpenModal}>
             🗑 Eliminar
           </button>
         </td>
-        <td className="w-4 p-4">
-          <Checkbox name="delete-product" value={sku} onChange={handleCheckbox} />
+        <td className="w-5 p-4">
+        <input type="checkbox" tabIndex={-1} name="delete-product" value={sku} onChange={handleCheckbox} />
         </td>
       </tr>
       <ConfirmModal

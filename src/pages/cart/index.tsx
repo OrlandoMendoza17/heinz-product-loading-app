@@ -106,85 +106,90 @@ const Cart: NextPage = () => {
   )
 
   return (
-    <div className="px-4 md:px-24 pb-20">
-      <Header />
-      <main className="Home grid justify-center">
-
-        <form ref={$form}>
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold pb-10">🛒 Carrito de Compras <span>({cart.length} items)</span></h1>
-            {
-              Boolean(selectedProducts.length) &&
-              <Button onClick={handleOpenModal} className="font-bold !py-2" color="danger">
-                Eliminar
-              </Button>
-            }
-          </div>
-
-          <table className="Table">
-            <thead>
-              <tr>
-                {
-                  fields.map((name, i) =>
-                    <th key={`${name}-${i}`} className="px-6 py-3">
-                      <span>{name}</span>
-                    </th>
-                  )
-                }
-                <th></th>
-                <th className="px-6 py-3">
-                  {
-                    Boolean(cart.length) &&
-                    <Checkbox name="delete-all" checked={selectedAll} onChange={handleSelectAll} />
-                  }
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+    <>
+      <div className="px-4 md:px-24 pb-20">
+        <Header />
+        <main className="Home xl:px-60">
+          <form ref={$form}>
+            <div className="flex justify-between items-center pb-10">
+              <h1 className="text-xl x_sm:text-2xl font-bold">
+                🛒 Carrito de Compras <span>({cart.length}<span className="hidden xx_sm:inline"> items</span>)</span>
+              </h1>
               {
-                cart.map(product =>
-                  <ProductRow
-                    key={`${product.name.replace(" ", "-")}-${product.sku}`}
-                    product={product}
-                    handleCheckbox={handleCheckbox}
-                  />
-                )
+                Boolean(selectedProducts.length) &&
+                <Button onClick={handleOpenModal} className="font-bold !text-xs !py-2" color="danger">
+                  <span className="block xx_sm:hidden">🗑</span>
+                  <span className="hidden xx_sm:block">Eliminar</span>
+                  
+                </Button>
               }
-              {/*Bill Footer */}
-              <tr>
-                <td className=" font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                  -
-                </td>
-                <td className="font-bold text-secondary">
-                  Total
-                </td>
-                <td className="text-end font-bold text-secondary !pr-12">
-                  {boxQuantity}
-                </td>
-                <td className=""></td>
-                <td className="text-end font-bold text-secondary">
-                  {bill}
-                </td>
-                <td className="atext-right"></td>
-                <td className="w-4 p-4"></td>
-              </tr>
-            </tbody>
-          </table>
+            </div>
 
-        </form>
+            <div className="overflow-x-scroll md:overflow-x-auto">
+              <table className="Table" style={{ minWidth: "768px" }}>
+                <thead>
+                  <tr>
+                    {
+                      fields.map((name, i) =>
+                        <th key={`${name}-${i}`} className="px-6 py-3">
+                          <span>{name}</span>
+                        </th>
+                      )
+                    }
+                    <th></th>
+                    <th className="px-6 py-3">
+                      {
+                        Boolean(cart.length) &&
+                        <input type="checkbox" name="delete-all" checked={selectedAll} onChange={handleSelectAll} />
+                      }
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    cart.map(product =>
+                      <ProductRow
+                        key={`${product.name.replace(" ", "-")}-${product.sku}`}
+                        product={product}
+                        handleCheckbox={handleCheckbox}
+                      />
+                    )
+                  }
+                  {/*Bill Footer */}
+                  <tr>
+                    <td className="font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                      -
+                    </td>
+                    <td className="font-bold text-secondary">
+                      Total
+                    </td>
+                    <td className="font-bold text-secondary !pl-8">
+                      {boxQuantity}
+                    </td>
+                    <td className=""></td>
+                    <td className=" font-bold text-secondary">
+                      {bill}
+                    </td>
+                    <td className="atext-right"></td>
+                    <td className="w-4 p-4"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
 
-        <div className="flex justify-end pt-8">
-          <Button onClick={() => router.push("/seleccionar-empleados")} color="info" className="font-bold !px-10">Siguiente →</Button>
-        </div>
-
-        <ConfirmModal
-          button2
-          notification={notification}
-          acceptAction={handleDelete}
-          closeModal={handleNotification.close}
-        />
-      </main>
-    </div >
+          <div className="flex justify-end pt-8">
+            <Button onClick={() => router.push("/seleccionar-empleados")} color="info" className="font-bold !px-10">Siguiente →</Button>
+          </div>
+        </main>
+      </div >
+      <ConfirmModal
+        button2
+        notification={notification}
+        acceptAction={handleDelete}
+        closeModal={handleNotification.close}
+      />
+    </>
   )
 }
 
