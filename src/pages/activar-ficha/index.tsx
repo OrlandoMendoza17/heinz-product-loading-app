@@ -1,3 +1,4 @@
+import DropFiles from '@/components/pages/activar-ficha/DropFiles'
 import Header from '@/components/widgets/Header'
 import React from 'react'
 
@@ -17,6 +18,7 @@ const ActivateEmployeesID = () => {
               </button>
             </div>
           </label>
+          <DropFiles/>
         </section>
       </main>
     </div>
