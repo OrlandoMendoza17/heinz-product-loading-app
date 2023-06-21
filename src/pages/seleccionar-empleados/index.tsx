@@ -12,6 +12,7 @@ import Form from '@/components/widgets/Form'
 import NotificationModal from '@/components/widgets/NotificationModal'
 import useNotification from '@/hooks/useNotification'
 import CartContext from '@/context/CartContext'
+import DropZone from '@/components/pages/activar-ficha/DropZone'
 
 type HandleFormProps = {
 	submit: FormEventHandler<HTMLFormElement>,
@@ -22,6 +23,8 @@ const SelectEmployees = () => {
 
 	const router = useRouter()
 	const { cart } = useContext(CartContext)
+
+	const [loading, setLoading] = useState<boolean>(false)
 
 	const [employees, setEmployees] = useState<Employee[]>([])
 	const [searching, setSearching] = useState<boolean>(false)
@@ -42,10 +45,10 @@ const SelectEmployees = () => {
 			event.preventDefault()
 
 			if (!selectedEmployees.length) {
-				
+
 				debugger
 				handleForm.invalid()
-				
+
 			} else if (!cart.length) {
 				debugger
 				handleNotification.open({
@@ -53,11 +56,11 @@ const SelectEmployees = () => {
 					title: "Carrito Vacío",
 					message: "Debes tener al menos 1 producto en el carrito para poder avanzar",
 				})
-				
+
 			} else {
-				
+
 				router.push("/")
-				
+
 			}
 		},
 		invalid: () => {
@@ -171,7 +174,20 @@ const SelectEmployees = () => {
 
 						</div>
 
-						<Textarea id="textarea" title="Observaciones" placeholder="📝 ..." required={false} />
+						<DropZone
+							filesAllowed={[]}
+							handleFiles={() => { }}
+							loading={loading}
+							setLoading={setLoading}
+						/>
+
+						<Textarea
+							id="textarea"
+							title="Observaciones"
+							className="pt-14"
+							placeholder="📝 ..."
+							required={false}
+						/>
 
 						<div className="flex justify-end pt-8">
 							<Button

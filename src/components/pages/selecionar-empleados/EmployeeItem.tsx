@@ -29,7 +29,7 @@ const EmployeeItem = ({ employee, selectedList, selectedEmployees, setSelectedEm
       <p><span>{ficha}</span> - {name}</p>
       {
         selectedList &&
-        <button onClick={handleDelete} className="py-1 px-3 text-xs rounded-lg bg-gray-600 hover:bg-red-400">
+        <button type="button" onClick={handleDelete} className="py-1 px-3 text-xs rounded-lg bg-gray-600 hover:bg-red-400">
           X
         </button>
       }

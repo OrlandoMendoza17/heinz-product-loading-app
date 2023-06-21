@@ -11,17 +11,19 @@ export const filterByNumbers = (value: string): number => { //"this27is65a34stri
 }
 
 export const getJsonFromExcel = async (file: File) => {
-  const schema = {
-    "Fichas": {
-      prop: "fichas",
-      type: Number,
-    },
+  const map = {
+    "Fichas": "fichas",
   }
 
   type jsonProps = {
-    fichas: string
+    fichas: number
   }
 
-  const { rows } = await readXlsxFile<jsonProps>(file, { schema })
-  return rows;
+  const output = await readXlsxFile<jsonProps>(file, { map })
+  return output;
+}
+
+export const stringListFrom = (array: string[]): string => {
+  const formatter = new Intl.ListFormat('es', { style: 'long', type: 'conjunction' });
+  return formatter.format(array)
 }

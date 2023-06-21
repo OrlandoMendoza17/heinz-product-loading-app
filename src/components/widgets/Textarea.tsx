@@ -17,7 +17,7 @@ const Textarea = (props: Omit<Props, "name">): JSX.Element => {
           {title}
         </span>
       }
-      <textarea id={id} name={id} required={required} {...inputProps} />
+      <textarea id={id} name={id} className="!transition-none" required={required} {...inputProps} />
     </label>
   )
 }

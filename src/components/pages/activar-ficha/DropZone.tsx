@@ -1,105 +1,106 @@
-import { getJsonFromExcel } from '@/utils'
-import React, { ChangeEventHandler, DragEventHandler, MouseEventHandler } from 'react'
-import readXlsxFile from 'read-excel-file'
+import Button from '@/components/widgets/Button'
+import Spinner from '@/components/widgets/Spinner'
+import { stringListFrom } from '@/utils';
+import React, { ChangeEventHandler, Dispatch, DragEventHandler, SetStateAction, useRef, useState } from 'react'
 
-const xlsxFileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-
-type EmployeeXLSX = {
-  Fichas: number,
+type DragEvents = {
+  enter: DragEventHandler<HTMLDivElement>;
+  leave: DragEventHandler<HTMLDivElement>;
+  drop: DragEventHandler<HTMLDivElement>;
 }
 
-const DropZone = () => {
+type FileAllowed = {
+  label: string,
+  type: string, // Common MIME types => https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+}
 
-  // console.log({ element: event.target });
-  // console.log(event.target.files);
+type Props = {
+  loading: boolean,
+  multiple?: boolean,
+  filesAllowed: FileAllowed[],
+  setLoading: Dispatch<SetStateAction<boolean>>
+  handleFiles: (file: FileList) => void
+}
 
+const DropZone = ({ multiple = false, filesAllowed, handleFiles, loading, setLoading }: Props) => {
 
-  // const getEmployeeIDs = () => {
-  //   const name = "Fichas";
-  //   const employees: EmployeeXLSX[] = XLSX.utils.sheet_to_json(workbook.Sheets[name])
-  // }
+  const $input = useRef<HTMLInputElement>(null)
 
-  // const HandleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-  //   const { files } = event.target
+  const loadFiles = async (files: FileList) => {
+    setLoading(true)
+    await handleFiles(files)
+    setLoading(false)
+  }
 
-  //   if (files?.length) {
-  //     const [file] = Array.from(files) // file.xlsx
-
-  //     const reader = new FileReader()
-  //     reader.readAsArrayBuffer(file)
-
-  //     reader.addEventListener("load", (event) => {
-  //       event.preventDefault()
-
-  //       // Se lee el archivo
-  //       const arrayBuffer = reader.result // File.xlsx
-  //       const workbook = XLSX.readFile(arrayBuffer)
-
-  //       // Se pasa el contenido del archivo a JSON
-  //       const name = "Fichas";
-  //       const employees: EmployeeXLSX[] = XLSX.utils.sheet_to_json(workbook.Sheets[name])
-
-  //       // Se almacenan las fichas de los trabajadores en un array
-  //       const employeeIDs = employees.map(employee => employee.Fichas)
-
-  //       console.log('JSON', employeeIDs)
-  //     })
-  //   }
-  // }
-
-
-
-  const HandleChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     const { files } = event.target
+    if (files?.length) loadFiles(files)
+  }
 
-    if (files?.length) {
-      const [file] = Array.from(files) // file.xlsx
-      try {
-        const fichas = await getJsonFromExcel(file)
-        console.log('fichas', fichas)
-      } catch (error) {
-        console.log(error)
-      }
+  const handleDrag: DragEvents = {
+    enter: ({ currentTarget }) => {
+      currentTarget.classList.add("draggingOver")
+    },
+    leave: ({ currentTarget }) => {
+      currentTarget.classList.remove("draggingOver")
+    },
+    // When the files are drop then they're handled from outside the component
+    drop: async (event) => {
+      event.preventDefault()
+      event.currentTarget.classList.remove("draggingOver")
+
+      const { files } = event.dataTransfer
+
+      if (files?.length) loadFiles(files)
     }
   }
 
-  // console.log('XLSX', XLSX)
-
-  // const blob = new Blob([files[0]], { type: xlsxFileType })
-  // console.log('blob', blob)
-
-  // const domString = URL.createObjectURL(blob)
-  // console.log('domString', domString)
-
-  const handleDragEnter: DragEventHandler<HTMLDivElement> = ({ currentTarget }) => {
-    currentTarget.classList.add("draggingOver")
-    console.log("drag entered");
-  }
-  const handleDragLeave: DragEventHandler<HTMLDivElement> = ({ currentTarget }) => {
-    currentTarget.classList.remove("draggingOver")
-    console.log("drag left");
-  }
-  const handleDrop: DragEventHandler<HTMLDivElement> = (event) => {
-    event.preventDefault()
-    event.currentTarget.classList.remove("draggingOver")
-    console.log("drop");
-    console.log("files", event.dataTransfer.files);
-    debugger
-  }
+  const allowedTypes = filesAllowed.map(item => item.type).join(",")
+  const allowedFileLabels = filesAllowed.map(item => item.label)
 
   return (
-    <div>
-      <h4>Archivos</h4>
-      <input type="file" onChange={HandleChange} />
-      <div
-        className="DropZone"
-        onDrop={handleDrop}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={(event) => event.preventDefault()}
-      // onDropCapture={}
-      ></div>
-    </div>
+    <>
+      <div>
+        <h4 className="text-lg sm:text-2xl mt-8 font-semibold">
+          Activación de fichas <small>(carga masiva)</small>
+        </h4>
+        <div
+          className="DropZone grid gap-4 place-content-center justify-items-center"
+          onDrop={handleDrag.drop}
+          onDragEnter={handleDrag.enter}
+          onDrag={handleDrag.enter}
+          onDragLeave={handleDrag.leave}
+          onDragOver={(event) => event.preventDefault()}
+        // onDropCapture={}
+        >
+          {
+            loading ?
+              <>
+                <Spinner size="normal" />
+                <span className="text-xl font-medium text-slate-600 mt-5">Procesando el archivo</span>
+              </>
+              :
+              <>
+                <img src="https://i.imgur.com/KZW9aDD.png" alt="" />
+                <div className="text-center">
+                  <span className="text-xl font-medium text-slate-600">Suelta el archivo aquí</span>
+                  <small className="block text-slate-400">Archivos permitidos: {stringListFrom(allowedFileLabels)}</small>
+                </div>
+                <Button onClick={() => $input.current?.click()} color="secondary" className="!py-2">Subir Archivo</Button>
+              </>
+          }
+          <input
+            hidden
+            type="file"
+            ref={$input}
+            accept={allowedTypes}
+            multiple={multiple}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+
+    </>
   )
 }
 
