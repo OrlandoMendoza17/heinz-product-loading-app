@@ -10,7 +10,6 @@ const getProducts = () => {
       price: 68,
       quantity: 0,
       available: 10,
-      discount: 0.1,
       image: 'https://i.imgur.com/ngedpd4.png'
     },
     {
@@ -19,7 +18,6 @@ const getProducts = () => {
       price: 16,
       quantity: 0,
       available: 10,
-      discount: 0.1,
       image: 'https://i.imgur.com/L8lOqCA.png'
     },
     {
@@ -28,7 +26,6 @@ const getProducts = () => {
       price: 76,
       quantity: 0,
       available: 10,
-      discount: 0.1,
       image: 'https://i.imgur.com/cQ6WozY.png'
     },
     {
@@ -37,7 +34,6 @@ const getProducts = () => {
       price: 46,
       quantity: 0,
       available: 10,
-      discount: 0.1,
       image: 'https://i.imgur.com/2fijKlZ.png'
     },
     {
@@ -46,7 +42,6 @@ const getProducts = () => {
       price: 14,
       quantity: 0,
       available: 10,
-      discount: 0.1,
       image: 'https://i.imgur.com/6FXSZ3l.png'
     },
     {
@@ -55,7 +50,6 @@ const getProducts = () => {
       price: 60,
       quantity: 0,
       available: 10,
-      discount: 0.1,
       image: 'https://i.imgur.com/sfml8nl.png'
     },
     {
@@ -64,7 +58,6 @@ const getProducts = () => {
       price: 24,
       quantity: 0,
       available: 10,
-      discount: 0.1,
       image: 'https://i.imgur.com/qMCO7aB.png'
     },
     {
@@ -73,7 +66,6 @@ const getProducts = () => {
       price: 11,
       quantity: 0,
       available: 10,
-      discount: 0.1,
       image: 'https://i.imgur.com/OeFz1vP.png'
     },
     {
@@ -82,7 +74,6 @@ const getProducts = () => {
       price: 57,
       quantity: 0,
       available: 10,
-      discount: 0.1,
       image: 'https://i.imgur.com/Yl57Hlk.png'
     }
   ]
