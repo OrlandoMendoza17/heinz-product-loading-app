@@ -1,7 +1,7 @@
 import Button from '@/components/widgets/Button'
 import Spinner from '@/components/widgets/Spinner'
 import { stringListFrom } from '@/utils';
-import React, { ChangeEventHandler, Dispatch, DragEventHandler, SetStateAction, useRef, useState } from 'react'
+import React, { ChangeEventHandler, Dispatch, DragEventHandler, ReactNode, SetStateAction, useRef, useState } from 'react'
 
 type DragEvents = {
   enter: DragEventHandler<HTMLDivElement>;
@@ -19,10 +19,11 @@ type Props = {
   multiple?: boolean,
   filesAllowed: FileAllowed[],
   setLoading: Dispatch<SetStateAction<boolean>>
-  handleFiles: (file: FileList) => void
+  handleFiles: (file: FileList) => void,
+  children?: ReactNode
 }
 
-const DropZone = ({ multiple = false, filesAllowed, handleFiles, loading, setLoading }: Props) => {
+const DropZone = ({ multiple = false, filesAllowed, handleFiles, loading, setLoading, children }: Props) => {
 
   const $input = useRef<HTMLInputElement>(null)
 
@@ -62,7 +63,7 @@ const DropZone = ({ multiple = false, filesAllowed, handleFiles, loading, setLoa
     <>
       <div>
         <h4 className="text-lg sm:text-2xl mt-8 font-semibold">
-          Activación de fichas <small>(carga masiva)</small>
+          {children}
         </h4>
         <div
           className="DropZone grid gap-4 place-content-center justify-items-center"

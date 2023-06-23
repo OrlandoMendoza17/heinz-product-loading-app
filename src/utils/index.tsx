@@ -12,15 +12,19 @@ export const filterByNumbers = (value: string): number => { //"this27is65a34stri
 
 export const getJsonFromExcel = async (file: File) => {
   const map = {
-    "Fichas": "fichas",
+    "Ficha": "ficha",
+    "Nombre": "name",
   }
 
-  type jsonProps = {
-    fichas: number
-  }
+  const output = await readXlsxFile<Employee>(file, { map })
+  const { rows } = output
 
-  const output = await readXlsxFile<jsonProps>(file, { map })
-  return output;
+  // Elimina los duplicados
+  const stringObjectArray: string[] = rows.map(item => JSON.stringify(item));
+  const sortedArray = Array.from(new Set(stringObjectArray)).map(item => JSON.parse(item)) as Employee[]
+
+  return {...output, rows: sortedArray};
+  // return output;
 }
 
 export const stringListFrom = (array: string[]): string => {

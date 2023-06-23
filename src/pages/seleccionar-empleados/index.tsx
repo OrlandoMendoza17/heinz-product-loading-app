@@ -3,7 +3,7 @@ import Employees from '@/components/pages/selecionar-empleados/Employees'
 import Header from '@/components/widgets/Header'
 import Input from '@/components/widgets/Input'
 import Select from '@/components/widgets/Select'
-import { filterByNumbers } from '@/utils'
+import { filterByNumbers, getJsonFromExcel } from '@/utils'
 import getEmployees from '@/utils/getEmployees'
 import Textarea from '@/components/widgets/Textarea'
 import Button from '@/components/widgets/Button'
@@ -18,6 +18,13 @@ type HandleFormProps = {
 	submit: FormEventHandler<HTMLFormElement>,
 	invalid: () => void,
 }
+
+const filesAllowed = [
+	{
+		label: ".xlsx",
+		type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+	}
+]
 
 const SelectEmployees = () => {
 
@@ -103,6 +110,30 @@ const SelectEmployees = () => {
 		}
 	}
 
+
+	const handleFiles = async (files: FileList) => {
+
+		const [file] = Array.from(files)
+		const allowedTypes = filesAllowed.map(item => item.type)
+		if (allowedTypes.includes(file.type)) {
+			const { rows, errors } = await getJsonFromExcel(file);
+			const newList = [...selectedEmployees]
+			
+			rows.forEach(inserted => {
+				const exists = employees.find(employee => employee.ficha === inserted.ficha)
+				const alreadySelected = selectedEmployees.find(employee => employee.ficha === inserted.ficha)
+
+				// Verifica si la ficha existe en la base de datos y si ya fue seleccionada
+				if(exists && !alreadySelected) newList.push(inserted)
+			})
+
+			console.log('info', rows)
+			console.log('errors', errors)
+			console.log('newList', newList)
+			setSelectedEmployees(newList)
+		}
+	}
+
 	const employeeListTitle =
 		<>Lista de empleados <small>({searching ? searchedEmployees.length : employees.length})</small></>
 
@@ -113,6 +144,13 @@ const SelectEmployees = () => {
 	}
 
 	const selectedEmployeesProps = { ...employeesProps, selectedList: true }
+
+	const DropZoneProps = {
+		loading,
+		filesAllowed,
+		setLoading,
+		handleFiles,
+	}
 
 	return (
 		<>
@@ -174,12 +212,9 @@ const SelectEmployees = () => {
 
 						</div>
 
-						<DropZone
-							filesAllowed={[]}
-							handleFiles={() => { }}
-							loading={loading}
-							setLoading={setLoading}
-						/>
+						<DropZone {...DropZoneProps}>
+							Cargar Empleados
+						</DropZone>
 
 						<Textarea
 							id="textarea"

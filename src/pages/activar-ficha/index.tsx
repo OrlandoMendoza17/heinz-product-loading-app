@@ -17,7 +17,6 @@ const filesAllowed = [
   },
 ]
 
-const allowedTypes = filesAllowed.map(item => item.type)
 
 const ActivateEmployeesID = () => {
 
@@ -32,6 +31,7 @@ const ActivateEmployeesID = () => {
 
     // Only the first archive will be accepted and/or validated
     const [file] = Array.from(files) // file.xlsx
+    const allowedTypes = filesAllowed.map(item => item.type)
 
     if (allowedTypes.includes(file.type)) {
       setInputFile(file)
@@ -52,7 +52,7 @@ const ActivateEmployeesID = () => {
           })
 
           // Se guardan las fichas en el estado
-          setEmployeeIDs(rows.map(employee => employee.fichas.toString()))
+          setEmployeeIDs(rows.map(employee => employee.ficha.toString()))
 
         } else {
           handleNotification.open({
@@ -94,7 +94,9 @@ const ActivateEmployeesID = () => {
               filesAllowed={filesAllowed}
               handleFiles={handleFiles}
               setLoading={setLoading}
-            />
+            >
+							Activación de fichas <small>(carga masiva)</small>
+            </DropZone>
 
             {
               Boolean(employeeIDs.length) && !loading &&
