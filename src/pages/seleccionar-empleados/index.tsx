@@ -115,16 +115,17 @@ const SelectEmployees = () => {
 
 		const [file] = Array.from(files)
 		const allowedTypes = filesAllowed.map(item => item.type)
+
 		if (allowedTypes.includes(file.type)) {
 			const { rows, errors } = await getJsonFromExcel(file);
 			const newList = [...selectedEmployees]
-			
+
 			rows.forEach(inserted => {
-				const exists = employees.find(employee => employee.ficha === inserted.ficha)
-				const alreadySelected = selectedEmployees.find(employee => employee.ficha === inserted.ficha)
+				const exists = employees.find(({ ficha }) => ficha === inserted.ficha)
+				const alreadySelected = selectedEmployees.find(({ ficha }) => ficha === inserted.ficha)
 
 				// Verifica si la ficha existe en la base de datos y si ya fue seleccionada
-				if(exists && !alreadySelected) newList.push(inserted)
+				if (exists && !alreadySelected) newList.push(inserted)
 			})
 
 			console.log('info', rows)
