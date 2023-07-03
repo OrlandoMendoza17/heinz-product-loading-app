@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import DropZone from './DropZone'
 import Button from '@/components/widgets/Button'
-import useNotification from '@/hooks/useNotification'
+import useNotification, { HandleNotification, OpenProps } from '@/hooks/useNotification'
 import { getJsonFromExcel } from '@/utils'
 import NotificationModal from '@/components/widgets/NotificationModal'
+import { activateEmployeeIDs } from '@/components/services/activar-ids'
+import { AxiosError } from 'axios'
+import { handleError } from '@/components/services'
 
 const filesAllowed = [
   {
@@ -16,13 +19,14 @@ const filesAllowed = [
   },
 ]
 
-const MassivelyActivate = () => {
+type Props = {
+  handleNotification: HandleNotification
+}
+
+const MassivelyActivate = ({ handleNotification }: Props) => {
   const [inputFile, setInputFile] = useState<File>()
   const [employeeIDs, setEmployeeIDs] = useState<string[]>([])
-
   const [loading, setLoading] = useState<boolean>(false)
-
-  const { notification, handleNotification } = useNotification()
 
   const handleFiles = async (files: FileList) => {
 
@@ -69,8 +73,27 @@ const MassivelyActivate = () => {
     }
   }
 
-  const isActive: boolean = !Boolean(employeeIDs.length) || loading
+  const handleButton = async () => {
+    try {
+      setLoading(true)
+      await activateEmployeeIDs(employeeIDs)
+  
+      handleNotification.open({
+        type: "success",
+        title: "Activación de Fichas",
+        message: `Las fichas se han activado exitosamente ✅`
+      })
+  
+      setEmployeeIDs([])
+      setLoading(false)
+      
+    } catch (error) {
+      handleError(error)
+      setLoading(false)
+    }
+  }
 
+  const isActive: boolean = !Boolean(employeeIDs.length) || loading
   console.log('employeeIDs', employeeIDs)
 
   return (
@@ -85,33 +108,12 @@ const MassivelyActivate = () => {
       </DropZone>
 
       <div className="flex justify-end pt-8 font-bold">
-        <Button color="info" disabled={isActive}>
+        <Button onClick={handleButton} color="info" disabled={isActive}>
           Activar Empleados
         </Button>
       </div>
-
-      <NotificationModal
-        {...notification}
-        closeNotification={handleNotification.close}
-      />
     </div>
   )
 }
 
 export default MassivelyActivate;
-
-// --Activar ficha en JDE
-
-const array = ["1011080", "1004707", "1011913"];
-const idListString = `${array.map(item => `''${item}''`)}`;
-
-const queryString = `
-  Update openquery(
-    hveow001,
-    'select * from proddta.f03012 
-    where aian8 in (${idListString})'
-  ) 
-  set aihold=''
-`
-
-console.log('queryString', queryString)

@@ -7,6 +7,11 @@ export type NotificationProps = {
   message: string,
 }
 
+export type HandleNotification = {
+  open: (notification: OpenProps) => void;
+  close: () => void;
+}
+
 export type OpenProps = Omit<NotificationProps, "show">
 
 const useNotification = () => {
@@ -20,7 +25,7 @@ const useNotification = () => {
     message: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatem, voluptates!",
   })
 
-  const handleNotification = {
+  const handleNotification: HandleNotification = {
     open: (notification: OpenProps): void => {
       setNotification({ ...notification, show: true })
       

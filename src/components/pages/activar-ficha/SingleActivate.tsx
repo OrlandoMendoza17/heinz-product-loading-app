@@ -1,16 +1,55 @@
+import { handleError } from '@/components/services'
+import { activateEmployeeIDs } from '@/components/services/activar-ids'
 import Button from '@/components/widgets/Button'
+import { HandleNotification } from '@/hooks/useNotification'
 import React, { ChangeEventHandler, FormEventHandler, useState } from 'react'
 
-const SingleActivate = () => {
+type Props = {
+  handleNotification: HandleNotification
+}
 
-  const [employeeID, setEmployeeID] = useState<string>("")
+const { isInteger } = Number
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+const SingleActivate = ({ handleNotification }: Props) => {
+
+  const [loading, setLoading] = useState<boolean>(false)
+  const [employeeID, setEmployeeID] = useState<number | string>("")
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
+    debugger
+
+    if (isInteger(employeeID)) {
+      try {
+        setLoading(true)
+        await activateEmployeeIDs([employeeID.toString()])
+
+        handleNotification.open({
+          type: "success",
+          title: "Activación de Ficha",
+          message: `La ficha se ha activado exitosamente ✅`
+        })
+
+        setEmployeeID("")
+        setLoading(false)
+
+      } catch (error) {
+        handleError(error)
+        setLoading(false)
+      }
+    }
   }
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
-    setEmployeeID(target.value)
+    // const digits = target.value.toString().length
+    const number = parseInt(target.value)
+    
+    if(number <= 1099999 && number > 0 && isInteger(number)){
+      setEmployeeID(parseInt(target.value))
+    }
+    if(target.value === ""){
+      setEmployeeID("")
+    }
   }
 
   return (
@@ -19,9 +58,9 @@ const SingleActivate = () => {
         <h1 className="SingleActivate__title">Activar Ficha indivual</h1>
 
         <div className="activation-input">
-          <input id="activar-ficha" placeholder="💼 Ficha de Trabajador" type="text" value={employeeID} onChange={handleChange} />
+          <input id="activar-ficha" placeholder="💼 Ficha de Trabajador" type="number" value={employeeID} onChange={handleChange} />
 
-          <Button color="info" disabled={!employeeID}>
+          <Button type="submit" color="info" loading={loading} disabled={!employeeID || loading}>
             <span>Activar</span>
           </Button>
         </div>
