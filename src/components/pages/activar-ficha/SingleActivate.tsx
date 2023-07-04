@@ -1,8 +1,8 @@
-import { handleError } from '@/components/services'
-import { activateEmployeeIDs } from '@/components/services/activar-ids'
+import React, { ChangeEventHandler, FormEventHandler, useState } from 'react'
 import Button from '@/components/widgets/Button'
 import { HandleNotification } from '@/hooks/useNotification'
-import React, { ChangeEventHandler, FormEventHandler, useState } from 'react'
+import { activateEmployeeIDs } from '@/services/activar-ids'
+import { handleError } from '@/services'
 
 type Props = {
   handleNotification: HandleNotification

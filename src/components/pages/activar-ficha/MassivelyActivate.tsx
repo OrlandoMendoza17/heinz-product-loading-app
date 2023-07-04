@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import DropZone from './DropZone'
 import Button from '@/components/widgets/Button'
-import useNotification, { HandleNotification, OpenProps } from '@/hooks/useNotification'
+import { HandleNotification } from '@/hooks/useNotification'
 import { getJsonFromExcel } from '@/utils'
-import NotificationModal from '@/components/widgets/NotificationModal'
-import { activateEmployeeIDs } from '@/components/services/activar-ids'
-import { AxiosError } from 'axios'
-import { handleError } from '@/components/services'
+import { activateEmployeeIDs } from '@/services/activar-ids'
+import { handleError } from '@/services'
 
 const filesAllowed = [
   {

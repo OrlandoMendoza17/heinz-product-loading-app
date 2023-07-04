@@ -1,5 +1,4 @@
-import axios, { AxiosError } from "axios"
-import { Dispatch, SetStateAction } from "react"
+import axios from "axios"
 
 export const activateEmployeeIDs = async (idList: string[]) => {
   const body = { idList }

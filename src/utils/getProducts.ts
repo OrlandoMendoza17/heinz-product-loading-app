@@ -1,4 +1,4 @@
-const getProducts = () => {
+const getDumbProducts = () => {
 
   // const randomSKU = () => parseInt((Math.random() * 30000).toString()).toString()
   // const randomPrice = () => parseInt((Math.random() * 100000).toString())
@@ -81,4 +81,4 @@ const getProducts = () => {
   return products;
 }
 
-export default getProducts;
+export default getDumbProducts;

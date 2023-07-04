@@ -7,7 +7,8 @@ import ProductFinder from '@/components/pages/ProductFinder';
 import Products from '@/components/pages/Products';
 import ProductSkeleton from '@/components/pages/ProductSkeleton';
 import useNotification from '@/hooks/useNotification';
-import getProducts from "@/utils/getProducts";
+import getDumbProducts from "@/utils/getProducts";
+import { getProducts } from '@/services/products-id';
 
 const Home: NextPage = () => {
 
@@ -21,11 +22,18 @@ const Home: NextPage = () => {
   useEffect(() => {
     setLoading(true)
     setTimeout(() => {
-      const products = getProducts()
+      const products = getDumbProducts()
       setProducts(products)
       setLoading(false)
     }, 1000)
   }, [])
+  
+  useEffect(()=>{
+    (async ()=>{
+      const products = await getProducts()
+      console.log("products", products)
+    })()
+  },[])
 
   const { notification, handleNotification } = useNotification()
 
