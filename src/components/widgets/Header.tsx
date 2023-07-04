@@ -1,25 +1,26 @@
-import React, { ChangeEventHandler, FormEventHandler, useContext, useRef, useState } from 'react'
+import React, { useContext } from 'react'
 import CartContext from '@/context/CartContext';
 import Link from 'next/link';
 import Picture from './Picture'
-import Input from './Input';
-import Button from './Button';
-import Select from './Select';
 import { useRouter } from 'next/router';
-import { filterByNumbers } from '@/utils';
+import { RiFilePaperFill } from "react-icons/ri";
+import { FaBriefcase, FaBottleWater, FaArrowRightToBracket } from "react-icons/fa6";
 
 const navigationList = [
   {
     link: "/mis-ordenes",
-    label: "📄 Mis Ordenes",
+    label: "Mis Ordenes",
+    Icon: RiFilePaperFill
   },
   {
     link: "/activar-ficha",
-    label: "💼 Activar Ficha",
+    label: "Activar Ficha",
+    Icon: FaBriefcase
   },
   {
     link: "/activar-producto",
-    label: "🥫 Activar Producto",
+    label: "Activar Producto",
+    Icon: FaBottleWater
   },
 ]
 
@@ -51,14 +52,16 @@ const Header = () => {
         <span className="sm:hidden">🍔</span>
         <ul>
           {
-            navigationList.map(({ link, label }, i) =>
+            navigationList.map(({ link, label, Icon }, i) =>
               <li key={i}>
-                <Link href={link}>{label}</Link>
+                <Link href={link}><Icon /> {label}</Link>
               </li>
             )
           }
         </ul>
-        <Link href="/login">➡ Cerrar Sesión</Link>
+        <Link href="/login">
+          <FaArrowRightToBracket/> Cerrar Sesión
+        </Link>
       </nav>
       {
         router.pathname !== "/" &&

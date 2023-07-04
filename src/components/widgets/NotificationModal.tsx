@@ -1,7 +1,6 @@
 import React, { MouseEventHandler } from 'react'
 import Portal from './Portal'
-import Cross from '../icons/Cross'
-import { title } from 'process'
+import { FaXmark } from 'react-icons/fa6';
 
 type Props = {
   show: boolean,
@@ -33,7 +32,7 @@ const NotificationModal = ({ show, type, title = "", message, closeNotification 
           </div>
 
           <button onClick={closeNotification}>
-            <Cross />
+            <FaXmark />
           </button>
 
         </div>

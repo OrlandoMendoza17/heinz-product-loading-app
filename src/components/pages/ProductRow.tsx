@@ -35,7 +35,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
     }
   }
 
-  const { name, price, sku, discount, quantity } = product
+  const { name, price, sku, quantity } = product
 
   return (
     <>

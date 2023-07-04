@@ -79,7 +79,7 @@ const ProductFinder = ({ loading, products, setSearching, setSearchedProducts, D
 
       {
         !loading && DINT_FIND_PRODUCTS &&
-        <p className="pt-8">No se ha encontrado ningún producto por <span className="font-bold">"{search}"</span></p>
+        <p className="pt-8">No se ha encontrado ningún producto por <span className="font-bold">&quot;{search}&quot;</span></p>
       }
     </>
   )

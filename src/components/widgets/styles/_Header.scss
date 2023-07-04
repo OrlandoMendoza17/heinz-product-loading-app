@@ -38,10 +38,19 @@
     li {
       // padding: 0 10px;
       @apply text-xs;
-      
+      svg{
+        @apply mt-1;
+        // display: inline-block;
+      }
       // &:last-of-type{
       //   justify-self: end;
       // }
+    }
+    
+    a{
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     
     & > a{
