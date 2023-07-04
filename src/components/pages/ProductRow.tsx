@@ -1,7 +1,6 @@
 import CartContext from '@/context/CartContext'
 import formatMoney from '@/utils/formatMoney'
-import React, { ChangeEventHandler, SetStateAction, useContext, useState } from 'react'
-import Checkbox from '../widgets/Checkbox'
+import React, { ChangeEventHandler, useContext } from 'react'
 import ConfirmModal from '../widgets/ConfirmModal'
 import useNotification from '@/hooks/useNotification'
 
@@ -71,7 +70,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
           </button>
         </td>
         <td className="w-5 p-4">
-        <input type="checkbox" tabIndex={-1} name="delete-product" value={sku} onChange={handleCheckbox} />
+          <input type="checkbox" tabIndex={-1} name="delete-product" value={sku} onChange={handleCheckbox} />
         </td>
       </tr>
       <ConfirmModal
