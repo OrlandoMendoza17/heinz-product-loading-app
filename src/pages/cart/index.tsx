@@ -1,6 +1,6 @@
 import React, { ChangeEventHandler, MouseEventHandler, useContext, useRef, useState } from 'react'
 import { NextPage } from 'next'
-import Header from '@/components/widgets/Header'
+import Header from '@/components/widgets/Header/Header'
 import CartContext from '@/context/CartContext'
 import formatMoney from '@/utils/formatMoney'
 import Checkbox from '@/components/widgets/Checkbox'
@@ -9,10 +9,12 @@ import ProductRow from '@/components/pages/ProductRow'
 import useNotification from '@/hooks/useNotification'
 import ConfirmModal from '@/components/widgets/ConfirmModal'
 import { useRouter } from 'next/router'
+import { FaArrowRightLong } from 'react-icons/fa6'
 
 const fields = [
   "SKU",
   "Descripcion",
+  "Stock",
   "Cantidad",
   "Precio Base",
   "Subtotal",
@@ -21,7 +23,7 @@ const fields = [
 const Cart: NextPage = () => {
 
   const router = useRouter()
-  const { cart, emptyCart, deleteGroup } = useContext(CartContext)
+  const { cart, selectedEmployees, emptyCart, deleteGroup } = useContext(CartContext)
   const { notification, handleNotification } = useNotification()
 
   const handleOpenModal = () => {
@@ -93,6 +95,17 @@ const Cart: NextPage = () => {
     }
   }
 
+  const handleSubmit = () => {
+    if (!cart.length) {
+      debugger
+      handleNotification.open({
+        type: "danger",
+        title: "Carrito Vacío",
+        message: "Debes tener al menos 1 producto en el carrito para poder avanzar",
+      })
+    }
+  }
+
   const boxQuantity = (
     cart.reduce((accumulator, product) => {
       return accumulator + product.quantity
@@ -113,14 +126,14 @@ const Cart: NextPage = () => {
           <form ref={$form}>
             <div className="flex justify-between items-center pb-10">
               <h1 className="text-xl x_sm:text-2xl font-bold">
-                🛒 Carrito de Compras <span>({cart.length}<span className="hidden xx_sm:inline"> items</span>)</span>
+                🛒 Carrito de Compras <span>({cart.length}<span className="hidden xx_sm:inline"> items</span>) </span>
+                <span>({selectedEmployees.length} empleados)</span>
               </h1>
               {
                 Boolean(selectedProducts.length) &&
                 <Button onClick={handleOpenModal} className="font-bold !text-xs !py-2" color="danger">
                   <span className="block xx_sm:hidden">🗑</span>
                   <span className="hidden xx_sm:block">Eliminar</span>
-                  
                 </Button>
               }
             </div>
@@ -136,7 +149,7 @@ const Cart: NextPage = () => {
                         </th>
                       )
                     }
-                    <th></th>
+                    <th className="w-44"></th>
                     <th className="px-6 py-3">
                       {
                         Boolean(cart.length) &&
@@ -176,11 +189,18 @@ const Cart: NextPage = () => {
                 </tbody>
               </table>
             </div>
+
+            <div className="flex justify-end pt-8">
+              <Button
+                // onClick={() => router.push("/seleccionar-empleados")}
+                type="submit"
+                color="info"
+                className="font-bold !px-10 flex gap-4 items-center">
+                Siguiente <FaArrowRightLong className="mt-1" size={14} />
+              </Button>
+            </div>
           </form>
 
-          <div className="flex justify-end pt-8">
-            <Button onClick={() => router.push("/seleccionar-empleados")} color="info" className="font-bold !px-10">Siguiente →</Button>
-          </div>
         </main>
       </div >
       <ConfirmModal

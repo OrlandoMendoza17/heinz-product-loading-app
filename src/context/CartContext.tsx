@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Dispatch, SetStateAction} from 'react'
 
 type Cart = {
   cart: Product[],
@@ -7,6 +7,8 @@ type Cart = {
   updateProduct: (product: Product) => void,
   deleteGroup: (productGroup: string[]) => void,
   removeProduct: (productSKU: Product["sku"]) => void,
+  selectedEmployees: Employee[],
+  setSelectedEmployees: Dispatch<SetStateAction<Employee[]>>
 }
 
 const CartContext = React.createContext<Cart>({} as Cart)

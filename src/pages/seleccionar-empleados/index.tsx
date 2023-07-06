@@ -1,6 +1,6 @@
 import React, { ChangeEventHandler, FormEventHandler, MouseEventHandler, useContext, useEffect, useState } from 'react'
 import Employees from '@/components/pages/selecionar-empleados/Employees'
-import Header from '@/components/widgets/Header'
+import Header from '@/components/widgets/Header/Header'
 import Input from '@/components/widgets/Input'
 import Select from '@/components/widgets/Select'
 import { filterByNumbers, getJsonFromExcel } from '@/utils'
@@ -13,6 +13,7 @@ import NotificationModal from '@/components/widgets/NotificationModal'
 import useNotification from '@/hooks/useNotification'
 import CartContext from '@/context/CartContext'
 import DropZone from '@/components/pages/activar-ficha/DropZone'
+import { FaArrowRight } from 'react-icons/fa6'
 
 type HandleFormProps = {
 	submit: FormEventHandler<HTMLFormElement>,
@@ -29,14 +30,14 @@ const filesAllowed = [
 const SelectEmployees = () => {
 
 	const router = useRouter()
-	const { cart } = useContext(CartContext)
+	const { cart, selectedEmployees, setSelectedEmployees } = useContext(CartContext)
 
 	const [loading, setLoading] = useState<boolean>(false)
 
 	const [employees, setEmployees] = useState<Employee[]>([])
 	const [searching, setSearching] = useState<boolean>(false)
 	const [searchedEmployees, setSearchedEmployees] = useState<Employee[]>([])
-	const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([])
+	// const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([])
 
 	const [search, setSearch] = useState<number | "">("")
 
@@ -56,19 +57,12 @@ const SelectEmployees = () => {
 				debugger
 				handleForm.invalid()
 
-			} else if (!cart.length) {
-				debugger
-				handleNotification.open({
-					type: "danger",
-					title: "Carrito Vacío",
-					message: "Debes tener al menos 1 producto en el carrito para poder avanzar",
-				})
-
 			} else {
 
-				router.push("/")
+				router.push("/cart")
 
 			}
+			
 		},
 		invalid: () => {
 			handleNotification.open({
@@ -229,9 +223,9 @@ const SelectEmployees = () => {
 							<Button
 								color="info"
 								type="submit"
-								className="font-bold !px-10"
+								className="font-bold !px-10 flex gap-4 items-center"
 							>
-								Siguiente →
+								Siguiente <FaArrowRight className="mt-1" size={14} />
 							</Button>
 						</div>
 					</Form>

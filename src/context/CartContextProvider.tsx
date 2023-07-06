@@ -9,6 +9,7 @@ type Props = {
 const CartContextProvider = ({ children }: Props) => {
 
   const [cart, setCart] = useState<Product[]>([])
+  const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([])
 
   const emptyCart = () => {
     setCart([])
@@ -41,13 +42,16 @@ const CartContextProvider = ({ children }: Props) => {
     setCart(cart.filter(item => item.sku !== productSKU))
   }
 
+
   const value = {
     cart,
+    selectedEmployees,
     emptyCart,
     saveProduct,
     updateProduct,
     deleteGroup,
     removeProduct,
+    setSelectedEmployees,
   }
 
   return (
