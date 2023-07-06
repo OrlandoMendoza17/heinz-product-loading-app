@@ -1,4 +1,4 @@
-import Header from '@/components/widgets/Header'
+import Header from '@/components/widgets/Header/Header'
 import Input from '@/components/widgets/Input'
 import Switch from '@/components/widgets/Switch'
 import React from 'react'

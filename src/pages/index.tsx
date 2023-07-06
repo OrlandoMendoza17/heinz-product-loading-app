@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { NextPage } from 'next'
-import Header from "@/components/widgets/Header";
+import Header from "@/components/widgets/Header/Header";
 import Aside from '@/components/pages/Aside';
 import NotificationModal from '@/components/widgets/NotificationModal';
 import ProductFinder from '@/components/pages/ProductFinder';
@@ -9,6 +9,7 @@ import ProductSkeleton from '@/components/pages/ProductSkeleton';
 import useNotification from '@/hooks/useNotification';
 import getDumbProducts from "@/utils/getProducts";
 import { getProducts } from '@/services/products-id';
+import { getFromSStorage, saveToSStorage } from '@/utils/sessionStorage';
 
 const Home: NextPage = () => {
 
@@ -18,25 +19,45 @@ const Home: NextPage = () => {
   const [searchedProducts, setSearchedProducts] = useState<Product[]>([])
 
   const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    setLoading(true)
-    setTimeout(() => {
-      const products = getDumbProducts()
-      setProducts(products)
-      setLoading(false)
-    }, 1000)
-  }, [])
-  
-  useEffect(()=>{
-    (async ()=>{
-      const products = await getProducts()
-      console.log("products", products)
-    })()
-  },[])
-
   const { notification, handleNotification } = useNotification()
 
+  useEffect(() => {
+
+    (async () => {
+      setLoading(true)
+
+      const products = getFromSStorage<Product[]>("products")
+      
+      if(products){
+        
+        setProducts(products)
+        setLoading(false)
+        
+      }else{
+        try {
+          
+          const products = await getProducts()
+          // console.log("products", products.filter(item => item.available))
+  
+          saveToSStorage("products", products)
+  
+          setProducts(products)
+          setLoading(false)
+  
+        } catch (error) {
+          console.log(error)
+          setLoading(false)
+  
+          handleNotification.open({
+            type: "danger",
+            title: "Carga de productos ❌",
+            message: `Ha ocurrido un error al intentar traer los productos, recargue la pagina e intentelo de nuevo`
+          })
+        } 
+      }
+    })()
+  }, [])
+  
   const skelentonProducts = new Array(12).fill(0)
 
   const NO_PRODUCTS = !Boolean(products.length)

@@ -30,7 +30,7 @@ const useNotification = () => {
       setNotification({ ...notification, show: true })
       
       clearTimeout(timeoutID)
-      setTimeoutID(setTimeout(() => handleNotification.close(), 7000))
+      setTimeoutID(setTimeout(() => handleNotification.close(), 20000))
       
     },
     close: () => {

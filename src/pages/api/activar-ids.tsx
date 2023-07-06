@@ -22,6 +22,8 @@ const activateEmployeeIDs = async (
     // --Activar ficha en JDE
 
     const idListString = `${validatedList.map(item => `''${item}''`)}`;
+    
+    // Activar ficha en JDE
     const queryString = `
       Update openquery(
         hveow001,

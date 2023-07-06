@@ -1,4 +1,4 @@
-import Header from '@/components/widgets/Header'
+import Header from '@/components/widgets/Header/Header'
 import React from 'react'
 
 const ActivateProduct = () => {

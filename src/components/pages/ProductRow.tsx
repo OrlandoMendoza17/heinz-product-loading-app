@@ -3,6 +3,7 @@ import formatMoney from '@/utils/formatMoney'
 import React, { ChangeEventHandler, useContext } from 'react'
 import ConfirmModal from '../widgets/ConfirmModal'
 import useNotification from '@/hooks/useNotification'
+import { getAvailableStock } from '@/utils'
 
 type Props = {
   product: Product,
@@ -11,9 +12,12 @@ type Props = {
 
 const ProductRow = ({ product, handleCheckbox }: Props) => {
 
-  const { updateProduct, removeProduct } = useContext(CartContext)
+  const { selectedEmployees, updateProduct, removeProduct } = useContext(CartContext)
 
   const { notification, handleNotification } = useNotification()
+  const { name, price, sku, quantity, available } = product
+  
+  const MIN_VALUE = 0.25
 
   const handleOpenModal = () => {
     handleNotification.open({
@@ -23,19 +27,23 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
     })
   }
 
+  const stock = getAvailableStock(available, selectedEmployees.length)
+  
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     if (target.name === "product_quantity") {
       const quantity = parseFloat(target.value)
-      const EMPTY_VALUE = 0
-      updateProduct({
-        ...product,
-        quantity: (quantity >= 0) ? quantity : EMPTY_VALUE,
-      })
+      debugger
+      if(quantity <= stock){
+        updateProduct({
+          ...product,
+          quantity: (quantity >= 0.25) ? quantity : MIN_VALUE,
+        })
+      }
     }
   }
 
-  const { name, price, sku, quantity } = product
-
+  const productQuantity = quantity ? quantity : MIN_VALUE
+  
   return (
     <>
       <tr key={`${name.split(" ").join("-")}-${sku}`}>
@@ -46,13 +54,16 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
           {name}
         </td>
         <td className="">
+          {stock}
+        </td>
+        <td className="">
           <input
             id=""
-            min={0}
+            min={MIN_VALUE}
             step="0.25"
             name="product_quantity"
             type="number"
-            value={quantity}
+            value={productQuantity}
             placeholder='0.00'
             onChange={handleChange}
             className="border-gray-300 px-2 py-1 border rounded-md w-28"

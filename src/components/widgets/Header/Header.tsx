@@ -1,10 +1,11 @@
 import React, { useContext } from 'react'
 import CartContext from '@/context/CartContext';
 import Link from 'next/link';
-import Picture from './Picture'
+import Picture from '../Picture'
 import { useRouter } from 'next/router';
 import { RiFilePaperFill } from "react-icons/ri";
-import { FaBriefcase, FaBottleWater, FaArrowRightToBracket } from "react-icons/fa6";
+import { FaBriefcase, FaBottleWater, FaArrowRightToBracket, FaAngleRight, FaXmark } from "react-icons/fa6";
+import Cart from './Cart';
 
 const navigationList = [
   {
@@ -41,11 +42,7 @@ const Header = () => {
           <Picture className="w-48" url="https://i.imgur.com/j4F3kJ3.png" />
           {/* <Picture className="w-48" url="https://i.imgur.com/hkIgVIM.png" /> */}
         </Link>
-        <div className="py-5">
-          <Link href="/cart" className="font-bold text-2xl">
-            🛒 <span className="text-xl">{cart.length}</span>
-          </Link>
-        </div>
+        <Cart />
       </div>
 
       <nav className="font-bold">
@@ -60,7 +57,7 @@ const Header = () => {
           }
         </ul>
         <Link href="/login">
-          <FaArrowRightToBracket/> Cerrar Sesión
+          <FaArrowRightToBracket /> Cerrar Sesión
         </Link>
       </nav>
       {

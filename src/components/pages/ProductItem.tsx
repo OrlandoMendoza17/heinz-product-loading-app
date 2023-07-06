@@ -42,9 +42,15 @@ const ProductItem = ({ product }: Props) => {
         </div>
         <button
           onClick={handleClick}
-          className={`px-3 py-2 ${found ? "bg-green-500" : "bg-gray-800"} text-white text-xs font-bold uppercase rounded`}
+          disabled={!available}
+          className={`px-3 py-2 ${found ? "bg-green-500" : "bg-sky-800"} disabled:bg-slate-300 text-white text-xs font-bold uppercase rounded`}
         >
-          {found ? "Añadido" : "Añadir"}
+          {
+          available ?
+          (found ? "Añadido" : "Añadir")
+          :
+          "Sin Stock"
+          }
         </button>
       </div>
     </div>

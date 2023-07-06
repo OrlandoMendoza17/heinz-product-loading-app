@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from '@/components/widgets/Header'
+import Header from '@/components/widgets/Header/Header'
 import MassivelyActivate from '@/components/pages/activar-ficha/MassivelyActivate'
 import SingleActivate from '@/components/pages/activar-ficha/SingleActivate'
 import NotificationModal from '@/components/widgets/NotificationModal'

@@ -23,11 +23,28 @@ export const getJsonFromExcel = async (file: File) => {
   const stringObjectArray: string[] = rows.map(item => JSON.stringify(item));
   const sortedArray = Array.from(new Set(stringObjectArray)).map(item => JSON.parse(item)) as Employee[]
 
-  return {...output, rows: sortedArray};
+  return { ...output, rows: sortedArray };
   // return output;
 }
 
 export const stringListFrom = (array: string[]): string => {
   const formatter = new Intl.ListFormat('es', { style: 'long', type: 'conjunction' });
   return formatter.format(array)
+}
+
+export const getAvailableStock = (available: number, employees: number): number => {
+  const availablePerUser = available / employees
+  const integerStockValue = Math.floor(availablePerUser)
+
+  const rest = availablePerUser - integerStockValue
+
+  const rounds = [0, 0.25, 0.5, 0.75, 1]
+
+  let extra = 0;
+  rounds.forEach((value) => {
+    extra = (rest >= value) ? value : extra
+  })
+
+  const stock = integerStockValue + extra;
+  return stock;
 }

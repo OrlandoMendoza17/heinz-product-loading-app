@@ -1,13 +1,13 @@
-const getStoreProducts = () =>{
-  
+const getStoreProducts = () => {
+
   type StoreProducts = {
     STOCKCOD: string;
     MCCO: string;
     LIMCU: string;
     IMLITM: string;
     STOCKCANT: number;
-}
-  
+  }
+
   const products = [
     {
       STOCKCOD: '15773',
