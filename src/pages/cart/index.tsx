@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, MouseEventHandler, useContext, useRef, useState } from 'react'
+import React, { ChangeEventHandler, FormEventHandler, MouseEventHandler, useContext, useRef, useState } from 'react'
 import { NextPage } from 'next'
 import Header from '@/components/widgets/Header/Header'
 import CartContext from '@/context/CartContext'
@@ -10,6 +10,7 @@ import useNotification from '@/hooks/useNotification'
 import ConfirmModal from '@/components/widgets/ConfirmModal'
 import { useRouter } from 'next/router'
 import { FaArrowRightLong } from 'react-icons/fa6'
+import NotificationModal from '@/components/widgets/NotificationModal'
 
 const fields = [
   "SKU",
@@ -20,11 +21,13 @@ const fields = [
   "Subtotal",
   // "Editar",
 ]
+
 const Cart: NextPage = () => {
 
   const router = useRouter()
   const { cart, selectedEmployees, emptyCart, deleteGroup } = useContext(CartContext)
   const { notification, handleNotification } = useNotification()
+  const { notification: alert, handleNotification: handleAlert } = useNotification()
 
   const handleOpenModal = () => {
     handleNotification.open({
@@ -95,13 +98,20 @@ const Cart: NextPage = () => {
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault()
     if (!cart.length) {
       debugger
-      handleNotification.open({
+      handleAlert.open({
         type: "danger",
         title: "Carrito Vacío",
         message: "Debes tener al menos 1 producto en el carrito para poder avanzar",
+      })
+    }else{
+      handleAlert.open({
+        type: "success",
+        title: "Exito",
+        message: "Puedes pasar al siguiente segmento",
       })
     }
   }
@@ -123,7 +133,7 @@ const Cart: NextPage = () => {
       <div className="px-4 md:px-24 pb-20">
         <Header />
         <main className="Home xl:px-60">
-          <form ref={$form}>
+          <form ref={$form} onSubmit={handleSubmit}>
             <div className="flex justify-between items-center pb-10">
               <h1 className="text-xl x_sm:text-2xl font-bold">
                 🛒 Carrito de Compras <span>({cart.length}<span className="hidden xx_sm:inline"> items</span>) </span>
@@ -208,6 +218,10 @@ const Cart: NextPage = () => {
         notification={notification}
         acceptAction={handleDelete}
         closeModal={handleNotification.close}
+      />
+      <NotificationModal
+        {...alert}
+        closeNotification={handleAlert.close}
       />
     </>
   )

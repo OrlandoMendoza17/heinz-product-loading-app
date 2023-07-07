@@ -7,8 +7,12 @@ type Cart = {
   updateProduct: (product: Product) => void,
   deleteGroup: (productGroup: string[]) => void,
   removeProduct: (productSKU: Product["sku"]) => void,
+  
   selectedEmployees: Employee[],
-  setSelectedEmployees: Dispatch<SetStateAction<Employee[]>>
+  setSelectedEmployees: Dispatch<SetStateAction<Employee[]>>,
+  
+  purchase: Purchase,
+  setPurchase: Dispatch<SetStateAction<Purchase>>,
 }
 
 const CartContext = React.createContext<Cart>({} as Cart)

@@ -15,16 +15,25 @@ export const getJsonFromExcel = async (file: File) => {
     "Ficha": "ficha",
     "Nombre": "name",
   }
+  
+  const deleteDuplicates = (rows: Employee[]) =>{
+    // Se transforman los objetos a string
+    const stringObjectArray: string[] = rows.map(item => JSON.stringify(item));
+    
+    // Los duplicados de los strings que coincidan se eliminan y se deja un único duplicado
+    const sortedArray = Array.from(new Set(stringObjectArray))
+    
+    // Se pasa de nuevo a JSON
+    const employees = sortedArray.map(item => JSON.parse(item)) as Employee[]
+    return employees;
+  }
 
   const output = await readXlsxFile<Employee>(file, { map })
-  const { rows } = output
 
-  // Elimina los duplicados
-  const stringObjectArray: string[] = rows.map(item => JSON.stringify(item));
-  const sortedArray = Array.from(new Set(stringObjectArray)).map(item => JSON.parse(item)) as Employee[]
-
-  return { ...output, rows: sortedArray };
-  // return output;
+  // Se eliminan los duplicados
+  const rows = deleteDuplicates(output.rows)
+  
+  return { ...output, rows };
 }
 
 export const stringListFrom = (array: string[]): string => {

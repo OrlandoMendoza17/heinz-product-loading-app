@@ -30,7 +30,10 @@ const filesAllowed = [
 const SelectEmployees = () => {
 
 	const router = useRouter()
-	const { cart, selectedEmployees, setSelectedEmployees } = useContext(CartContext)
+	const context = useContext(CartContext)
+
+	const { cart, purchase, setPurchase } = context
+	const { selectedEmployees, setSelectedEmployees } = context
 
 	const [loading, setLoading] = useState<boolean>(false)
 
@@ -62,7 +65,7 @@ const SelectEmployees = () => {
 				router.push("/cart")
 
 			}
-			
+
 		},
 		invalid: () => {
 			handleNotification.open({
@@ -73,22 +76,34 @@ const SelectEmployees = () => {
 		}
 	}
 
-	const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
-		const value = filterByNumbers(target.value)
-		if (target.value === "") {
+	const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = ({ target }) => {
 
-			setSearch("")
-			setSearching(false)
+		const { name, value } = target
 
-		} else if (!isNaN(value)) {
-			setSearch(value)
-			setSearching(true)
+		if (name === "ficha-search") {
 
-			setSearchedEmployees(
-				employees.filter(employee =>
-					employee.ficha.toString().includes(value.toString())
+			const value = filterByNumbers(target.value)
+
+			if (target.value === "") {
+
+				setSearch("")
+				setSearching(false)
+
+			} else if (!isNaN(value)) {
+				setSearch(value)
+				setSearching(true)
+
+				setSearchedEmployees(
+					employees.filter(employee =>
+						employee.ficha.toString().includes(value.toString())
+					)
 				)
-			)
+			}
+
+		} else {
+			setPurchase({
+				...purchase, [name]: value
+			})
 		}
 	}
 
@@ -104,7 +119,6 @@ const SelectEmployees = () => {
 		}
 	}
 
-
 	const handleFiles = async (files: FileList) => {
 
 		const [file] = Array.from(files)
@@ -115,11 +129,18 @@ const SelectEmployees = () => {
 			const newList = [...selectedEmployees]
 
 			rows.forEach(inserted => {
-				const exists = employees.find(({ ficha }) => ficha === inserted.ficha)
-				const alreadySelected = selectedEmployees.find(({ ficha }) => ficha === inserted.ficha)
+				const findEmployee = (employee: Employee) => {
+					return employee.ficha === inserted.ficha
+				}
+
+				const exists = employees.find(findEmployee)
+				const notSelected = !selectedEmployees.find(findEmployee)
 
 				// Verifica si la ficha existe en la base de datos y si ya fue seleccionada
-				if (exists && !alreadySelected) newList.push(inserted)
+				if (exists && notSelected) newList.push({
+					...inserted,
+					name: exists.name,
+				})
 			})
 
 			console.log('info', rows)
@@ -129,8 +150,9 @@ const SelectEmployees = () => {
 		}
 	}
 
-	const employeeListTitle =
+	const employeeListTitle = (
 		<>Lista de empleados <small>({searching ? searchedEmployees.length : employees.length})</small></>
+	)
 
 	const employeesProps = {
 		selectedList: false,
@@ -156,6 +178,7 @@ const SelectEmployees = () => {
 					<Form onSubmit={handleForm.submit} onInvalid={handleForm.invalid}>
 						<h1 className="text-3xl font-bold">Selecionar Empleados</h1>
 
+						{/* ficha-search | order | date */}
 						<div>
 							<div className="input-list">
 								<Input
@@ -167,12 +190,24 @@ const SelectEmployees = () => {
 									required={false}
 								/>
 
-								<Input id="purchase-order" title="Orden de Compra" placeholder="📄 12-12052023" />
-								<Input id="purchase-date" title="Fecha de recepción" type="date" />
+								<Input
+									id="order"
+									title="Orden de Compra"
+									placeholder="📄 12-12052023"
+									value={purchase.order}
+									onChange={handleChange}
+								/>
+								
+								<Input
+									id="date"
+									title="Fecha de recepción"
+									type="date"
+									value={purchase.date}
+									onChange={handleChange}
+								/>
 
-								{/* <Select id="purchase-order" title="Filtrar por tipo" defaultOption="-" options={[{ name: "", value: "" }]} /> */}
-								{/* <Select id="purchase-date" title="Filtrar por sub-tipo" defaultOption="-" options={[{ name: "", value: "" }]} /> */}
-
+								{/* <Select id="order" title="Filtrar por tipo" defaultOption="-" options={[{ name: "", value: "" }]} /> */}
+								{/* <Select id="date" title="Filtrar por sub-tipo" defaultOption="-" options={[{ name: "", value: "" }]} /> */}
 							</div>
 						</div>
 
@@ -212,9 +247,11 @@ const SelectEmployees = () => {
 						</DropZone>
 
 						<Textarea
-							id="textarea"
+							id="details"
+							value={purchase.details}
 							title="Observaciones"
 							className="pt-14"
+							onChange={handleChange}
 							placeholder="📝 ..."
 							required={false}
 						/>

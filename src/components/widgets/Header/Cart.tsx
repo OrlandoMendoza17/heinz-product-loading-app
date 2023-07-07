@@ -28,14 +28,15 @@ const Cart = () => {
               </div>
               <ul className="Cart__items">
                 {
-                  cart.map(({ sku, name, image }) =>
+                  cart.map(({ sku, name, image, available }) =>
                     <li key={sku}>
                       <div>
                         <img src={image} alt="" />
                       </div>
                       <div className='Cart__items--details'>
                         <span>{name}</span>
-                        <small>{sku}</small>
+                        <small>Disponible: {available}</small>
+                        <small>SKU: {sku}</small>
                       </div>
                       <button onClick={() => {
                         removeProduct(sku)
@@ -49,7 +50,6 @@ const Cart = () => {
               </ul>
               <button
                 className="Cart__button"
-                disabled={!cart.length}
                 onClick={() => router.push("/seleccionar-empleados")}
               >
                 <span>Siguiente</span>

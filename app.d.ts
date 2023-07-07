@@ -3,7 +3,7 @@ type Product = {
   sku: number,  // IMLITM
   available: number, // STOCKCANT
   price: number, // ?
-  
+
   image: string, // Se va a eliminar porque obtendrá en una carpeta local dependiendo del sku del producto
   quantity: number, // Se setea desde la app
 }
@@ -11,4 +11,10 @@ type Product = {
 type Employee = {
   ficha: number;
   name: string;
+}
+
+type Purchase = {
+  order: string;
+  date: string;
+  details: string;
 }
