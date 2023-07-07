@@ -3,12 +3,12 @@ const { DataTypes } = require('sequelize');
 import sequelize from "@/lib/mssql"
 import getPlaceholderProducts from "@/utils/getPlaceholderProducts";
 
-export type JDEProduct = {
+type JDEProduct = {
   IMDSC1: string;
   IMLITM: string;
 }
 
-export type StoreProduct = {
+type StoreProduct = {
   STOCKCOD: string;
   STOCKCANT: number;
   IMLITM: string;
@@ -16,7 +16,13 @@ export type StoreProduct = {
   LIMCU: string;
 }
 
+type ProductPrices = {
+  ADLITM: string,
+  ADFVTR: number,
+}
+
 const products = async (request: NextApiRequest, response: NextApiResponse) => {
+
   // LOS SKU ACTIVOS
   const queryString = `
     select * FROM OPENQUERY(
@@ -51,15 +57,21 @@ const products = async (request: NextApiRequest, response: NextApiResponse) => {
       AND TRIM(IMSRP1) <> ''''  AND IMPRP1 IN (''PT'', ''PB'') AND IBSTKT NOT IN (''O'', ''U'') and LIPQOH <>''0''
       GROUP BY TRIM(LIMCU), LIMCU, IMLITM')
   `
+
+  const queryString3 = `select * from openquery (jde,'select ADFVTR, ADLITM  from proddta.f4072 where ADAST = ''SUBCLAS''')`
+
   // const data: JDEProduct[] = getPlaceholderProducts()
   const [data] = await sequelize.query(queryString) as [JDEProduct[], unknown]
   const [data2] = await sequelize.query(queryString2) as [StoreProduct[], unknown]
+  const [data3] = await sequelize.query(queryString3) as [ProductPrices[], unknown]
 
-  console.log('data2', data2)
+  // console.log('data2', data2)
+  console.log('data3', data3)
 
   const products = data.map(({ IMLITM, IMDSC1 }) => {
 
     const storeProduct = data2.find((store) => store.IMLITM === IMLITM)
+    const price = data3.find((product) => product.ADLITM === IMLITM)?.ADFVTR
 
     const product = {
       sku: IMLITM,
@@ -67,14 +79,15 @@ const products = async (request: NextApiRequest, response: NextApiResponse) => {
       image: `/product-images/${IMLITM}.png`,
       available: 0,
       quantity: 0,
-      price: 0,
+      price: (price !== undefined) ? (price / 10000) : -100,
     }
 
-    if (storeProduct)
+    if (storeProduct) {
       return ({
         ...product,
         available: storeProduct.STOCKCANT,
       })
+    }
 
     return product
   })

@@ -27,7 +27,12 @@ const Home: NextPage = () => {
 
       const products = getFromSStorage<Product[]>("products")
       
+      const logUndefinedPrices = (products: Product[]) =>{
+        console.log(products.filter((item) => item.price === -100))
+      }
+      
       if(products){
+        logUndefinedPrices(products)
         
         setProducts(products)
         setLoading(false)
@@ -36,7 +41,7 @@ const Home: NextPage = () => {
         try {
           
           const products = await getProducts()
-          // console.log("products", products.filter(item => item.available))
+          logUndefinedPrices(products)
   
           saveToSStorage("products", products)
   
@@ -54,6 +59,7 @@ const Home: NextPage = () => {
           })
         } 
       }
+      
     })()
   }, [])
   
