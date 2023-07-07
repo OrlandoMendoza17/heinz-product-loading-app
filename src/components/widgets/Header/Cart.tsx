@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import Link from 'next/link'
-import { FaAngleRight, FaXmark } from 'react-icons/fa6'
+import { FaAngleRight, FaCartShopping, FaXmark } from 'react-icons/fa6'
 import CartContext from '@/context/CartContext'
 import { useRouter } from 'next/router'
 
@@ -13,7 +13,7 @@ const Cart = () => {
     <>
       <div className="Cart relative py-5">
         <button onClick={() => setOpened(!opened)} className="font-bold text-2xl curs">
-          🛒 <span className="text-xl">{cart.length}</span>
+          < FaCartShopping className="inline-block fill-slate-600" /> <span className="text-xl">{cart.length}</span>
         </button>
         {
           opened &&
@@ -40,7 +40,7 @@ const Cart = () => {
                       </div>
                       <button onClick={() => {
                         removeProduct(sku)
-                        if(cart.length === 1) setOpened(false)
+                        if (cart.length === 1) setOpened(false)
                       }}>
                         <FaXmark size={10} className="fill-white" />
                       </button>

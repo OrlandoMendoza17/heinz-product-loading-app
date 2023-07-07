@@ -1,4 +1,5 @@
 import React, { Dispatch, MouseEventHandler, SetStateAction } from 'react'
+import { FaRegCircleCheck, FaXmark } from 'react-icons/fa6'
 
 type Props = {
   employee: Employee,
@@ -29,13 +30,13 @@ const EmployeeItem = ({ employee, selectedList, selectedEmployees, setSelectedEm
       <p><span>{ficha}</span> - {name}</p>
       {
         selectedList &&
-        <button type="button" onClick={handleDelete} className="py-1 px-3 text-xs rounded-lg bg-gray-600 hover:bg-red-400">
-          X
+        <button type="button" onClick={handleDelete} className="p-2 text-xs rounded-lg bg-gray-600 hover:bg-red-400">
+          <FaXmark className="fill-white"/>
         </button>
       }
       {
         found && !selectedList &&
-        <span>✅</span>
+        <span><FaRegCircleCheck className="fill-emerald-500"/></span>
       }
     </div>
   )

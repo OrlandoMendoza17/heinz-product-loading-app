@@ -53,7 +53,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
         <td className="font-bold">
           {name}
         </td>
-        <td className="">
+        <td title={`Stock límite disponible para cada empleado (${selectedEmployees.length})`}>
           {stock}
         </td>
         <td className="">

@@ -42,8 +42,8 @@ const Header = ({ products }: Props) => {
   const handleDownloadInventory = () => {
     if (products && products.length) {
       const availableProducts = products.filter(product => product.available)
-      const formattedProducts = availableProducts.map(product =>{
-        return({
+      const formattedProducts = availableProducts.map(product => {
+        return ({
           SKU: product.sku,
           NOMBRE: product.name,
           STOCK: product.available,
@@ -79,9 +79,12 @@ const Header = ({ products }: Props) => {
               </li>
             )
           }
-          <li onClick={handleDownloadInventory} className="cursor-pointer">
-            <span><FaBriefcase /> Descargar inventario</span>
-          </li>
+          {
+            products &&
+            <li onClick={handleDownloadInventory} className="cursor-pointer">
+              <span><FaBriefcase /> Descargar inventario</span>
+            </li>
+          }
         </ul>
         <Link href="/login">
           <FaArrowRightToBracket /> Cerrar Sesión
