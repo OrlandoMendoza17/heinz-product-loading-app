@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { RiFilePaperFill } from "react-icons/ri";
 import { FaBriefcase, FaBottleWater, FaArrowRightToBracket, FaAngleRight, FaXmark } from "react-icons/fa6";
 import Cart from './Cart';
+const XLSX = require('../../../../node_modules/xlsx/xlsx.js')
 
 const navigationList = [
   {
@@ -29,10 +30,33 @@ const navigationList = [
 //   link: "/login",
 //   label: "Cerrar Sesión",
 // },
-const Header = () => {
+
+type Props = {
+  products?: Product[]
+}
+
+const Header = ({ products }: Props) => {
 
   const router = useRouter()
-  const { cart } = useContext(CartContext)
+
+  const handleDownloadInventory = () => {
+    if (products && products.length) {
+      const availableProducts = products.filter(product => product.available)
+      const formattedProducts = availableProducts.map(product =>{
+        return({
+          SKU: product.sku,
+          NOMBRE: product.name,
+          STOCK: product.available,
+          PRECIO: product.price,
+        })
+      })
+      const workbook = XLSX.utils.book_new()
+      const worksheet = XLSX.utils.json_to_sheet(formattedProducts)
+
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja 1")
+      XLSX.writeFile(workbook, `Inventario de Productos.xlsx`)
+    }
+  }
 
   return (
     <header className="Header">
@@ -55,6 +79,9 @@ const Header = () => {
               </li>
             )
           }
+          <li onClick={handleDownloadInventory} className="cursor-pointer">
+            <span><FaBriefcase /> Descargar inventario</span>
+          </li>
         </ul>
         <Link href="/login">
           <FaArrowRightToBracket /> Cerrar Sesión

@@ -22,7 +22,6 @@ const Home: NextPage = () => {
   const { notification, handleNotification } = useNotification()
 
   useEffect(() => {
-
     (async () => {
       setLoading(true)
 
@@ -67,7 +66,7 @@ const Home: NextPage = () => {
 
   return (
     <div className="Home px-4 md:px-24 pb-20">
-      <Header />
+      <Header products={products}/>
 
       <ProductFinder
         {...{
