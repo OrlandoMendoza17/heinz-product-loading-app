@@ -2,7 +2,7 @@ import React, { ChangeEventHandler, FormEventHandler, MouseEventHandler, useCont
 import { NextPage } from 'next'
 import Header from '@/components/widgets/Header/Header'
 import CartContext from '@/context/CartContext'
-import formatMoney from '@/utils/formatMoney'
+import formatMoney, { getBoxQuantity, getTotalFromProducts } from '@/utils/formatMoney'
 import Checkbox from '@/components/widgets/Checkbox'
 import Button from '@/components/widgets/Button'
 import ProductRow from '@/components/pages/ProductRow'
@@ -117,17 +117,8 @@ const Cart: NextPage = () => {
     }
   }
 
-  const boxQuantity = (
-    cart.reduce((accumulator, product) => {
-      return accumulator + product.quantity
-    }, 0)
-  )
-
-  const bill = formatMoney(
-    cart.reduce((accumulator, product) => {
-      return accumulator + (product.quantity * product.price)
-    }, 0)
-  )
+  const boxQuantity = getBoxQuantity(cart)
+  const bill = formatMoney(getTotalFromProducts(cart))
   
   return (
     <>

@@ -18,3 +18,9 @@ type Purchase = {
   date: string;
   details: string;
 }
+
+type Bill = {
+  purchase: Purchase,
+  employee: Employee,
+  products: Product[],
+}

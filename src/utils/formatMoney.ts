@@ -15,4 +15,18 @@ const formatMoney = (price: number): string => {
   // )
 }
 
+export const getTotalFromProducts = (products: Product[]): number =>{
+  const total = products.reduce((accumulator, product) => {
+    return accumulator + (product.quantity * product.price)
+  }, 0)
+  return total;
+}
+
+export const getBoxQuantity  = (products: Product[])=>{
+  const boxQuantity = products.reduce((accumulator, product) => {
+    return accumulator + product.quantity
+  }, 0)
+  return boxQuantity
+}
+
 export default formatMoney;

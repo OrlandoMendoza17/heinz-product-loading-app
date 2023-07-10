@@ -1,5 +1,5 @@
 .EmployeeItem {
-  @apply p-2 bg-slate-200 hover:bg-blue-300 rounded-xl;
+  @apply p-2 bg-slate-200 hover:bg-sky-400 hover:text-white rounded-xl;
   cursor: pointer;
   display: grid;
   grid-template-columns: 1fr auto;
@@ -18,7 +18,7 @@
     @apply bg-green-600;
   }
 
-  &.selected {
-    @apply text-white bg-blue-400;
-  }
+  // &.selected {
+  //   @apply text-white bg-blue-400;
+  // }
 }

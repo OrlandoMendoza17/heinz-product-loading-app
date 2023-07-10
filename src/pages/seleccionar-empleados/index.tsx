@@ -212,7 +212,7 @@ const SelectEmployees = () => {
 						</div>
 
 						<div className="Employee-grid">
-							{
+							{/* {
 								searching ?
 									// Siempre aparecerá el botón de limpiar
 									<Employees
@@ -229,7 +229,7 @@ const SelectEmployees = () => {
 										employees={employees}
 										{...employeesProps}
 									/>
-							}
+							} */}
 
 							<Employees
 								// Botón de limpiar aparecerá cuando hayan items en la lista
