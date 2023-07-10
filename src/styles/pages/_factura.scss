@@ -1,0 +1,57 @@
+.Bill {
+  @apply mt-8;
+
+  .header {
+    ul {
+
+      span,
+      li {
+        @apply text-base;
+      }
+
+      li {
+        @apply mb-4;
+
+        span {
+          @apply font-bold;
+        }
+      }
+    }
+  }
+}
+
+.EmployeeBill {
+  @apply bg-slate-200 my-8 rounded-2xl;
+
+  ul {
+    * {
+
+      @apply text-base;
+    }
+
+    li {
+      @apply mb-1;
+      span {
+        @apply font-bold;
+      }
+    }
+
+  }
+
+
+  table {
+    @apply w-full border-slate-300;
+    overflow: hidden;
+
+    td,
+    th {
+      @apply border border-slate-300 p-2;
+    }
+    
+    thead tr th{
+      &:first-of-type{
+        @apply rounded-tl-2xl;
+      }
+    }
+  }
+}

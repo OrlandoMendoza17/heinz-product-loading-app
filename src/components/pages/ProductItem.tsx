@@ -37,19 +37,22 @@ const ProductItem = ({ product }: Props) => {
             Disponible: <span className="font-bold">{available}</span>
           </small>
           <small className="block text-gray-700 text-sm">
-            Precio: <span className="font-bold">{formatMoney(price)}</span>
+            Precio: <span className={"font-bold"}>{formatMoney(price)}</span>
           </small>
         </div>
         <button
           onClick={handleClick}
-          disabled={!available}
-          className={`px-3 py-2 ${found ? "bg-green-500" : "bg-sky-800"} disabled:bg-slate-300 text-white text-xs font-bold uppercase rounded`}
+          disabled={!available || !price}
+          className={`ProductItem-action ${price ? "disabled:bg-slate-300" : "disabled:bg-red-300" } ${found ? "bg-green-500" : "bg-sky-800"} `}
         >
           {
-          available ?
-          (found ? "Añadido" : "Añadir")
-          :
-          "Sin Stock"
+            (price > 0) ?
+              (
+                available ?
+                  (found ? "Añadido" : "Añadir") : "Sin Stock"
+              )
+              :
+              "Sin Precio"
           }
         </button>
       </div>

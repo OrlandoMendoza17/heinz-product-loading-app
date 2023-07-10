@@ -171,7 +171,7 @@ const SelectEmployees = () => {
 
 	return (
 		<>
-			<div className="SelectEmployees px-4 md:px-24 pb-20">
+			<div className="SelectEmployees Layout">
 				<Header />
 				<main className="pt-10 xl:px-60">
 

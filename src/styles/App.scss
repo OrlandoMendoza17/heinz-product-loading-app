@@ -1,11 +1,14 @@
 @import "./libs/reset";
+@import "./libs/mixin";
+@import "./globals.scss";
 
 //pages
 @import "./pages/index";
 @import "./pages/login";
 @import "./pages/cart";
-@import "./pages/seleccionar-empleados";
 @import "./pages/mis-ordenes";
+@import "./pages/factura";
+@import "./pages/seleccionar-empleados";
 
 // components
 @import "../components/pages/styles/ProductItem";

@@ -1,5 +1,6 @@
 .ProductItem{
   @apply p-4 bg-gray-100 rounded-lg;
+  
   display: grid;
   grid-template-columns: 100px 1fr;
   gap: 10px;
@@ -19,5 +20,9 @@
     &-details{
       @apply pb-4;
     }
+  }
+  
+  &-action{
+    @apply px-3 py-2 text-white text-xs font-bold uppercase rounded;
   }
 }

@@ -77,9 +77,9 @@ const products = async (request: NextApiRequest, response: NextApiResponse) => {
       sku: IMLITM,
       name: IMDSC1,
       image: `/product-images/${IMLITM}.png`,
-      available: 0,
-      quantity: 0,
-      price: (price !== undefined) ? (price / 10000) : -100,
+      available: 0,   // Valor por defecto
+      quantity: 0.25, // Valor inicial | Vlor mínimo
+      price: (price !== undefined) ? (price / 10000) : 0,
     }
 
     if (storeProduct) {

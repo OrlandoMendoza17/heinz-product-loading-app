@@ -71,7 +71,7 @@ const Home: NextPage = () => {
   const DINT_FIND_PRODUCTS = (NO_PRODUCTS || NOT_FOUND_PRODUCTS)
 
   return (
-    <div className="Home px-4 md:px-24 pb-20">
+    <div className="Home Layout">
       <Header products={products}/>
 
       <ProductFinder
@@ -88,7 +88,7 @@ const Home: NextPage = () => {
         {/* <p className="pb-8">Se ha encontrado 1 item(s) por el SKU: 15297</p> */}
         <div className="main_container">
 
-          <Aside />
+          {/* <Aside /> */}
 
           <section>
             {

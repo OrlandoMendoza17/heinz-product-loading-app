@@ -113,6 +113,7 @@ const Cart: NextPage = () => {
         title: "Exito",
         message: "Puedes pasar al siguiente segmento",
       })
+      setTimeout(() => router.push("/factura"), 3000);
     }
   }
 
@@ -127,10 +128,10 @@ const Cart: NextPage = () => {
       return accumulator + (product.quantity * product.price)
     }, 0)
   )
-
+  
   return (
     <>
-      <div className="px-4 md:px-24 pb-20">
+      <div className="Layout">
         <Header />
         <main className="Home xl:px-60">
           <form ref={$form} onSubmit={handleSubmit}>
@@ -189,6 +190,7 @@ const Cart: NextPage = () => {
                     <td className="font-bold text-secondary !pl-8">
                       {boxQuantity}
                     </td>
+                    <td className=""></td>
                     <td className=""></td>
                     <td className=" font-bold text-secondary">
                       {bill}

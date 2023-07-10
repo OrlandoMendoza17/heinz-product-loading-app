@@ -38,7 +38,7 @@ const MyOrders = () => {
   const orders: Pedido[] = new Array(10).fill(pedido)
 
   return (
-    <div className="SelectEmployees px-4 md:px-24 pb-20">
+    <div className="SelectEmployees Layout">
       <Header />
       <main className="MyOrders pt-10 xl:px-60">
         <h1 className="MyOrders__title">Mis Ordenes</h1>
