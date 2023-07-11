@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import CartContext from '../../context/CartContext'
 import formatMoney from '@/utils/formatMoney'
+import { FaImages } from 'react-icons/fa'
 
 type Props = {
   product: Product,
@@ -26,6 +27,7 @@ const ProductItem = ({ product }: Props) => {
     <div className="ProductItem">
       <div className="image-container">
         <img src={image} alt="" />
+        <FaImages size={40} className="fill-slate-200"/>
       </div>
       <div className="ProductItem-info">
         <div className="ProductItem-info-details">
@@ -43,7 +45,7 @@ const ProductItem = ({ product }: Props) => {
         <button
           onClick={handleClick}
           disabled={!available || !price}
-          className={`ProductItem-action ${price ? "disabled:bg-slate-300" : "disabled:bg-red-300" } ${found ? "bg-green-500" : "bg-sky-800"} `}
+          className={`ProductItem-action ${price ? "disabled:bg-slate-300" : "disabled:bg-red-300"} ${found ? "bg-green-500" : "bg-sky-800"} `}
         >
           {
             (price > 0) ?

@@ -7,9 +7,17 @@
   
   .image-container {
     @apply bg-white rounded-lg grid items-center;
+    position: relative;
     img{
-      @apply rounded-lg;
+      @apply bg-white rounded-lg;
+      z-index: 2;
       object-fit: cover;
+    }
+    svg{
+      z-index: 1;
+      position: absolute;
+      top: calc(50% - (40px / 2));
+      left: calc(50% - (40px / 2));
     }
   }
   
