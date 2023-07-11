@@ -1,53 +1,34 @@
 const getEmployees = (): Employee[] => {
   const employees: Employee[] = [
     {
-      ficha: 1000101,
-      name: "Mendoza Vargas, Orlando Manuel",
+      ficha: 1004529,
+      name: "Neme Anka, Elias Jose",
     },
     {
-      ficha: 1000102,
-      name: "Mendoza Chirinos, Orlando Jesús",
-    },
-    {
-      ficha: 1000103,
-      name: "Mendoza Vargas, Sofia Victoria",
-    },
-    {
-      ficha: 1000104,
+      ficha: 1014474,
       name: "Vargas Bolívar, Mary Carmen",
     },
     {
-      ficha: 1000105,
-      name: "Vargas Bolívar, Manuel Alejandro",
+      ficha: 1000703,
+      name: "Pinto Nieves, Carmen Pialina",
     },
     {
-      ficha: 1000106,
-      name: "Mendoza Ynojosa, Marietsy Alejandra",
+      ficha: 1012196,
+      name: "Lucena Medina, Mary Carmen",
     },
     {
-      ficha: 1000107,
-      name: "Mendoza, Orlando Jesús",
+      ficha: 1014642,
+      name: "Mendez Alvarez, Juan Carlos",
     },
     {
-      ficha: 1000108,
-      name: "Morales, Miles",
+      ficha: 1014419,
+      name: "Pages Contreras, Jose Gregorio",
     },
     {
-      ficha: 1000109,
-      name: "Stacy, Gwen",
+      ficha: 27313279,
+      name: "Mendoza Vargas, Orlando Manuel",
     },
-    {
-      ficha: 1000110,
-      name: "Ohara, Miguel",
-    },
-    {
-      ficha: 1000111,
-      name: "Jane, Mary",
-    },
-    {
-      ficha: 1000112,
-      name: "Stacy, George",
-    },
+
   ]
   return employees;
 }

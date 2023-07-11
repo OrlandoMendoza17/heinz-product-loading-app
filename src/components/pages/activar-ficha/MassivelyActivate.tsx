@@ -72,6 +72,9 @@ const MassivelyActivate = ({ handleNotification }: Props) => {
   }
 
   const handleButton = async () => {
+    
+    handleNotification.close()
+    
     try {
       setLoading(true)
       await activateEmployeeIDs(employeeIDs)
