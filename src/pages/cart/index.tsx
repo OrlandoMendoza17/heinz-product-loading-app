@@ -11,6 +11,7 @@ import ConfirmModal from '@/components/widgets/ConfirmModal'
 import { useRouter } from 'next/router'
 import { FaArrowRightLong } from 'react-icons/fa6'
 import NotificationModal from '@/components/widgets/NotificationModal'
+import BillsContext from '@/context/BillsContext'
 
 const fields = [
   "SKU",
@@ -25,10 +26,16 @@ const fields = [
 const Cart: NextPage = () => {
 
   const router = useRouter()
-  const { cart, selectedEmployees, emptyCart, deleteGroup } = useContext(CartContext)
-  const { notification, handleNotification } = useNotification()
-  const { notification: alert, handleNotification: handleAlert } = useNotification()
-
+  
+  const { setBills } = useContext(BillsContext)
+  const { cart, selectedEmployees, purchase, emptyCart, deleteGroup } = useContext(CartContext)
+  
+  const notificationProps = useNotification()
+  const { handleNotification } = notificationProps
+  
+  const alertProps = useNotification()
+  const { handleNotification: handleAlert } = alertProps
+  
   const handleOpenModal = () => {
     handleNotification.open({
       type: "warning",
@@ -107,19 +114,22 @@ const Cart: NextPage = () => {
         title: "Carrito Vacío",
         message: "Debes tener al menos 1 producto en el carrito para poder avanzar",
       })
-    }else{
-      handleAlert.open({
-        type: "success",
-        title: "Exito",
-        message: "Puedes pasar al siguiente segmento",
+    } else {
+      router.push("/factura")
+      const bills: Bill[] = selectedEmployees.map(employee => {
+        return ({
+          purchase,
+          employee,
+          products: [...cart],
+        })
       })
-      setTimeout(() => router.push("/factura"), 3000);
+      setBills(bills)
     }
   }
 
   const boxQuantity = getBoxQuantity(cart)
   const bill = formatMoney(getTotalFromProducts(cart))
-  
+
   return (
     <>
       <div className="Layout">
@@ -178,10 +188,10 @@ const Cart: NextPage = () => {
                     <td className="font-bold text-secondary">
                       Total
                     </td>
+                    <td className=""></td>
                     <td className="font-bold text-secondary !pl-8">
                       {boxQuantity}
                     </td>
-                    <td className=""></td>
                     <td className=""></td>
                     <td className=" font-bold text-secondary">
                       {bill}
@@ -203,19 +213,13 @@ const Cart: NextPage = () => {
               </Button>
             </div>
           </form>
-
         </main>
       </div >
       <ConfirmModal
-        button2
-        notification={notification}
         acceptAction={handleDelete}
-        closeModal={handleNotification.close}
+        {...notificationProps}
       />
-      <NotificationModal
-        {...alert}
-        closeNotification={handleAlert.close}
-      />
+      <NotificationModal {...alertProps}/>
     </>
   )
 }

@@ -7,7 +7,8 @@ import useNotification from '@/hooks/useNotification'
 
 const ActivateEmployeesID = () => {
 
-  const { notification, handleNotification } = useNotification()
+  const notificationProps = useNotification()
+  const { handleNotification } = notificationProps
 
   const props = { handleNotification }
   
@@ -24,10 +25,7 @@ const ActivateEmployeesID = () => {
           </section>
         </main>
       </div>
-      <NotificationModal
-        {...notification}
-        closeNotification={handleNotification.close}
-      />
+      <NotificationModal {...notificationProps}/>
     </>
   )
 }

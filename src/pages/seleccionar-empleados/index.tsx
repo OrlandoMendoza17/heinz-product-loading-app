@@ -44,7 +44,8 @@ const SelectEmployees = () => {
 
 	const [search, setSearch] = useState<number | "">("")
 
-	const { notification, handleNotification } = useNotification()
+	const notificationProps = useNotification()
+  const { handleNotification } = notificationProps
 
 	useEffect(() => {
 		const employees = getEmployees()
@@ -271,10 +272,7 @@ const SelectEmployees = () => {
 				<footer></footer>
 			</div>
 
-			<NotificationModal
-				{...notification}
-				closeNotification={handleNotification.close}
-			/>
+			<NotificationModal {...notificationProps}/>
 
 		</>
 	)

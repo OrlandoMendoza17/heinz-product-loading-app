@@ -1,17 +1,28 @@
 import React, { MouseEventHandler } from 'react'
 import Portal from './Portal'
 import { FaXmark } from 'react-icons/fa6';
+import { HandleNotification, NotificationProps } from '@/hooks/useNotification';
+
+// type Props = {
+//   show: boolean,
+//   type: "success" | "warning" | "danger",
+//   title: string,
+//   message: string,
+//   notification: 
+//   closeNotification: MouseEventHandler<HTMLButtonElement>
+// }
 
 type Props = {
-  show: boolean,
-  type: "success" | "warning" | "danger",
-  title: string,
-  message: string,
-  closeNotification: MouseEventHandler<HTMLButtonElement>
+  notification: NotificationProps,
+  handleNotification: HandleNotification,
 }
 
-const NotificationModal = ({ show, type, title = "", message, closeNotification }: Props) => {
+// { notification, handleNotification }: Props
 
+const NotificationModal = ({notification, handleNotification}: Props) => {
+
+  const { show, type, title = "", message } = notification
+  
   const states = {
     success: "modal_green",
     warning: "modal_yellow",
@@ -31,7 +42,7 @@ const NotificationModal = ({ show, type, title = "", message, closeNotification 
             <span>{message}</span>
           </div>
 
-          <button onClick={closeNotification}>
+          <button onClick={handleNotification.close}>
             <FaXmark />
           </button>
 

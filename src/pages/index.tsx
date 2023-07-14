@@ -19,50 +19,52 @@ const Home: NextPage = () => {
   const [searchedProducts, setSearchedProducts] = useState<Product[]>([])
 
   const [loading, setLoading] = useState(true)
-  const { notification, handleNotification } = useNotification()
+  
+  const notificationProps = useNotification()
+  const { handleNotification } = notificationProps
 
   useEffect(() => {
     (async () => {
       setLoading(true)
 
       const products = getFromSStorage<Product[]>("products")
-      
-      const logUndefinedPrices = (products: Product[]) =>{
+
+      const logUndefinedPrices = (products: Product[]) => {
         console.log(products.filter((item) => item.price === -100))
       }
-      
-      if(products){
+
+      if (products) {
         logUndefinedPrices(products)
-        
+
         setProducts(products)
         setLoading(false)
-        
-      }else{
+
+      } else {
         try {
-          
+
           const products = await getProducts()
           logUndefinedPrices(products)
-  
+
           saveToSStorage("products", products)
-  
+
           setProducts(products)
           setLoading(false)
-  
+
         } catch (error) {
           console.log(error)
           setLoading(false)
-  
+
           handleNotification.open({
             type: "danger",
             title: "Carga de productos ❌",
             message: `Ha ocurrido un error al intentar traer los productos, recargue la pagina e intentelo de nuevo`
           })
-        } 
+        }
       }
-      
+
     })()
   }, [])
-  
+
   const skelentonProducts = new Array(12).fill(0)
 
   const NO_PRODUCTS = !Boolean(products.length)
@@ -72,7 +74,7 @@ const Home: NextPage = () => {
 
   return (
     <div className="Home Layout">
-      <Header products={products}/>
+      <Header products={products} />
 
       <ProductFinder
         {...{
@@ -119,10 +121,7 @@ const Home: NextPage = () => {
 
           </section>
 
-          <NotificationModal
-            {...notification}
-            closeNotification={handleNotification.close}
-          />
+          <NotificationModal {...notificationProps}/>
 
         </div>
       </main>

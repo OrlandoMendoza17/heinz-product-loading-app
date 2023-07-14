@@ -4,6 +4,7 @@ import React, { ChangeEventHandler, useContext } from 'react'
 import ConfirmModal from '../widgets/ConfirmModal'
 import useNotification from '@/hooks/useNotification'
 import { getAvailableStock } from '@/utils'
+import NotificationModal from '../widgets/NotificationModal'
 
 type Props = {
   product: Product,
@@ -14,10 +15,16 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
 
   const { selectedEmployees, updateProduct, removeProduct } = useContext(CartContext)
 
-  const { notification, handleNotification } = useNotification()
-  const { name, price, sku, quantity, available } = product
+  const notificationProps = useNotification()
+  const { handleNotification } = notificationProps
   
+  const alertProps = useNotification()
+  const { handleNotification: handleAlert } = alertProps
+
+  const { name, price, sku, quantity, available } = product
+
   const MIN_VALUE = 0.25
+  const stock = getAvailableStock(available, selectedEmployees.length)
 
   const handleOpenModal = () => {
     handleNotification.open({
@@ -27,13 +34,15 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
     })
   }
 
-  const stock = getAvailableStock(available, selectedEmployees.length)
-  
+  const handleAccept = () => {
+    removeProduct(sku)
+  }
+
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     if (target.name === "product_quantity") {
       const quantity = parseFloat(target.value)
       debugger
-      if(quantity <= stock){
+      if (quantity <= stock) {
         updateProduct({
           ...product,
           quantity: (quantity >= 0.25) ? quantity : MIN_VALUE,
@@ -43,7 +52,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
   }
 
   const productQuantity = quantity ? quantity : MIN_VALUE
-  
+
   return (
     <>
       <tr key={`${name.split(" ").join("-")}-${sku}`}>
@@ -85,13 +94,10 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
         </td>
       </tr>
       <ConfirmModal
-        {...{
-          button2: true,
-          notification,
-          closeModal: handleNotification.close,
-          acceptAction: () => removeProduct(sku),
-        }}
+        acceptAction={handleAccept}
+        {...notificationProps}
       />
+      <NotificationModal {...alertProps}/>
     </>
   )
 }

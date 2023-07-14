@@ -1,4 +1,4 @@
-import { NotificationProps, OpenProps } from '@/hooks/useNotification'
+import { HandleNotification, NotificationProps, OpenProps } from '@/hooks/useNotification'
 import React, { MouseEventHandler } from 'react'
 import Portal from './Portal'
 
@@ -9,14 +9,14 @@ interface Props {
   button1?: boolean,
   button2?: boolean,
   acceptAction: () => void,
-  closeModal: () => void,
+  handleNotification: HandleNotification,
 }
 
 const LOREM = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus, amet!"
 
 const ConfirmModal = (props: Props) => {
 
-  const { acceptAction, closeModal, button1 = true, button2, notification } = props
+  const { acceptAction, handleNotification, button1 = true, button2 = true, notification } = props
   const { title = "Title", message = LOREM } = notification
 
   const handleClick: MouseEventHandler<HTMLDivElement> = ({ target, currentTarget }) => {
@@ -36,12 +36,12 @@ const ConfirmModal = (props: Props) => {
     const clickedOutModal = getDataAttribute(target as TargetProps, "modal")
     console.log('clickedOutModal', clickedOutModal)
 
-    if (clickedOutModal) closeModal()
+    if (clickedOutModal) handleNotification.close()
   }
 
   const handleAccept = () => {
     acceptAction()
-    closeModal();
+    handleNotification.close();
   }
 
   return (
@@ -66,7 +66,7 @@ const ConfirmModal = (props: Props) => {
               }
               {
                 button2 &&
-                <button onClick={closeModal} className="bg-red-500 duration-75 hover:bg-red-400">
+                <button onClick={handleNotification.close} className="bg-red-500 duration-75 hover:bg-red-400">
                   Cerrar
                 </button>
               }

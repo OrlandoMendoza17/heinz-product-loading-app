@@ -22,6 +22,13 @@ export const getTotalFromProducts = (products: Product[]): number =>{
   return total;
 }
 
+export const getTotalBoxesFromProducts = (products: Product[]): number =>{
+  const total = products.reduce((accumulator, product) => {
+    return accumulator + product.quantity
+  }, 0)
+  return total;
+}
+
 export const getBoxQuantity  = (products: Product[])=>{
   const boxQuantity = products.reduce((accumulator, product) => {
     return accumulator + product.quantity
