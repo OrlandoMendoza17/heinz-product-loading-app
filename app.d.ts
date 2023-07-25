@@ -9,8 +9,11 @@ type Product = {
 }
 
 type Employee = {
-  ficha: number;
   name: string;
+  CI: string;
+  ficha: number;
+  zone: string;
+  clientType: string;
 }
 
 type Purchase = {

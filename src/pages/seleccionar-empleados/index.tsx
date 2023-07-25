@@ -4,7 +4,7 @@ import Header from '@/components/widgets/Header/Header'
 import Input from '@/components/widgets/Input'
 import Select from '@/components/widgets/Select'
 import { filterByNumbers, getJsonFromExcel } from '@/utils'
-import getEmployees from '@/utils/getEmployees'
+// import getEmployees from '@/utils/getEmployees'
 import Textarea from '@/components/widgets/Textarea'
 import Button from '@/components/widgets/Button'
 import { useRouter } from 'next/router'
@@ -14,6 +14,7 @@ import useNotification from '@/hooks/useNotification'
 import CartContext from '@/context/CartContext'
 import DropZone from '@/components/pages/activar-ficha/DropZone'
 import { FaArrowRight } from 'react-icons/fa6'
+import { getEmployees } from '@/services/employees'
 
 type HandleFormProps = {
 	submit: FormEventHandler<HTMLFormElement>,
@@ -40,7 +41,7 @@ const SelectEmployees = () => {
 	const [employees, setEmployees] = useState<Employee[]>([])
 	const [searching, setSearching] = useState<boolean>(false)
 	const [searchedEmployees, setSearchedEmployees] = useState<Employee[]>([])
-	// const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([])
+	// const [selectedEmployees, setSelectedEmployees] = useState<WorkerEmployee[]>([])
 
 	const [search, setSearch] = useState<number | "">("")
 
@@ -48,8 +49,10 @@ const SelectEmployees = () => {
   const { handleNotification } = notificationProps
 
 	useEffect(() => {
-		const employees = getEmployees()
-		setEmployees(employees)
+		(async ()=>{
+			const employees = await getEmployees()
+			setEmployees(employees)
+		})()
 	}, [])
 
 	const handleForm: HandleFormProps = {
@@ -138,10 +141,7 @@ const SelectEmployees = () => {
 				const notSelected = !selectedEmployees.find(findEmployee)
 
 				// Verifica si la ficha existe en la base de datos y si ya fue seleccionada
-				if (exists && notSelected) newList.push({
-					...inserted,
-					name: exists.name,
-				})
+				if (exists && notSelected) newList.push(exists)
 			})
 
 			console.log('info', rows)

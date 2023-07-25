@@ -11,12 +11,18 @@ export const filterByNumbers = (value: string): number => { //"this27is65a34stri
 }
 
 export const getJsonFromExcel = async (file: File) => {
+  
+  type TemplateEmployee = {
+    ficha: number;
+    name: string;
+  }
+  
   const map = {
     "Ficha": "ficha",
     "Nombre": "name",
   }
   
-  const deleteDuplicates = (rows: Employee[]) =>{
+  const deleteDuplicates = (rows: TemplateEmployee[]) =>{
     // Se transforman los objetos a string
     const stringObjectArray: string[] = rows.map(item => JSON.stringify(item));
     
@@ -24,11 +30,11 @@ export const getJsonFromExcel = async (file: File) => {
     const sortedArray = Array.from(new Set(stringObjectArray))
     
     // Se pasa de nuevo a JSON
-    const employees = sortedArray.map(item => JSON.parse(item)) as Employee[]
+    const employees = sortedArray.map(item => JSON.parse(item)) as TemplateEmployee[]
     return employees;
   }
 
-  const output = await readXlsxFile<Employee>(file, { map })
+  const output = await readXlsxFile<TemplateEmployee>(file, { map })
 
   // Se eliminan los duplicados
   const rows = deleteDuplicates(output.rows)
