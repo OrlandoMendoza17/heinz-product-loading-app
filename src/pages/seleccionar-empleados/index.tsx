@@ -15,6 +15,7 @@ import CartContext from '@/context/CartContext'
 import DropZone from '@/components/pages/activar-ficha/DropZone'
 import { FaArrowRight } from 'react-icons/fa6'
 import { getEmployees } from '@/services/employees'
+import Spinner from '@/components/widgets/Spinner'
 
 type HandleFormProps = {
 	submit: FormEventHandler<HTMLFormElement>,
@@ -37,21 +38,33 @@ const SelectEmployees = () => {
 	const { selectedEmployees, setSelectedEmployees } = context
 
 	const [loading, setLoading] = useState<boolean>(false)
+	const [loadingEmployees, setLoadingEmployees] = useState<boolean>(false)
+
 
 	const [employees, setEmployees] = useState<Employee[]>([])
 	const [searching, setSearching] = useState<boolean>(false)
 	const [searchedEmployees, setSearchedEmployees] = useState<Employee[]>([])
 	// const [selectedEmployees, setSelectedEmployees] = useState<WorkerEmployee[]>([])
 
-	const [search, setSearch] = useState<number | "">("")
+	const [search, setSearch] = useState<number | string>("")
 
 	const notificationProps = useNotification()
-  const { handleNotification } = notificationProps
+	const { handleNotification } = notificationProps
 
 	useEffect(() => {
-		(async ()=>{
-			const employees = await getEmployees()
-			setEmployees(employees)
+		(async () => {
+			try {
+				setLoading(true)
+
+				const employees = await getEmployees()
+				setEmployees(employees)
+
+				setLoading(false)
+
+			} catch (error) {
+				console.log(error)
+				setLoading(false)
+			}
 		})()
 	}, [])
 
@@ -83,25 +96,39 @@ const SelectEmployees = () => {
 	const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = ({ target }) => {
 
 		const { name, value } = target
-
+		debugger
 		if (name === "ficha-search") {
-
-			const value = filterByNumbers(target.value)
-
+			debugger
 			if (target.value === "") {
 
 				setSearch("")
 				setSearching(false)
 
-			} else if (!isNaN(value)) {
-				setSearch(value)
-				setSearching(true)
+			} else {
 
-				setSearchedEmployees(
-					employees.filter(employee =>
-						employee.ficha.toString().includes(value.toString())
+				if (isNaN(parseInt(value))) {
+
+					setSearch(value)
+					setSearching(true)
+
+					setSearchedEmployees(
+						employees.filter(employee =>
+							employee.name.toLowerCase().includes(value.toLowerCase())
+						)
 					)
-				)
+
+				} else {
+					const value = filterByNumbers(target.value)
+
+					setSearch(value)
+					setSearching(true)
+
+					setSearchedEmployees(
+						employees.filter(employee =>
+							employee.ficha.toString().includes(value.toString())
+						)
+					)
+				}
 			}
 
 		} else {
@@ -164,9 +191,9 @@ const SelectEmployees = () => {
 	const selectedEmployeesProps = { ...employeesProps, selectedList: true }
 
 	const DropZoneProps = {
-		loading,
+		loadingEmployees,
 		filesAllowed,
-		setLoading,
+		setLoadingEmployees,
 		handleFiles,
 	}
 
@@ -177,20 +204,73 @@ const SelectEmployees = () => {
 				<main className="pt-10 xl:px-60">
 
 					<Form onSubmit={handleForm.submit} onInvalid={handleForm.invalid}>
-						<h1 className="text-3xl font-bold">Selecionar Empleados</h1>
+						<h1 className="text-3xl font-bold pb-10">Selecionar Empleados</h1>
 
-						{/* ficha-search | order | date */}
-						<div>
+						<>
+							{
+								!loading ?
+									<>
+										<div className="grid pb-8">
+											<Input
+												id="ficha-search"
+												title="Buscar por"
+												placeholder="💼 Nombre | Ficha"
+												value={search}
+												onChange={handleChange}
+												required={false}
+											/>
+										</div>
+										<div className="Employee-grid">
+											{
+												searching ?
+													// Siempre aparecerá el botón de limpiar
+													<Employees
+														showDeleteButton={true}
+														title={employeeListTitle}
+														handleClean={handleClean.search}
+														employees={searchedEmployees}
+														{...employeesProps}
+													/>
+													:
+													// No aparecerá el botón de limpiar
+													<Employees
+														title={employeeListTitle}
+														employees={employees}
+														{...employeesProps}
+													/>
+											}
+
+											<Employees
+												// Botón de limpiar aparecerá cuando hayan items en la lista
+												title={<>Seleccionados <small>({selectedEmployees.length})</small></>}
+												handleClean={handleClean.selected}
+												showDeleteButton={Boolean(selectedEmployees.length)}
+												employees={selectedEmployees}
+												{...selectedEmployeesProps}
+											/>
+										</div>
+
+										<DropZone {...DropZoneProps}>
+											Cargar Empleados
+										</DropZone>
+									</>
+									:
+									<>
+										<div className="grid pb-8">
+											<div className="h-14 bg-slate-200 rounded-xl animate-pulse duration-200"></div>
+										</div>
+										<div className="Employee-grid">
+											<>
+												<div className="Employees_skeleton duration-500"></div>
+												<div className="Employees_skeleton duration-700"></div>
+											</>
+										</div>
+									</>
+							}
+						</>
+						<>
+							{/* order | date */}
 							<div className="input-list">
-								<Input
-									id="ficha-search"
-									title="Buscar por ficha"
-									placeholder="💼 Employee's ID"
-									value={search}
-									onChange={handleChange}
-									required={false}
-								/>
-
 								<Input
 									id="order"
 									title="Orden de Compra"
@@ -198,7 +278,7 @@ const SelectEmployees = () => {
 									value={purchase.order}
 									onChange={handleChange}
 								/>
-								
+
 								<Input
 									id="date"
 									title="Fecha de recepción"
@@ -210,69 +290,35 @@ const SelectEmployees = () => {
 								{/* <Select id="order" title="Filtrar por tipo" defaultOption="-" options={[{ name: "", value: "" }]} /> */}
 								{/* <Select id="date" title="Filtrar por sub-tipo" defaultOption="-" options={[{ name: "", value: "" }]} /> */}
 							</div>
-						</div>
 
-						<div className="Employee-grid">
-							{/* {
-								searching ?
-									// Siempre aparecerá el botón de limpiar
-									<Employees
-										showDeleteButton={true}
-										title={employeeListTitle}
-										handleClean={handleClean.search}
-										employees={searchedEmployees}
-										{...employeesProps}
-									/>
-									:
-									// No aparecerá el botón de limpiar
-									<Employees
-										title={employeeListTitle}
-										employees={employees}
-										{...employeesProps}
-									/>
-							} */}
-
-							<Employees
-								// Botón de limpiar aparecerá cuando hayan items en la lista
-								title={<>Seleccionados <small>({selectedEmployees.length})</small></>}
-								handleClean={handleClean.selected}
-								showDeleteButton={Boolean(selectedEmployees.length)}
-								employees={selectedEmployees}
-								{...selectedEmployeesProps}
+							<Textarea
+								id="details"
+								value={purchase.details}
+								title="Observaciones"
+								className="pt-14"
+								onChange={handleChange}
+								placeholder="📝 ..."
+								required={false}
 							/>
 
-						</div>
+							<div className="flex justify-end pt-8">
+								<Button
+									color="info"
+									type="submit"
+									className="font-bold !px-10 flex gap-4 items-center"
+								>
+									Siguiente <FaArrowRight className="mt-1" size={14} />
+								</Button>
+							</div>
 
-						<DropZone {...DropZoneProps}>
-							Cargar Empleados
-						</DropZone>
-
-						<Textarea
-							id="details"
-							value={purchase.details}
-							title="Observaciones"
-							className="pt-14"
-							onChange={handleChange}
-							placeholder="📝 ..."
-							required={false}
-						/>
-
-						<div className="flex justify-end pt-8">
-							<Button
-								color="info"
-								type="submit"
-								className="font-bold !px-10 flex gap-4 items-center"
-							>
-								Siguiente <FaArrowRight className="mt-1" size={14} />
-							</Button>
-						</div>
+						</>
 					</Form>
 
 				</main>
 				<footer></footer>
 			</div>
 
-			<NotificationModal {...notificationProps}/>
+			<NotificationModal {...notificationProps} />
 
 		</>
 	)

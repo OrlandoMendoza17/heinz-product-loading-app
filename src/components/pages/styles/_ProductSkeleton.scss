@@ -1,4 +1,5 @@
 .ProductSkeleton {
+  @apply animate-pulse;
   @apply p-4 bg-gray-100 rounded-lg;
   // max-height: 175px;
   display: grid;

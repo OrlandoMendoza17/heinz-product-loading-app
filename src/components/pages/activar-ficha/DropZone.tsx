@@ -15,22 +15,22 @@ type FileAllowed = {
 }
 
 type Props = {
-  loading: boolean,
+  loadingEmployees: boolean,
   multiple?: boolean,
   filesAllowed: FileAllowed[],
-  setLoading: Dispatch<SetStateAction<boolean>>
+  setLoadingEmployees: Dispatch<SetStateAction<boolean>>
   handleFiles: (file: FileList) => void,
   children?: ReactNode
 }
 
-const DropZone = ({ multiple = false, filesAllowed, handleFiles, loading, setLoading, children }: Props) => {
+const DropZone = ({ multiple = false, filesAllowed, handleFiles, loadingEmployees, setLoadingEmployees, children }: Props) => {
 
   const $input = useRef<HTMLInputElement>(null)
 
   const loadFiles = async (files: FileList) => {
-    setLoading(true)
+    setLoadingEmployees(true)
     await handleFiles(files)
-    setLoading(false)
+    setLoadingEmployees(false)
   }
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
@@ -75,7 +75,7 @@ const DropZone = ({ multiple = false, filesAllowed, handleFiles, loading, setLoa
         // onDropCapture={}
         >
           {
-            loading ?
+            loadingEmployees ?
               <>
                 <Spinner size="normal" />
                 <span className="text-xl font-medium text-slate-600 mt-5">Procesando el archivo</span>

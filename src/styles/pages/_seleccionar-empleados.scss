@@ -1,10 +1,9 @@
 .SelectEmployees{
   
   .input-list{
-    @apply py-10;
+    @apply pt-20 gap-8;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
   }
   
   .Input{
@@ -22,10 +21,9 @@
   }
   
   .Employee-grid{
-    @apply pb-10;
+    @apply pb-10 gap-8;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 600px));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     justify-content: center;
-    gap: 20px;
   }
 }

@@ -6,7 +6,7 @@ type Props = {
 
 const ProductSkeleton = () => {
   return (
-    <div className="ProductSkeleton animate-pulse">
+    <div className="ProductSkeleton">
       <div className="image-container">
         <img src="https://i.imgur.com/Q3TDDYy.png" alt="" />
       </div>

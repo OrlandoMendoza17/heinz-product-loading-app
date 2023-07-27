@@ -24,7 +24,7 @@ type Props = {
 const MassivelyActivate = ({ handleNotification }: Props) => {
   const [inputFile, setInputFile] = useState<File>()
   const [employeeIDs, setEmployeeIDs] = useState<string[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loadingEmployees, setLoadingEmployees] = useState<boolean>(false)
 
   const handleFiles = async (files: FileList) => {
 
@@ -76,7 +76,7 @@ const MassivelyActivate = ({ handleNotification }: Props) => {
     handleNotification.close()
     
     try {
-      setLoading(true)
+      setLoadingEmployees(true)
       await activateEmployeeIDs(employeeIDs)
   
       handleNotification.open({
@@ -86,24 +86,24 @@ const MassivelyActivate = ({ handleNotification }: Props) => {
       })
   
       setEmployeeIDs([])
-      setLoading(false)
+      setLoadingEmployees(false)
       
     } catch (error) {
       handleError(error)
-      setLoading(false)
+      setLoadingEmployees(false)
     }
   }
 
-  const isActive: boolean = !Boolean(employeeIDs.length) || loading
+  const isActive: boolean = !Boolean(employeeIDs.length) || loadingEmployees
   console.log('employeeIDs', employeeIDs)
 
   return (
     <div className="MassivelyActivate">
       <DropZone
-        loading={loading}
+        loadingEmployees={loadingEmployees}
         filesAllowed={filesAllowed}
         handleFiles={handleFiles}
-        setLoading={setLoading}
+        setLoadingEmployees={setLoadingEmployees}
       >
         Activación de fichas <small>(carga masiva)</small>
       </DropZone>

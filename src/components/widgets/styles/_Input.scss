@@ -3,12 +3,14 @@ form.validated {
   input,
   select,
   textarea {
-    &:valid {
-      @apply border-green-300;
-    }
-
-    &:invalid {
-      @apply border-red-300;
+    &:required{
+      &:valid {
+        @apply border-green-300;
+      }
+  
+      &:invalid {
+        @apply border-red-300;
+      }
     }
   }
 }
@@ -25,7 +27,7 @@ form.validated {
     transition: .3s;
     outline: none;
     @apply text-sm;
-    @apply bg-white rounded-md border border-gray-300;
+    @apply bg-white rounded-md border-2 border-gray-300;
     @apply px-5 py-3 text-gray-600 placeholder-gray-400;
     
     &:focus {
