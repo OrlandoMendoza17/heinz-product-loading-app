@@ -27,3 +27,17 @@ type Bill = {
   employee: Employee,
   products: Product[],
 }
+
+type Bulletin = {
+  number: number,
+  name: string;
+  user: string;
+  ficha: number;
+  address: string;
+  zone: string;
+  clientType: string;
+  order: string;
+  store: string;
+  details: string;
+  date: string;
+}

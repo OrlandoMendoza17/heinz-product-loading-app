@@ -5,11 +5,18 @@ form.validated {
   textarea {
     &:required{
       &:valid {
-        @apply border-green-300;
+        @apply border-green-500;
+        &:focus{
+          @apply shadow-green-300;
+          box-shadow: 0px 0px 0px 3px rgb(134 239 172);
+        }
       }
   
       &:invalid {
-        @apply border-red-300;
+        @apply border-red-500;
+        &:focus{
+          box-shadow: 0px 0px 0px 3px rgb(252 165 165);
+        }
       }
     }
   }

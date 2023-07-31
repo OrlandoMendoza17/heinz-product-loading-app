@@ -13,13 +13,8 @@
       "search"
       "date-from"
       "date-to"
-      "switch"
     ;
 
-
-    label[for="search-order"] {
-      grid-area: search;
-    }
 
     label[for="date-from"]:first-of-type {
       grid-area: date-from;
@@ -27,13 +22,6 @@
 
     label[for="date-to"]:nth-of-type(2) {
       grid-area: date-to;
-    }
-
-    .switch-options {
-      display: grid;
-      gap: 5px;
-      align-items: start;
-      grid-area: switch;
     }
 
     @screen xx_sm {
@@ -45,7 +33,7 @@
 
     @screen md {
       // grid-template-columns: repeat(3, 1fr) auto;
-      grid-template-areas: "search date-from date-to switch";
+      grid-template-areas: "search date-from date-to";
     }
   }
 }
