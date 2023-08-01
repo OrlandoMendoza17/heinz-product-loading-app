@@ -33,23 +33,39 @@ type JDEBulletinHeader = {
   AIAC05: string,
 }
 
-type BodyProps = {
-  dateFrom: string,
+export type BulletinsProps = {
+  dateFrom?: string,
   dateTo?: string,
+  bulletinNumber?: number
 }
 
 const Bulletins = async (request: NextApiRequest, response: NextApiResponse) => {
 
-  const { dateFrom, dateTo }: BodyProps = request.body
+  const getQuery = () => {
+    const { dateFrom, dateTo, bulletinNumber }: BulletinsProps = request.body;
+    let queryString = ""
 
-  const query1 = `WHERE WOTRDJ'${dateFrom} 00:00:00.000'`
-  const query2 = `WHERE WOTRDJ BETWEEN '${dateFrom} 00:00:00.000' AND '${dateTo} 00:00:00.000'`
+    if (dateFrom && dateTo) {
 
-  const queryString = `
-    SELECT * FROM [HCRM01].[dbo].[F9010] 
-    ${!dateTo ? query1 : query2}
-    ORDER BY WOTRDJ DESC
-  `
+      const query1 = `WHERE WOTRDJ'${dateFrom} 00:00:00.000'`
+      const query2 = `WHERE WOTRDJ BETWEEN '${dateFrom} 00:00:00.000' AND '${dateTo} 00:00:00.000'`
+
+      queryString = `
+        ${!dateTo ? query1 : query2}
+        ORDER BY WOEDOC DESC
+      `
+
+    } else if (bulletinNumber) {
+
+      queryString = `
+        WHERE WOEDOC = ${bulletinNumber}
+      `
+    }
+
+    return `SELECT * FROM [HCRM01].[dbo].[F9010] ${queryString}`;
+  }
+
+  const queryString = getQuery()
 
   const [data] = await sequelize.query(queryString) as [JDEBulletin[], unknown]
 
@@ -73,3 +89,8 @@ const Bulletins = async (request: NextApiRequest, response: NextApiResponse) => 
 }
 
 export default Bulletins;
+`
+  SELECT * FROM [HCRM01].[dbo].[F9011] 
+  WHERE ODEDOC = 5663201
+  ORDER BY ODTMST DESC
+`

@@ -1,18 +1,23 @@
+import { subWeeks } from 'date-fns'
 import Header from '@/components/widgets/Header/Header'
 import Input from '@/components/widgets/Input'
-import { shortDate } from '@/utils/parseDate'
-import axios from 'axios'
-import React, { useState, useEffect } from 'react'
+import { TODAY, formatDateString, shortDate } from '@/utils/parseDate'
+import React, { useState, useEffect, ChangeEventHandler, FormEventHandler } from 'react'
+import Switch from '@/components/widgets/Switch'
+import Button from '@/components/widgets/Button'
+import { getBulletinInfo, getBulletins } from '@/services/boletin'
+import Spinner from '@/components/widgets/Spinner'
+import NotificationModal from '@/components/widgets/NotificationModal'
+import useNotification from '@/hooks/useNotification'
+import { BulletinsProps } from '../api/boletin'
+import Modal from '@/components/widgets/Modal'
 
-type Pedido = {
-  pedido: string;
-  zona: string;
-  ficha: string;
-  cliente: string;
-  fecha: string;
-  cajas: string;
-  total_pedido: string;
+enum OPTIONS {
+  DATE = 1,
+  BOLETIN_NUMBER = 2,
 }
+
+const { DATE, BOLETIN_NUMBER } = OPTIONS
 
 const MyOrders = () => {
 
@@ -27,55 +32,129 @@ const MyOrders = () => {
   ]
 
   const [loading, setloading] = useState<boolean>(false)
-  
-  const [dates, setDates] = useState({ 
-    dateFrom: "2023-07-15", 
-    dateTo: "2023-07-30",
-  })
-  
-  
+  const [showModal, setModal] = useState<boolean>(true)
+
+  const [option, setOption] = useState<OPTIONS>(1)
   const [bulletins, setBulletins] = useState<Bulletin[]>([])
 
-  const pedido = {
-    pedido: "5685862",
-    zona: "120",
-    ficha: "1008473",
-    cliente: "Mendoza Vargas, Orlando Manuel",
-    fecha: "06/06/2023",
-    cajas: "1.00",
-    total_pedido: "0.14",
-  }
+  const [bulletinNumber, setBulletinNumber] = useState<number | "">("")
+  const [dates, setDates] = useState({
+    dateFrom: formatDateString(subWeeks(TODAY, 1)),
+    dateTo: formatDateString(),
+  })
+
+  const { dateFrom, dateTo } = dates
 
   useEffect(() => {
-    searchBulletins()
+    searchBulletins(dates)
   }, [])
 
-  const searchBulletins = async () => {
+  const NotificationProps = useNotification()
+  const { handleNotification } = NotificationProps
+
+  const searchBulletins = async (body: BulletinsProps) => {
+    setloading(true)
+    handleNotification.close()
     try {
-      const body = { dateFrom: "2023-07-15", dateTo: "2023-07-30" }
-      const { data } = await axios.post<Bulletin[]>("/api/boletin", body)
-      console.log('data', data)
+
+      const data = await getBulletins(body)
       setBulletins(data)
+
+    } catch (error) {
+
+      console.log('error', error)
+      handleNotification.open({
+        type: "danger",
+        title: "Error ❌",
+        message: "Ha habido un error intentado traer los boletines, intente de nuevo",
+      })
+
+    } finally {
+      setloading(false)
+    }
+  }
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+    const { name, value } = target
+    debugger
+    if (name === "search-order") {
+      const number = parseInt(value)
+      setBulletinNumber(value !== "" ? number : "")
+    } else {
+      setDates({
+        ...dates, [name]: value
+      })
+    }
+  }
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+    if (option === DATE) {
+      await searchBulletins(dates)
+    }
+    if (option === BOLETIN_NUMBER && bulletinNumber) {
+      await searchBulletins({ bulletinNumber })
+    }
+  }
+
+  const getDetails = async (bulletinNumber: number) => {
+    try {
+      const data = await getBulletinInfo(bulletinNumber)
+      console.log('data', data)
     } catch (error) {
       console.log('error', error)
     }
   }
-  
+
   return (
     <div className="SelectEmployees Layout">
       <Header />
       <main className="MyOrders pt-10 xl:px-60">
-        <h1 className="MyOrders__title">Mis Ordenes</h1>
+
+        <div className="pb-8">
+          <h1 className="MyOrders__title">Mis Ordenes</h1>
+          <Switch
+            id="search2"
+            label="Fecha / N° Boletín"
+            onChange={({ target }) => {
+              setOption(target.checked ? BOLETIN_NUMBER : DATE)
+            }}
+          />
+        </div>
+
         <section>
-          <div className="MyOrders__options pb-10">
-            <Input id="search-order" title="Buscar" placeholder="10-12052023" />
-            <Input id="date-from" title="Desde" type="date" />
-            <Input id="date-to" title="Hasta" type="date" />
-          </div>
+          <form onSubmit={handleSubmit} className="MyOrders__options pb-10">
+            {
+              option === DATE &&
+              <>
+                <Input id="dateFrom" onChange={handleChange} value={dateFrom} title="Desde" type="date" />
+                <Input id="dateTo" onChange={handleChange} value={dateTo} title="Hasta" type="date" />
+              </>
+            }
+
+            {
+              option === BOLETIN_NUMBER &&
+              <>
+                <Input
+                  id="search-order"
+                  title="Buscar"
+                  value={bulletinNumber}
+                  type="number"
+                  placeholder="📄 Número de Boletín"
+                  className="col-start-1 col-end-3"
+                  onChange={handleChange}
+                />
+              </>
+            }
+
+            <Button type="submit" color="secondary">
+              Buscar
+            </Button>
+          </form>
           {
             loading ?
               <div className="py-20">
-                Cargando...
+                <Spinner size="normal" />
               </div>
               :
               <div className="overflow-x-scroll md:overflow-x-auto">
@@ -121,7 +200,7 @@ const MyOrders = () => {
                             <button type="button">
                               🛒
                             </button>
-                            <button type="button">
+                            <button type="button" onClick={() => getDetails(bulletin.number)}>
                               📋
                             </button>
                           </td>
@@ -162,6 +241,57 @@ const MyOrders = () => {
           }
         </section>
       </main>
+
+      <NotificationModal {...NotificationProps} />
+
+      <Modal transparent closeButton={false} {...{ showModal, setModal }} >
+        <table className="Table">
+          <thead>
+            <tr>
+              <th className="px-6 py-3">
+                <span>SKU</span>
+              </th>
+              <th className="px-6 py-3">
+                <span>Imagen</span>
+              </th>
+              <th className="px-6 py-3">
+                <span>Descripcion</span>
+              </th>
+              <th className="px-6 py-3">
+                <span>Cantidad</span>
+              </th>
+              <th className="px-6 py-3">
+                <span>Precio Base</span>
+              </th>
+              <th className="px-6 py-3">
+                <span>Total</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                <span>15149</span>
+              </th>
+              <th>
+                <img width={100} src="/product-images/15149.png" alt="" />
+              </th>
+              <th>
+                <span>COL. BANANA 113G</span>
+              </th>
+              <th>
+                <span>3</span>
+              </th>
+              <th>
+                <span>0.2</span>
+              </th>
+              <th>
+                <span>0.6</span>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+      </Modal>
     </div>
   )
 }

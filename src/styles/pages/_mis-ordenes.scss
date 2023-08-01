@@ -1,21 +1,24 @@
 .MyOrders {
 
   &__title {
-    @apply pb-8 text-3xl font-bold;
+    @apply pb-4 text-3xl font-bold;
   }
 
   &__options {
     display: grid;
+    grid-template-columns: repeat(3, 1fr);
     align-items: end;
     gap: 20px;
 
-    grid-template-areas:
-      "search"
-      "date-from"
-      "date-to"
-    ;
+    input, button{
+      height: 38px;
+      padding: 0;
+    }
 
-
+    button{
+      @apply font-bold;
+    }
+    
     label[for="date-from"]:first-of-type {
       grid-area: date-from;
     }
@@ -23,17 +26,6 @@
     label[for="date-to"]:nth-of-type(2) {
       grid-area: date-to;
     }
-
-    @screen xx_sm {
-      grid-template-areas:
-        "date-from date-to"
-        "search switch"
-      ;
-    }
-
-    @screen md {
-      // grid-template-columns: repeat(3, 1fr) auto;
-      grid-template-areas: "search date-from date-to";
-    }
+      
   }
 }

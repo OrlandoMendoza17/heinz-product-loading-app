@@ -48,8 +48,8 @@ const ConfirmModal = (props: Props) => {
     <Portal type="modal">
       {
         notification.show &&
-        <div data-modal={true} onClick={handleClick} className="Modal">
-          <div className="Modal__main-container">
+        <div data-modal={true} onClick={handleClick} className="ConfirmModal">
+          <div className="ConfirmModal__main-container">
 
             <div className="content">
               <span className="text-5xl">⚠</span>
