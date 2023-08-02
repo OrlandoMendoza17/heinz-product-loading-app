@@ -35,7 +35,6 @@ const MyOrdersRow = ({ bulletin, setModal, setBulletinDetails, handleNotificatio
 
       const productsToBeSaved = products.map(product => {
         const bulletinProduct = bulletinProducts.find(({ sku }) => sku === product.sku)
-
         if (bulletinProduct && product.available) {
           const modifiedProduct: Product = {
             ...product,
@@ -44,8 +43,9 @@ const MyOrdersRow = ({ bulletin, setModal, setBulletinDetails, handleNotificatio
           return modifiedProduct
         }
 
-        return product
+        return null
       })
+        .filter(product => Boolean(product)) as Product[]
 
       handleNotification.open({
         type: "success",
@@ -71,19 +71,19 @@ const MyOrdersRow = ({ bulletin, setModal, setBulletinDetails, handleNotificatio
     try {
       setLoadingDetails(true)
       setBulletinDetails([])
-      
+
       const data = await getBulletinInfo(bulletinNumber)
-      
+
       setBulletinDetails(data)
       setModal(true)
 
       console.log('data', data)
-      
+
     } catch (error) {
-      
+
       console.log('error', error)
-      
-    }finally{
+
+    } finally {
       setLoadingDetails(false)
     }
   }
