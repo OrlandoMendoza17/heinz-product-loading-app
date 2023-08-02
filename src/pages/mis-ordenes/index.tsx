@@ -11,6 +11,8 @@ import NotificationModal from '@/components/widgets/NotificationModal'
 import useNotification from '@/hooks/useNotification'
 import { BulletinsProps } from '../api/boletin'
 import Modal from '@/components/widgets/Modal'
+import BulletinDetailsModal from '@/components/pages/mis-ordenes/BulletinDetailsModal'
+import { BulletinHeader } from '../api/boletin/info'
 
 enum OPTIONS {
   DATE = 1,
@@ -32,17 +34,20 @@ const MyOrders = () => {
   ]
 
   const [loading, setloading] = useState<boolean>(false)
-  const [showModal, setModal] = useState<boolean>(true)
+  const [showModal, setModal] = useState<boolean>(false)
 
   const [option, setOption] = useState<OPTIONS>(1)
-  const [bulletins, setBulletins] = useState<Bulletin[]>([])
-
+  
+  
   const [bulletinNumber, setBulletinNumber] = useState<number | "">("")
   const [dates, setDates] = useState({
     dateFrom: formatDateString(subWeeks(TODAY, 1)),
     dateTo: formatDateString(),
   })
-
+  
+  const [bulletins, setBulletins] = useState<Bulletin[]>([])
+  const [bulletinDetails, setBulletinDetails] = useState<BulletinHeader[]>([])
+  
   const { dateFrom, dateTo } = dates
 
   useEffect(() => {
@@ -99,7 +104,12 @@ const MyOrders = () => {
 
   const getDetails = async (bulletinNumber: number) => {
     try {
+      setModal(true)
+      setBulletinDetails([])
+      
       const data = await getBulletinInfo(bulletinNumber)
+      setBulletinDetails(data)
+      
       console.log('data', data)
     } catch (error) {
       console.log('error', error)
@@ -107,9 +117,9 @@ const MyOrders = () => {
   }
 
   return (
-    <div className="SelectEmployees Layout">
+    <div className="SelectEmployees Layout MyOrders">
       <Header />
-      <main className="MyOrders pt-10 xl:px-60">
+      <main className="pt-10 xl:px-60">
 
         <div className="pb-8">
           <h1 className="MyOrders__title">Mis Ordenes</h1>
@@ -204,16 +214,6 @@ const MyOrders = () => {
                               📋
                             </button>
                           </td>
-
-                          {/* <td className="atext-right">
-                      <button type="button">
-                        🗑 Eliminar
-                      </button>
-                    </td> */}
-                          {/* <td className="w-4 p-4">
-                      <Checkbox name="delete-product" value={sku} onChange={handleCheckbox} />
-                    </td> */}
-
                         </tr>
                       )
                     }
@@ -243,55 +243,8 @@ const MyOrders = () => {
       </main>
 
       <NotificationModal {...NotificationProps} />
-
-      <Modal transparent closeButton={false} {...{ showModal, setModal }} >
-        <table className="Table">
-          <thead>
-            <tr>
-              <th className="px-6 py-3">
-                <span>SKU</span>
-              </th>
-              <th className="px-6 py-3">
-                <span>Imagen</span>
-              </th>
-              <th className="px-6 py-3">
-                <span>Descripcion</span>
-              </th>
-              <th className="px-6 py-3">
-                <span>Cantidad</span>
-              </th>
-              <th className="px-6 py-3">
-                <span>Precio Base</span>
-              </th>
-              <th className="px-6 py-3">
-                <span>Total</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>
-                <span>15149</span>
-              </th>
-              <th>
-                <img width={100} src="/product-images/15149.png" alt="" />
-              </th>
-              <th>
-                <span>COL. BANANA 113G</span>
-              </th>
-              <th>
-                <span>3</span>
-              </th>
-              <th>
-                <span>0.2</span>
-              </th>
-              <th>
-                <span>0.6</span>
-              </th>
-            </tr>
-          </tbody>
-        </table>
-      </Modal>
+      <BulletinDetailsModal {...{setModal, showModal, bulletinDetails}}/>
+      
     </div>
   )
 }

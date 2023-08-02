@@ -11,3 +11,8 @@ export const getBulletinInfo = async (bulletinNumber: number) => {
   const { data } = await axios.post<BulletinHeader[]>("/api/boletin/info", { bulletinNumber })
   return data;
 }
+
+export const getBulletinNextNumber = async () => {
+  const { data } = await axios.get<number>("/api/boletin/next-number")
+  return data;
+}

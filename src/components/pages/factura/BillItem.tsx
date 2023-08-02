@@ -57,11 +57,11 @@ const BillItem = ({ bill, modify = false }: Props) => {
           </div>
           <div className="EmployeeBill__main-container px-8 py-8 bg-white">
             <ul>
-              <li><span>Orden:</span> <span className="text-red-500">5660921</span></li>
-              <li><span>Cliente:</span> <span className="text-sky-600">{employee.ficha} {employee.name}</span></li>
-              <li><span>Dirección:</span> <span className="text-red-500">URB. Guacara, Loma Linda, 4ta Etapa, Calle 3-4, Casa B-61</span></li>
-              <li><span>Zona:</span> <span className="text-sky-600">120</span></li>
-              <li><span>Tipo de cliente:</span> <span className="text-sky-600">017</span></li>
+              <li><span>Orden:</span> <span>{bill.number}</span></li>
+              <li><span>Cliente:</span> <span>{employee.ficha} {employee.name}</span></li>
+              <li><span>Dirección:</span> <span>{employee.address}</span></li>
+              <li><span>Zona:</span> <span>120</span></li>
+              <li><span>Tipo de cliente:</span> <span>017</span></li>
               <li><span>Orden de compra:</span> {purchase.order}</li>
               <li><span>Fecha de Recepción:</span> {new Date(purchase.date).toLocaleDateString("es")}</li>
             </ul>

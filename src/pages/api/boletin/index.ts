@@ -1,7 +1,7 @@
 import sequelize from "@/lib/mssql";
 import { NextApiRequest, NextApiResponse } from "next";
 
-type JDEBulletin = {
+export type JDEBulletin = {
   WOEDOC: number;
   WOEDCT: string;
   WOMCU: string;
@@ -23,14 +23,6 @@ type JDEBulletin = {
   WOTMSTP: string; // Date
   WOUSER: string;
   WOJOBN: string;
-}
-
-type JDEBulletinHeader = {
-  ABALPH: string,
-  ABTAX: string,
-  AIAN8: number,
-  AIAC03: string,
-  AIAC05: string,
 }
 
 export type BulletinsProps = {
@@ -89,8 +81,3 @@ const Bulletins = async (request: NextApiRequest, response: NextApiResponse) => 
 }
 
 export default Bulletins;
-`
-  SELECT * FROM [HCRM01].[dbo].[F9011] 
-  WHERE ODEDOC = 5663201
-  ORDER BY ODTMST DESC
-`

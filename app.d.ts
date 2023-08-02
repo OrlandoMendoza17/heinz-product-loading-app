@@ -14,6 +14,9 @@ type Employee = {
   ficha: number;
   zone: string;
   clientType: string;
+  address: string;
+  birthState: string;
+  birthNeighborhood: string;
 }
 
 type Purchase = {
@@ -23,6 +26,7 @@ type Purchase = {
 }
 
 type Bill = {
+  number: number,
   purchase: Purchase,
   employee: Employee,
   products: Product[],

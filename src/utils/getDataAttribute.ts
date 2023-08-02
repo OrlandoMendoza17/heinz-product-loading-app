@@ -1,16 +1,8 @@
 export type TargetProps = EventTarget & HTMLElement
 
 const getDataAttribute = (target: TargetProps, attribute: string): boolean => {
-  const boolean = ["true", "false"]
-
-  const data = target.dataset[attribute];
-
-  if (typeof data === "string") {
-    const isBoolean = boolean.includes(data);
-    return isBoolean ? JSON.parse(data) : data
-  }
-
-  return false;
+  const dataModal = (target.dataset[attribute] as (string | undefined))
+  return (dataModal !== undefined) ? Boolean(JSON.parse(dataModal)) : false;
 }
 
 export default getDataAttribute;

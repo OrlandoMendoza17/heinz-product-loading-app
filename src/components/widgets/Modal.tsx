@@ -9,24 +9,23 @@ type Props = {
   closeButton?: boolean,
   transparent?: boolean,
   children: ReactNode,
+  className: string,
 }
 
-const Modal = ({ showModal, setModal, closeButton = true, transparent = false, children }: Props) => {
+const Modal = ({ showModal, setModal, closeButton = true, transparent = false, className = "", children }: Props) => {
 
   const handleClick: MouseEventHandler<HTMLDivElement> = ({ target }) => {
     const clickedOutModal = getDataAttribute(target as TargetProps, "modal")
     if (clickedOutModal) setModal(false)
   }
 
-  const onClick = closeButton ? handleClick : undefined
-
   return (
     showModal ?
     <Portal type="modal">
       <div
-        onClick={onClick}
-        data-modal={closeButton}
-        className={`Modal`}
+        onClick={handleClick}
+        data-modal={true}
+        className={`Modal ${className}`}
       >
         <div className={`Modal_container ${transparent && "transparent"}`}>
           {

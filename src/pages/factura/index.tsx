@@ -6,16 +6,23 @@ import React, { useContext, useEffect, useState } from 'react'
 import products from '../api/products'
 import BillsContext from '@/context/BillsContext'
 import { useRouter } from 'next/router'
+import { getBulletinNextNumber } from '@/services/boletin'
 
 const Billing = () => {
+
+  const router = useRouter()
 
   const { cart, selectedEmployees, purchase } = useContext(CartContext)
   const { bills, setBills } = useContext(BillsContext)
 
-  const router = useRouter()
-  
   useEffect(() => {
-    if(!bills.length) router.push("/")
+    (async () => {
+     
+      if (!bills.length) {
+        router.push("/")
+      }
+      
+    })()
   }, [])
 
 
@@ -47,11 +54,11 @@ const Billing = () => {
           <main className="Bill xl:px-60">
             <section className="header">
               <h1 className="text-4xl font-bold mb-10">Confirmar Pedido</h1>
-                <ul className="">
-                  <li><span>Total número de ordenes:</span> {bills.length}</li>
-                  <li><span>Total cantidad de cajas:</span> {totalBoxes}</li>
-                  <li><span>Total monto de ordenes:</span> {formatMoney(totalOrders)}</li>
-                </ul>
+              <ul className="">
+                <li><span>Total número de ordenes:</span> {bills.length}</li>
+                <li><span>Total cantidad de cajas:</span> {totalBoxes}</li>
+                <li><span>Total monto de ordenes:</span> {formatMoney(totalOrders)}</li>
+              </ul>
             </section>
             <section>
               {

@@ -50,6 +50,7 @@ const BulletinInfo = async (request: NextApiRequest, response: NextApiResponse) 
         quantity: bulletin.ODSOQS,
         price: bulletin.ODUPRC,
         available: 0,
+        image: `/product-images/${bulletin.ODLITM}.png`,
       },
       // Total (Precio Base x Cantidad de Cajas): bulletin.ODAMXT,
       store: bulletin.ODMCU.trim(),

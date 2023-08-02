@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 import { FaArrowRightLong } from 'react-icons/fa6'
 import NotificationModal from '@/components/widgets/NotificationModal'
 import BillsContext from '@/context/BillsContext'
+import { getBulletinNextNumber } from '@/services/boletin'
 
 const fields = [
   "SKU",
@@ -105,7 +106,7 @@ const Cart: NextPage = () => {
     }
   }
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
     if (!cart.length) {
       debugger
@@ -115,15 +116,18 @@ const Cart: NextPage = () => {
         message: "Debes tener al menos 1 producto en el carrito para poder avanzar",
       })
     } else {
-      router.push("/factura")
-      const bills: Bill[] = selectedEmployees.map(employee => {
+      const nextNumber = await getBulletinNextNumber()
+      
+      const bills: Bill[] = selectedEmployees.map((employee, i) => {
         return ({
+          number: (nextNumber + i),
           purchase,
           employee,
           products: [...cart],
         })
       })
       setBills(bills)
+      router.push("/factura")
     }
   }
 
