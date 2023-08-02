@@ -2,6 +2,7 @@ import React, {Dispatch, SetStateAction} from 'react'
 
 type Cart = {
   cart: Product[],
+  setCart: Dispatch<SetStateAction<Product[]>>,
   emptyCart: () => void,
   saveProduct: (product: Product) => void,
   updateProduct: (product: Product) => void,

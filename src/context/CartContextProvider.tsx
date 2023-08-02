@@ -49,6 +49,7 @@ const CartContextProvider = ({ children }: Props) => {
   
   const value = {
     cart,
+    setCart,
     emptyCart,
     saveProduct,
     updateProduct,
