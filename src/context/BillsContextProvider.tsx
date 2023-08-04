@@ -9,19 +9,19 @@ const BillsContextProvider = ({ children }: Props) => {
 
   const [bills, setBills] = useState<Bill[]>([])
 
-  const findBill = (ficha: number) => {
+  const findBill = (ficha: Employee["ficha"]) => {
     const foundBill = bills.find(({ employee }) => employee.ficha === ficha)
     return foundBill;
   }
 
-  const deleteBill = (ficha: number) => {
+  const deleteBill = (ficha: Employee["ficha"]) => {
     const filteredBills = bills.filter(({ employee }) => employee.ficha !== ficha)
     debugger
     setBills(filteredBills)
   }
 
-  const updateProduct = (modified: Product, ficha: number) => {
-    const foundBill = bills.find(bill => bill.employee.ficha === ficha)
+  const updateProduct = (modified: Product, ficha: Employee["ficha"]) => {
+    const foundBill = bills.find(({ employee }) => employee.ficha === ficha)
     debugger
     if (foundBill) {
       foundBill.products = foundBill.products.map(product =>
@@ -30,10 +30,19 @@ const BillsContextProvider = ({ children }: Props) => {
       setBills(bills.map(bill => (bill.employee.ficha === ficha) ? foundBill : bill))
     }
   }
-  
-  const deleteProduct = (productID: Product["sku"], ficha: number) => {
-    const foundBill = bills.find(bill => bill.employee.ficha === ficha)
+
+  const updatePurchase = (purchase: Purchase, ficha: Employee["ficha"]) => {
+    const foundBill = bills.find(({ employee }) => employee.ficha === ficha)
     if(foundBill){
+      foundBill.purchase = purchase
+      setBills(bills.map(bill => (bill.employee.ficha === ficha) ? foundBill : bill))
+    }
+  }
+
+
+  const deleteProduct = (productID: Product["sku"], ficha: Employee["ficha"]) => {
+    const foundBill = bills.find(({ employee }) => employee.ficha === ficha)
+    if (foundBill) {
       foundBill.products = foundBill.products.filter(product => product.sku !== productID)
       setBills(bills.map(bill => (bill.employee.ficha === ficha) ? foundBill : bill))
     }
@@ -45,6 +54,7 @@ const BillsContextProvider = ({ children }: Props) => {
     findBill,
     deleteBill,
     updateProduct,
+    updatePurchase,
     deleteProduct,
   }
 

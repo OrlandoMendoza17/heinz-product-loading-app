@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, ChangeEventHandler } from 'react'
 import BillsContext from '@/context/BillsContext'
 import Link from 'next/link'
 import ConfirmModal from '@/components/widgets/ConfirmModal'
@@ -7,6 +7,7 @@ import useNotification from '@/hooks/useNotification'
 import NotificationModal from '@/components/widgets/NotificationModal'
 import { useRouter } from 'next/router'
 import BillProductRow from './BillProductRow'
+import Input from '@/components/widgets/Input'
 
 type Props = {
   bill: Bill,
@@ -17,7 +18,7 @@ const BillItem = ({ bill, modify = false }: Props) => {
   const { employee, products, purchase } = bill
 
   const router = useRouter()
-  const { deleteBill } = useContext(BillsContext)
+  const { deleteBill, updatePurchase } = useContext(BillsContext)
 
   const notificationProps = useNotification()
   const { notification, handleNotification } = notificationProps
@@ -34,6 +35,11 @@ const BillItem = ({ bill, modify = false }: Props) => {
       type: "warning",
       message: "¿Estás seguro de querer eliminar este pedido?",
     })
+  }
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+    const { name, value } = target
+    updatePurchase({ ...purchase, [name]: value }, employee.ficha)
   }
 
   const buttonStyles = "text-white font-bold py-2 px-4 bg-secondary hover:bg-sky-500 rounded-lg"
@@ -57,12 +63,26 @@ const BillItem = ({ bill, modify = false }: Props) => {
           </div>
           <div className="EmployeeBill__main-container px-8 py-8 bg-white">
             <ul>
-              <li><span>Orden:</span> <span>{bill.number}</span></li>
-              <li><span>Cliente:</span> <span>{employee.ficha} {employee.name}</span></li>
-              <li><span>Dirección:</span> <span>{employee.address}</span></li>
-              <li><span>Zona:</span> <span>120</span></li>
-              <li><span>Tipo de cliente:</span> <span>017</span></li>
-              <li><span>Orden de compra:</span> {purchase.order}</li>
+              <li><span>Orden:</span> {bill.number}</li>
+              <li><span>Ficha:</span> {employee.ficha}</li>
+              <li><span>Nombre:</span> {employee.name}</li>
+              <li><span>Dirección:</span> {employee.address}</li>
+              <li><span>Zona:</span> {employee.zone}</li>
+              <li><span>Tipo de cliente:</span> {employee.clientType}</li>
+              <li className="flex items-center gap-4">
+                <span>Orden de compra:</span>
+                {
+                  !modify ?
+                    purchase.order :
+                    <input
+                      name="order"
+                      placeholder="📄 12-12052023"
+                      className="border-gray-300 px-2 py-1 border rounded-md w-48"
+                      value={purchase.order}
+                      onChange={handleChange}
+                    />
+                }
+              </li>
               <li><span>Fecha de Recepción:</span> {new Date(purchase.date).toLocaleDateString("es")}</li>
             </ul>
             <table className="w-full mt-8">

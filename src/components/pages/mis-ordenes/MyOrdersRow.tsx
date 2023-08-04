@@ -90,7 +90,7 @@ const MyOrdersRow = ({ bulletin, setModal, setBulletinDetails, handleNotificatio
 
   return (
     <tr>
-      <td className=" font-medium text-gray-900 dark:text-white whitespace-nowrap">
+      <td className="font-medium text-gray-900 dark:text-white whitespace-nowrap">
         {bulletin.number}
       </td>
       <td className="font-bold">
