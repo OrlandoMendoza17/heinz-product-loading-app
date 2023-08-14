@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { NextPage } from 'next'
 import Header from "@/components/widgets/Header/Header";
-import Aside from '@/components/pages/Aside';
 import NotificationModal from '@/components/widgets/NotificationModal';
 import ProductFinder from '@/components/pages/ProductFinder';
 import Products from '@/components/pages/Products';
 import ProductSkeleton from '@/components/pages/ProductSkeleton';
 import useNotification from '@/hooks/useNotification';
-import getDumbProducts from "@/utils/getProducts";
 import { getProducts } from '@/services/products-id';
 import { getFromSStorage, saveToSStorage } from '@/utils/sessionStorage';
 

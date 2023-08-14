@@ -1,6 +1,7 @@
+import axios from "axios";
 import { BulletinsProps } from "@/pages/api/boletin";
 import { BulletinHeader } from "@/pages/api/boletin/info";
-import axios from "axios";
+import { BulletinsFormat } from "@/utils/getQueries";
 
 export const getBulletins = async (body: BulletinsProps) => {
   const { data } = await axios.post<Bulletin[]>("/api/boletin", body)
@@ -15,4 +16,8 @@ export const getBulletinInfo = async (bulletinNumber: number) => {
 export const getBulletinNextNumber = async () => {
   const { data } = await axios.get<number>("/api/boletin/next-number")
   return data;
+}
+
+export const sendBulletin = async (bulletin: BulletinsFormat) => {
+  await axios.post("/api/boletin/send", { bulletin })
 }

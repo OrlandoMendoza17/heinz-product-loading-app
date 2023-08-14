@@ -6,6 +6,13 @@ import getPlaceholderProducts from "@/utils/getPlaceholderProducts";
 type JDEProduct = {
   IMDSC1: string; // Nombre
   IMLITM: string; // SKU
+
+  IBITM: number,
+  UMCONV: number, // Factor de conversión
+  IMSRP1: string,
+  IMSRP2: string,
+  IMSRP3: string,
+  IMSRP4: string,
 }
 
 type StoreProduct = {
@@ -46,15 +53,19 @@ const products = async (request: NextApiRequest, response: NextApiResponse) => {
     ''15773'',''15772'',''15774'',''15561'',''15557'',''15560'',''15771'',''15775'',''15777'',''15674'',''15216'',
     ''15776'',''15779''
   `
-  
+
   // Trayendo Nombre y número de SKU de los productos (dependiendo del body del request)
   const queryString = `
     SELECT * FROM OPENQUERY(
       JDE, 
       '
-        SELECT IMDSC1, IMLITM FROM PRODDTA.F4101 
-        LEFT OUTER JOIN PRODDTA.F4102 ON (IMITM=IBITM) 
+        SELECT IMDSC1, IMLITM, IBITM, IMSRP1, IMSRP2, IMSRP3, IMSRP4, UMCONV
+        FROM PRODDTA.F4101 
+        LEFT OUTER JOIN PRODDTA.F4102 ON (IMITM=IBITM)
+        LEFT OUTER JOIN PRODDTA.F41002 ON (IMITM=UMITM) 
         WHERE (LTRIM(RTRIM(IMSRP1)) <> '''') 
+        AND UMUM = ''CJ''
+		    AND UMRUM = ''KG''
         AND  TRIM(IMPRP1) IN (''PT'', ''PB'') 
         AND TRIM(IBSTKT) NOT IN (''O'', ''U'') 
         AND IMLITM IN (
@@ -64,6 +75,7 @@ const products = async (request: NextApiRequest, response: NextApiResponse) => {
       '
     )
   `
+  
   // STOCK DE PRODUCTOS EN EL "ALMACEN VEO3"
   const queryString2 = `
     SELECT * FROM OPENQUERY(
@@ -103,7 +115,11 @@ const products = async (request: NextApiRequest, response: NextApiResponse) => {
   const [data2] = await sequelize.query(queryString2) as [StoreProduct[], unknown]
   const [data3] = await sequelize.query(queryString3) as [ProductPrices[], unknown]
 
-  const products: Product[] = data.map(({ IMLITM, IMDSC1 }) => {
+  console.log('data', data[0])
+  // console.log('data2', data2)
+  // console.log('data3', data3)
+
+  const products: Product[] = data.map(({ IMLITM, IMDSC1, ...details }) => {
 
     const isProductAtStore = data2.find((store) => store.IMLITM === IMLITM)
     const price = data3.find((product) => product.ADLITM === IMLITM)?.ADFVTR
@@ -115,6 +131,10 @@ const products = async (request: NextApiRequest, response: NextApiResponse) => {
       available: 0,   // Valor por defecto
       quantity: 0.25, // Valor inicial | Valor mínimo
       price: (price !== undefined) ? (price / 10000) : 0,
+      details : {
+        ...details,
+        UMCONV: details.UMCONV / 10000000
+      },
     }
 
     if (isProductAtStore) {
