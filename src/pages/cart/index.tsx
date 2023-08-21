@@ -146,12 +146,15 @@ const Cart: NextPage = () => {
       )
 
       if (NoStockProduct) {
+
         const { sku } = NoStockProduct
         handleAlert.open({
           type: "warning",
           title: "Producto sin Stock",
           message: `No hay suficiente stock del SKU "${sku}" para ${employees} empleados`,
         })
+        setLoading(false)
+
       } else if (NoQuantityProduct) {
         const { sku } = NoQuantityProduct
         handleAlert.open({
@@ -182,6 +185,7 @@ const Cart: NextPage = () => {
             title: "Producto sin Stock",
             message: ``,
           })
+          setLoading(false)
         }
 
       }

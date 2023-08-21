@@ -11,7 +11,7 @@ import Input from '@/components/widgets/Input'
 import { getRandomID } from '@/utils/getRandomID'
 import { saveToSStorage } from '@/utils/sessionStorage'
 import CartContext from '@/context/CartContext'
-import { getPurchaseOrders } from '@/utils'
+import { getPurchaseOrders, getSKUList } from '@/utils'
 
 type Props = {
   bill: Bill,
@@ -19,19 +19,15 @@ type Props = {
 }
 
 const BillItem = ({ bill: billItem, modify = false }: Props) => {
-  
+
   const router = useRouter()
-  
+
   const cart = useContext(CartContext)
   const { bills, setBills, deleteBill } = useContext(BillsContext)
-  
-  const default_order_name = cart.purchase.order
-  
+
   const [loading, setLoading] = useState<boolean>(false)
   const [bill, setBill] = useState<Bill>(billItem)
-  
-  const orders = getPurchaseOrders(bills, billItem.purchase.order)
-  
+
   const { employee, products, purchase } = bill
 
   const notificationProps = useNotification()
@@ -43,7 +39,7 @@ const BillItem = ({ bill: billItem, modify = false }: Props) => {
   const boxQuantity = getBoxQuantity(products)
   const total = formatMoney(getTotalFromProducts(products))
 
-  const handleDelete = () => {
+  const handleDeleteBill = () => {
     handleNotification.open({
       title: "¡Precaución!",
       type: "warning",
@@ -53,25 +49,41 @@ const BillItem = ({ bill: billItem, modify = false }: Props) => {
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     const { name, value } = target
-
     if (name === "order") {
-      const foundBill = bills.find((bill) => bill.employee.ficha === employee.ficha)
-      if (foundBill) {
-        setBill({
-          ...foundBill,
-          purchase: {
-            ...purchase,
-            order: value,
-            id: getRandomID(),
-          }
-        })
-      }
+      setBill({
+        ...bill,
+        purchase: {
+          ...purchase,
+          order: value,
+          id: getRandomID(),
+        }
+      })
     }
   }
 
   const handleSave = () => {
     setLoading(true)
-    if (!orders.includes(purchase.order) && (purchase.order !== default_order_name)) {
+
+    const default_order_name = cart.purchase.order
+    let modifiedBills = bills.filter((item) => item.purchase.order !== default_order_name)
+    
+    debugger    
+    const billIndex = modifiedBills.findIndex((item) => item.purchase.order === purchase.order)
+    modifiedBills.slice(billIndex, 1)
+    debugger    
+    const orders = getPurchaseOrders(modifiedBills, default_order_name)
+    
+    const sku_list = getSKUList(cart.cart)         // Los SKU del boletín en general
+    const billProducts = getSKUList(products)
+    
+    if (!orders.includes(purchase.order) && (sku_list !== billProducts)) {
+      handleAlert.open({
+        type: "warning",
+        title: "Restricción",
+        message: `Debido a que modificó el listado de productos en este pedido, debe colocar una orden de compra distinta a la del boletín general`
+      })
+      setLoading(false)
+    } else {
       setBills(bills.map(
         item => (item.employee.ficha === employee.ficha) ? bill : item
       ))
@@ -81,13 +93,6 @@ const BillItem = ({ bill: billItem, modify = false }: Props) => {
         message: "Se han guardado las modificaciones del pedido con éxito"
       })
       setTimeout(() => router.push("/factura"), 4000);
-    }else{
-      handleAlert.open({
-        type: "warning",
-        title: "Restricción",
-        message: `Para salvar la modificación de este pedido la orden de compra debe ser diferente a la del pedido general o a la de los demás pedidos modificados \n(${[default_order_name, ...orders].join(", ")})`
-      })
-      setLoading(false)
     }
   }
 
@@ -106,10 +111,11 @@ const BillItem = ({ bill: billItem, modify = false }: Props) => {
                   <button
                     className={buttonStyles}
                     onClick={handleSave}
+                    disabled={loading}
                   >
-                    Guardar
+                    {loading ? "Guardando..." : "Guardar"}
                   </button>
-                  <button onClick={handleDelete} className={buttonStyles}>
+                  <button onClick={handleDeleteBill} className={buttonStyles}>
                     Eliminar
                   </button>
                 </>
@@ -172,9 +178,11 @@ const BillItem = ({ bill: billItem, modify = false }: Props) => {
                 {
                   products.map((product,) =>
                     <BillProductRow
+                      bill={bill}
                       modify={modify}
                       product={product}
                       employee={employee}
+                      setBill={setBill}
                     />
                   )
                 }

@@ -6,7 +6,6 @@ type Bills = {
   findBill: (ficha: number) => Bill | undefined;
   deleteBill: (ficha: number) => void;
   updateProduct: (modified: Product, ficha: number) => void;
-  deleteProduct: (productID: Product["sku"], ficha: number) => void;
 }
 
 const BillsContext = createContext<Bills>({} as Bills)

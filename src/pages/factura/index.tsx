@@ -111,7 +111,7 @@ const Billing = () => {
           WOURDT: purchase.date,  // Fecha igual a WOTRDJ
           WOTMSTP: purchase.date, // Fecha igual a WOTRDJ pero con tiempo espec�fico de la creaci�n
           WODRQJ: purchase.date,  // Otra Fecha 🟨
-          WOMCU: "VE03",     // Almacén
+          WOMCU: "        VE03",  // Almacén "❌ NO QUITARLE EL ESPACIO QUE LE SOBRE AL STRING ❌"
           WOEDCT: "BV",      // Tipo de documento
           WOEKCO: "07200",   // Código de la compáñia heinz
           WOASN: "VTASUBCL", // Ventas sub clasificadas

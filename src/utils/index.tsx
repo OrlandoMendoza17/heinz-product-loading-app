@@ -64,9 +64,12 @@ export const getAvailableStock = (available: number, employees: number): number 
   return stock;
 }
 
-export const getPurchaseOrders = (bills: Bill[], orderToModify: string) => {
-  let orders = [...new Set(bills.map((bill) => bill.purchase.order))]
-  debugger
-  orders = orders.filter((item) => item !== orderToModify)
+export const getPurchaseOrders = (bills: Bill[], default_order_name: string) => {
+  let orders = bills.map(item => item.purchase.order)
+  orders.push(default_order_name)
   return orders;
-}  
+}
+
+export const getSKUList = (products: Product[]): string => {
+  return [...new Set(products.map(product => product.sku))].sort().join(", ")
+}

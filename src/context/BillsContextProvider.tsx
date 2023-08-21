@@ -31,21 +31,12 @@ const BillsContextProvider = ({ children }: Props) => {
     }
   }
 
-  const deleteProduct = (productID: Product["sku"], ficha: Employee["ficha"]) => {
-    const foundBill = bills.find(({ employee }) => employee.ficha === ficha)
-    if (foundBill) {
-      foundBill.products = foundBill.products.filter(product => product.sku !== productID)
-      setBills(bills.map(bill => (bill.employee.ficha === ficha) ? foundBill : bill))
-    }
-  }
-
   const value = {
     bills,
     setBills,
     findBill,
     deleteBill,
     updateProduct,
-    deleteProduct,
   }
 
   return (
