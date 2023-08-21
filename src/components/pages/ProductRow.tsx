@@ -17,7 +17,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
 
   const notificationProps = useNotification()
   const { handleNotification } = notificationProps
-  
+
   const alertProps = useNotification()
   const { handleNotification: handleAlert } = alertProps
 
@@ -25,7 +25,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
 
   const MIN_VALUE = 0.25
   const stock = getAvailableStock(available, selectedEmployees.length)
-
+  
   const handleOpenModal = () => {
     handleNotification.open({
       type: "warning",
@@ -40,18 +40,21 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     if (target.name === "product_quantity") {
-      const quantity = parseFloat(target.value)
-      debugger
-      if (quantity <= stock) {
-        updateProduct({
-          ...product,
-          quantity: (quantity >= 0.25) ? quantity : MIN_VALUE,
-        })
+      let quantity = parseFloat(target.value)
+
+      if (stock === 0) {
+        quantity = 0
       }
+      else if (quantity <= stock) {
+        quantity = (quantity > MIN_VALUE) ? quantity : MIN_VALUE
+      }
+
+      updateProduct({ ...product, quantity })
     }
   }
 
-  const productQuantity = quantity ? quantity : MIN_VALUE
+  let productQuantity = quantity ? quantity : MIN_VALUE
+  productQuantity = stock === 0 ? 0 : productQuantity
 
   return (
     <>
@@ -68,7 +71,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
         <td className="">
           <input
             id=""
-            min={MIN_VALUE}
+            min={stock < MIN_VALUE ? 0 : MIN_VALUE}
             step="0.25"
             name="product_quantity"
             type="number"
@@ -76,6 +79,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
             placeholder='0.00'
             onChange={handleChange}
             className="border-gray-300 px-2 py-1 border rounded-md w-28"
+            required
           />
         </td>
         <td className="">
@@ -97,7 +101,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
         acceptAction={handleAccept}
         {...notificationProps}
       />
-      <NotificationModal {...alertProps}/>
+      <NotificationModal {...alertProps} />
     </>
   )
 }

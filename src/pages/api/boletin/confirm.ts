@@ -5,7 +5,7 @@ import { BulletinsFormat, getBulletinHeadersQuery, getBulletinInfoQuery } from "
 type ResponseData = unknown
 
 type BodyProps = {
-  bulletins: BulletinsFormat
+  bulletin: BulletinsFormat
 }
 
 const handleBulletins = async (
@@ -13,13 +13,18 @@ const handleBulletins = async (
   response: NextApiResponse<ResponseData>
 ) => {
   try {
-    const { bulletins }: BodyProps = request.body
-
-    const headersQuery = getBulletinHeadersQuery(bulletins)
-    const infoQuery = getBulletinInfoQuery(bulletins)
+    const { bulletin }: BodyProps = request.body
+    console.log(bulletin)
+    
+    const headersQuery = getBulletinHeadersQuery(bulletin)
+    const infoQuery = getBulletinInfoQuery(bulletin)
 
     await sequelize.query(headersQuery)
     await sequelize.query(infoQuery)
+
+    response.json({
+      message: "Succesful",
+    })
 
   } catch (error: unknown) {
     response.status(400).json(error)
@@ -27,3 +32,4 @@ const handleBulletins = async (
 }
 
 export default handleBulletins;
+

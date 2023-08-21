@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, FormEventHandler, MouseEventHandler, useContext, useRef, useState } from 'react'
+import React, { ChangeEventHandler, FormEventHandler, useEffect, useContext, useRef, useState } from 'react'
 import { NextPage } from 'next'
 import Header from '@/components/widgets/Header/Header'
 import CartContext from '@/context/CartContext'
@@ -13,6 +13,7 @@ import { FaArrowRightLong } from 'react-icons/fa6'
 import NotificationModal from '@/components/widgets/NotificationModal'
 import BillsContext from '@/context/BillsContext'
 import { getBulletinNextNumber } from '@/services/boletin'
+import { getAvailableStock } from '@/utils'
 
 const fields = [
   "SKU",
@@ -27,16 +28,33 @@ const fields = [
 const Cart: NextPage = () => {
 
   const router = useRouter()
-  
+  const [loading, setLoading] = useState<boolean>(false)
+
   const { setBills } = useContext(BillsContext)
-  const { cart, selectedEmployees, purchase, emptyCart, deleteGroup } = useContext(CartContext)
-  
+  const { cart, selectedEmployees, purchase, emptyCart, deleteGroup, setCart } = useContext(CartContext)
+
   const notificationProps = useNotification()
   const { handleNotification } = notificationProps
-  
+
   const alertProps = useNotification()
   const { handleNotification: handleAlert } = alertProps
-  
+
+  useEffect(() => {
+    const products = cart.map((product) => {
+      const MIN_VALUE = 0.25
+      const employees = selectedEmployees.length
+
+      const { quantity, available } = product
+      const stock = getAvailableStock(available, employees)
+
+      return {
+        ...product,
+        quantity: stock >= MIN_VALUE ? quantity : 0
+      }
+    })
+    setCart(products)
+  }, [])
+
   const handleOpenModal = () => {
     handleNotification.open({
       type: "warning",
@@ -108,6 +126,7 @@ const Cart: NextPage = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
+    setLoading(true)
     if (!cart.length) {
       debugger
       handleAlert.open({
@@ -116,18 +135,56 @@ const Cart: NextPage = () => {
         message: "Debes tener al menos 1 producto en el carrito para poder avanzar",
       })
     } else {
-      const nextNumber = await getBulletinNextNumber()
-      
-      const bills: Bill[] = selectedEmployees.map((employee, i) => {
-        return ({
-          number: (nextNumber + i),
-          purchase,
-          employee,
-          products: [...cart],
+      const employees = selectedEmployees.length
+
+      const NoStockProduct = cart.find(({ quantity, available }) =>
+        quantity === 0 &&
+        getAvailableStock(available, employees) === 0
+      )
+      const NoQuantityProduct = cart.find((product) =>
+        product.quantity === 0
+      )
+
+      if (NoStockProduct) {
+        const { sku } = NoStockProduct
+        handleAlert.open({
+          type: "warning",
+          title: "Producto sin Stock",
+          message: `No hay suficiente stock del SKU "${sku}" para ${employees} empleados`,
         })
-      })
-      setBills(bills)
-      router.push("/factura")
+      } else if (NoQuantityProduct) {
+        const { sku } = NoQuantityProduct
+        handleAlert.open({
+          type: "warning",
+          title: "Cantidad de producto no específicada",
+          message: `No se ha seleccionado la cantidad de cajas del SKU: ${sku}`,
+        })
+
+      } else {
+        try {
+          const nextNumber = await getBulletinNextNumber()
+
+          const bills: Bill[] = selectedEmployees.map((employee, i) => {
+            return ({
+              number: (nextNumber + i),
+              purchase,
+              employee,
+              products: [...cart],
+            })
+          })
+          setBills(bills)
+          router.push("/factura")
+
+        } catch (error) {
+          console.log(error)
+          handleAlert.open({
+            type: "danger",
+            title: "Producto sin Stock",
+            message: ``,
+          })
+        }
+
+      }
     }
   }
 
@@ -212,7 +269,9 @@ const Cart: NextPage = () => {
                 // onClick={() => router.push("/seleccionar-empleados")}
                 type="submit"
                 color="info"
-                className="font-bold !px-10 flex gap-4 items-center">
+                className="font-bold !px-10 flex gap-4 items-center"
+                loading={loading}
+              >
                 Siguiente <FaArrowRightLong className="mt-1" size={14} />
               </Button>
             </div>
@@ -223,7 +282,7 @@ const Cart: NextPage = () => {
         acceptAction={handleDelete}
         {...notificationProps}
       />
-      <NotificationModal {...alertProps}/>
+      <NotificationModal {...alertProps} />
     </>
   )
 }

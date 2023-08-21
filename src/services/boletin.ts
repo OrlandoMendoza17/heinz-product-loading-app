@@ -18,6 +18,7 @@ export const getBulletinNextNumber = async () => {
   return data;
 }
 
-export const sendBulletin = async (bulletin: BulletinsFormat) => {
-  await axios.post("/api/boletin/send", { bulletin })
+export const sendBulletin = async (bulletin: BulletinsFormat): Promise<any> => {
+  const {data} = await axios.post("/api/boletin/confirm", { bulletin })
+  return data
 }

@@ -11,7 +11,9 @@ const BulletinNextNumber = async (request: NextApiRequest, response: NextApiResp
   `
 
   const [data] = await sequelize.query(queryString) as [JDEBulletin[], unknown]
-  const bulletinNextNumber = data[0].WOEDOC
+  const lastNumber = data[0].WOEDOC
+  
+  const bulletinNextNumber = lastNumber + 1;
 
   response.status(200).json(bulletinNextNumber)
 }

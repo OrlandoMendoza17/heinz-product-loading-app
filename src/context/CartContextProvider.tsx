@@ -11,6 +11,7 @@ const CartContextProvider = ({ children }: Props) => {
   const [cart, setCart] = useState<Product[]>([])
   const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([])
   const [purchase, setPurchase] = useState<Purchase>({
+    id: "",
     order: "",
     date: "",
     details: "",
@@ -46,7 +47,7 @@ const CartContextProvider = ({ children }: Props) => {
   const removeProduct = (productSKU: Product["sku"]) => {
     setCart(cart.filter(item => item.sku !== productSKU))
   }
-  
+
   const value = {
     cart,
     setCart,
@@ -55,10 +56,10 @@ const CartContextProvider = ({ children }: Props) => {
     updateProduct,
     deleteGroup,
     removeProduct,
-    
+
     selectedEmployees,
     setSelectedEmployees,
-    
+
     purchase,
     setPurchase,
   }

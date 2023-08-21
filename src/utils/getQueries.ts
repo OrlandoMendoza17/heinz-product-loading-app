@@ -18,8 +18,8 @@ export const getBulletinHeadersQuery = (bulletins: BulletinsFormat) => {
     return values
   })
 
-  const keys = `(${Object.keys(headers[0][0]).join(", ")})`
-  const values = listOfValues.reduce((accu, currentValue) => `${accu}${currentValue},\n`, "")
+  const keys = `(${Object.keys(headers[0][0]).map(key => `[${key}]`).join(", ")})`
+  const values = listOfValues.join(",\n")
   
   return `
     INSERT INTO [HCRM01].[dbo].[F9011]\n${keys}
@@ -37,12 +37,13 @@ export const getBulletinInfoQuery = (bulletins: BulletinsFormat) => {const heade
     return values;
   })
 
-  const keys = `(${Object.keys(info[0]).join(", ")})`
+  const keys = `(${Object.keys(info[0]).map(key => `[${key}]`).join(", ")})`
   const values = listOfValues.join(",\n")
   
   return `
+    SET IDENTITY_INSERT [HCRM01].[dbo].[F9010] ON
     INSERT INTO [HCRM01].[dbo].[F9010]\n${keys} 
     VALUES\n${values}
+    SET IDENTITY_INSERT [HCRM01].[dbo].[F9010] OFF
   `
 }
-// VSJNO22

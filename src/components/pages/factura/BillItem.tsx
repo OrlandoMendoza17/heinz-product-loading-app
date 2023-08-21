@@ -8,6 +8,7 @@ import NotificationModal from '@/components/widgets/NotificationModal'
 import { useRouter } from 'next/router'
 import BillProductRow from './BillProductRow'
 import Input from '@/components/widgets/Input'
+import { getRandomID } from '@/utils/getRandomID'
 
 type Props = {
   bill: Bill,
@@ -39,7 +40,12 @@ const BillItem = ({ bill, modify = false }: Props) => {
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     const { name, value } = target
-    updatePurchase({ ...purchase, [name]: value }, employee.ficha)
+    const purchaseModified = {
+      ...purchase,
+      [name]: value,
+      id: getRandomID(),
+    }
+    updatePurchase(purchaseModified, employee.ficha)
   }
 
   const buttonStyles = "text-white font-bold py-2 px-4 bg-secondary hover:bg-sky-500 rounded-lg"

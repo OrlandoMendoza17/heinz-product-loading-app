@@ -16,6 +16,7 @@ import DropZone from '@/components/pages/activar-ficha/DropZone'
 import { FaArrowRight } from 'react-icons/fa6'
 import { getEmployees } from '@/services/employees'
 import Spinner from '@/components/widgets/Spinner'
+import { getRandomID } from '@/utils/getRandomID'
 
 type HandleFormProps = {
 	submit: FormEventHandler<HTMLFormElement>,
@@ -55,7 +56,12 @@ const SelectEmployees = () => {
 		(async () => {
 			try {
 				setLoading(true)
-
+				
+				setPurchase({
+					...purchase, 
+					id: getRandomID(),
+				})
+				
 				const employees = await getEmployees()
 				setEmployees(employees)
 
@@ -96,9 +102,14 @@ const SelectEmployees = () => {
 	const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = ({ target }) => {
 
 		const { name, value } = target
-		debugger
-		if (name === "ficha-search") {
-			debugger
+		
+		if (name !== "ficha-search") {
+			
+			setPurchase({
+				...purchase, [name]: value
+			})
+			
+		} else {
 			if (target.value === "") {
 
 				setSearch("")
@@ -130,11 +141,6 @@ const SelectEmployees = () => {
 					)
 				}
 			}
-
-		} else {
-			setPurchase({
-				...purchase, [name]: value
-			})
 		}
 	}
 

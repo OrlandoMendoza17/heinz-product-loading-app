@@ -27,6 +27,7 @@ type Employee = {
 }
 
 type Purchase = {
+  id: string,
   order: string;
   date: string;
   details: string;
