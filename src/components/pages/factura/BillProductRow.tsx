@@ -1,8 +1,7 @@
+import React, { useState, useContext, ChangeEventHandler, Dispatch, SetStateAction } from 'react'
 import BillsContext from '@/context/BillsContext'
 import useAvailableStock from '@/hooks/useAvailableStock'
-import { getAvailableStock } from '@/utils'
 import formatMoney from '@/utils/formatMoney'
-import React, { ChangeEventHandler, useContext } from 'react'
 import {FaTrash} from 'react-icons/fa6'
 
 type Props = {
@@ -18,15 +17,16 @@ const BillProductRow = ({ product, employee, modify }: Props) => {
 
   const MIN_VALUE = 0.25
   const stock = useAvailableStock(available)
-
+  
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     const quantity = parseFloat(target.value)
-    debugger
+    
     if (quantity <= stock) {
-      updateProduct({
+      const updatedProduct = {
         ...product,
         quantity: (quantity >= MIN_VALUE) ? quantity : MIN_VALUE,
-      }, employee.ficha)
+      }
+      updateProduct(updatedProduct, employee.ficha)
     }
   }
 

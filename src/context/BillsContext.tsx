@@ -6,7 +6,6 @@ type Bills = {
   findBill: (ficha: number) => Bill | undefined;
   deleteBill: (ficha: number) => void;
   updateProduct: (modified: Product, ficha: number) => void;
-  updatePurchase: (purchase: Purchase, ficha: Employee["ficha"]) => void;
   deleteProduct: (productID: Product["sku"], ficha: number) => void;
 }
 

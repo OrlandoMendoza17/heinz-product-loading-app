@@ -1,4 +1,4 @@
-import React, { useState, useContext, ChangeEventHandler } from 'react'
+import React, { useState, useContext, ChangeEventHandler, useEffect } from 'react'
 import BillsContext from '@/context/BillsContext'
 import Link from 'next/link'
 import ConfirmModal from '@/components/widgets/ConfirmModal'
@@ -9,23 +9,36 @@ import { useRouter } from 'next/router'
 import BillProductRow from './BillProductRow'
 import Input from '@/components/widgets/Input'
 import { getRandomID } from '@/utils/getRandomID'
+import { saveToSStorage } from '@/utils/sessionStorage'
+import CartContext from '@/context/CartContext'
+import { getPurchaseOrders } from '@/utils'
 
 type Props = {
   bill: Bill,
   modify?: boolean,
 }
 
-const BillItem = ({ bill, modify = false }: Props) => {
-  const { employee, products, purchase } = bill
-
+const BillItem = ({ bill: billItem, modify = false }: Props) => {
+  
   const router = useRouter()
-  const { deleteBill, updatePurchase } = useContext(BillsContext)
+  
+  const cart = useContext(CartContext)
+  const { bills, setBills, deleteBill } = useContext(BillsContext)
+  
+  const default_order_name = cart.purchase.order
+  
+  const [loading, setLoading] = useState<boolean>(false)
+  const [bill, setBill] = useState<Bill>(billItem)
+  
+  const orders = getPurchaseOrders(bills, billItem.purchase.order)
+  
+  const { employee, products, purchase } = bill
 
   const notificationProps = useNotification()
   const { notification, handleNotification } = notificationProps
 
   const alertProps = useNotification()
-  const { notification: alert, handleNotification: handleAlert } = alertProps
+  const { handleNotification: handleAlert } = alertProps
 
   const boxQuantity = getBoxQuantity(products)
   const total = formatMoney(getTotalFromProducts(products))
@@ -40,15 +53,45 @@ const BillItem = ({ bill, modify = false }: Props) => {
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     const { name, value } = target
-    const purchaseModified = {
-      ...purchase,
-      [name]: value,
-      id: getRandomID(),
+
+    if (name === "order") {
+      const foundBill = bills.find((bill) => bill.employee.ficha === employee.ficha)
+      if (foundBill) {
+        setBill({
+          ...foundBill,
+          purchase: {
+            ...purchase,
+            order: value,
+            id: getRandomID(),
+          }
+        })
+      }
     }
-    updatePurchase(purchaseModified, employee.ficha)
   }
 
-  const buttonStyles = "text-white font-bold py-2 px-4 bg-secondary hover:bg-sky-500 rounded-lg"
+  const handleSave = () => {
+    setLoading(true)
+    if (!orders.includes(purchase.order) && (purchase.order !== default_order_name)) {
+      setBills(bills.map(
+        item => (item.employee.ficha === employee.ficha) ? bill : item
+      ))
+      handleAlert.open({
+        type: "success",
+        title: "Éxito",
+        message: "Se han guardado las modificaciones del pedido con éxito"
+      })
+      setTimeout(() => router.push("/factura"), 4000);
+    }else{
+      handleAlert.open({
+        type: "warning",
+        title: "Restricción",
+        message: `Para salvar la modificación de este pedido la orden de compra debe ser diferente a la del pedido general o a la de los demás pedidos modificados \n(${[default_order_name, ...orders].join(", ")})`
+      })
+      setLoading(false)
+    }
+  }
+
+  const buttonStyles = "text-white font-bold py-2 px-4 bg-secondary hover:bg-sky-500 rounded-lg disabled:bg-slate-400"
 
   return (
     <>
@@ -56,16 +99,28 @@ const BillItem = ({ bill, modify = false }: Props) => {
         <div className="p-8">
           <div className="py-4 px-8 mb-4 bg-slate-100 flex justify-between items-center">
             <h3 className="text-lg font-bold">Información del Pedido</h3>
-            {
-              modify ?
-                <button onClick={handleDelete} className={buttonStyles}>
-                  Eliminar
-                </button>
-                :
+            <div className="flex gap-4">
+              {
+                modify &&
+                <>
+                  <button
+                    className={buttonStyles}
+                    onClick={handleSave}
+                  >
+                    Guardar
+                  </button>
+                  <button onClick={handleDelete} className={buttonStyles}>
+                    Eliminar
+                  </button>
+                </>
+              }
+              {
+                !modify &&
                 <Link href={`/factura/${employee.ficha}`} className={buttonStyles}>
                   Modificar
                 </Link>
-            }
+              }
+            </div>
           </div>
           <div className="EmployeeBill__main-container px-8 py-8 bg-white">
             <ul>
@@ -79,7 +134,8 @@ const BillItem = ({ bill, modify = false }: Props) => {
                 <span>Orden de compra:</span>
                 {
                   !modify ?
-                    purchase.order :
+                    purchase.order
+                    :
                     <input
                       name="order"
                       placeholder="📄 12-12052023"
@@ -89,7 +145,10 @@ const BillItem = ({ bill, modify = false }: Props) => {
                     />
                 }
               </li>
-              <li><span>Fecha de Recepción:</span> {new Date(purchase.date).toLocaleDateString("es")}</li>
+              <li>
+                <span>Fecha de Recepción:</span>{" "}
+                {new Date(purchase.date).toLocaleDateString("es")}
+              </li>
             </ul>
             <table className="w-full mt-8">
               <thead>

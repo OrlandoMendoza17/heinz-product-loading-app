@@ -1,4 +1,4 @@
-export const saveToSStorage = (name: string, value: unknown) => {
+export const saveToSStorage = <T = unknown,>(name: string, value: T) => {
   sessionStorage.setItem(name, JSON.stringify(value))
 }
 

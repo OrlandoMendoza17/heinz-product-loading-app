@@ -11,24 +11,24 @@ export const filterByNumbers = (value: string): number => { //"this27is65a34stri
 }
 
 export const getJsonFromExcel = async (file: File) => {
-  
+
   type TemplateEmployee = {
     ficha: number;
     name: string;
   }
-  
+
   const map = {
     "Ficha": "ficha",
     "Nombre": "name",
   }
-  
-  const deleteDuplicates = (rows: TemplateEmployee[]) =>{
+
+  const deleteDuplicates = (rows: TemplateEmployee[]) => {
     // Se transforman los objetos a string
     const stringObjectArray: string[] = rows.map(item => JSON.stringify(item));
-    
+
     // Los duplicados de los strings que coincidan se eliminan y se deja un único duplicado
     const sortedArray = Array.from(new Set(stringObjectArray))
-    
+
     // Se pasa de nuevo a JSON
     const employees = sortedArray.map(item => JSON.parse(item)) as TemplateEmployee[]
     return employees;
@@ -38,7 +38,7 @@ export const getJsonFromExcel = async (file: File) => {
 
   // Se eliminan los duplicados
   const rows = deleteDuplicates(output.rows)
-  
+
   return { ...output, rows };
 }
 
@@ -63,3 +63,10 @@ export const getAvailableStock = (available: number, employees: number): number 
   const stock = integerStockValue + extra;
   return stock;
 }
+
+export const getPurchaseOrders = (bills: Bill[], orderToModify: string) => {
+  let orders = [...new Set(bills.map((bill) => bill.purchase.order))]
+  debugger
+  orders = orders.filter((item) => item !== orderToModify)
+  return orders;
+}  

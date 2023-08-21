@@ -31,15 +31,6 @@ const BillsContextProvider = ({ children }: Props) => {
     }
   }
 
-  const updatePurchase = (purchase: Purchase, ficha: Employee["ficha"]) => {
-    const foundBill = bills.find(({ employee }) => employee.ficha === ficha)
-    if(foundBill){
-      foundBill.purchase = purchase
-      setBills(bills.map(bill => (bill.employee.ficha === ficha) ? foundBill : bill))
-    }
-  }
-
-
   const deleteProduct = (productID: Product["sku"], ficha: Employee["ficha"]) => {
     const foundBill = bills.find(({ employee }) => employee.ficha === ficha)
     if (foundBill) {
@@ -54,7 +45,6 @@ const BillsContextProvider = ({ children }: Props) => {
     findBill,
     deleteBill,
     updateProduct,
-    updatePurchase,
     deleteProduct,
   }
 
