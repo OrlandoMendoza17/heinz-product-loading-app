@@ -31,11 +31,16 @@ const BillsContextProvider = ({ children }: Props) => {
     }
   }
 
+  const resetBills = () => {
+    setBills([])
+  }
+
   const value = {
     bills,
     setBills,
     findBill,
     deleteBill,
+    resetBills,
     updateProduct,
   }
 

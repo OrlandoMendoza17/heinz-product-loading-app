@@ -1,21 +1,24 @@
 "use client"
 import { useState } from "react"
 import CartContext from "./CartContext"
+import { NodeNextRequest } from "next/dist/server/base-http/node"
 
 type Props = {
   children: React.ReactNode | JSX.Element[] | JSX.Element
+}
+
+const purchaseInitialValue = {
+  id: "",
+  order: "",
+  date: "",
+  details: "",
 }
 
 const CartContextProvider = ({ children }: Props) => {
 
   const [cart, setCart] = useState<Product[]>([])
   const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([])
-  const [purchase, setPurchase] = useState<Purchase>({
-    id: "",
-    order: "",
-    date: "",
-    details: "",
-  })
+  const [purchase, setPurchase] = useState<Purchase>(purchaseInitialValue)
 
   const emptyCart = () => {
     setCart([])
@@ -48,6 +51,12 @@ const CartContextProvider = ({ children }: Props) => {
     setCart(cart.filter(item => item.sku !== productSKU))
   }
 
+  const resetCart = () => {
+    setCart([])
+    setSelectedEmployees([])
+    setPurchase(purchaseInitialValue)
+  }
+
   const value = {
     cart,
     setCart,
@@ -62,6 +71,8 @@ const CartContextProvider = ({ children }: Props) => {
 
     purchase,
     setPurchase,
+    
+    resetCart,
   }
 
   return (

@@ -10,6 +10,7 @@ import useNotification from '@/hooks/useNotification'
 import ConfirmModal from '@/components/widgets/ConfirmModal'
 import Button from '@/components/widgets/Button'
 import { sendBulletin } from '@/services/boletin'
+import { saveToSStorage } from '@/utils/sessionStorage'
 
 const Billing = () => {
 
@@ -132,8 +133,11 @@ const Billing = () => {
         message: "Se ha generado el boletín con éxito ✅"
       })
       
-      setLoading(false)
-
+      setTimeout(() => {
+        saveToSStorage<boolean>("bills-confirmation", true)
+        router.push("/")
+      }, 5000);
+      
     } catch (error) {
       setLoading(false)
       handleAlert.open({
@@ -162,7 +166,7 @@ const Billing = () => {
             <section className="header">
               <div className="flex justify-between items-center mb-10">
                 <h1 className="text-4xl font-bold">Confirmar Pedido</h1>
-                <Button onClick={handleOpenModal} className="bg-secondary font-bold" loading={loading}>
+                <Button onClick={handleOpenModal} className="bg-secondary !py-2 font-bold hover:bg-emerald-500" loading={loading}>
                   Confirmar
                 </Button>
               </div>

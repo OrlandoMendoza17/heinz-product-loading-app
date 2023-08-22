@@ -65,18 +65,21 @@ const BillItem = ({ bill: billItem, modify = false }: Props) => {
     setLoading(true)
 
     const default_order_name = cart.purchase.order
-    let modifiedBills = bills.filter((item) => item.purchase.order !== default_order_name)
-    
-    debugger    
-    const billIndex = modifiedBills.findIndex((item) => item.purchase.order === purchase.order)
-    modifiedBills.slice(billIndex, 1)
-    debugger    
+    const modifiedBills = bills.filter((bill) => {
+      return (
+        (bill.purchase.order !== default_order_name) &&
+        (bill.employee.ficha !== employee.ficha)
+      )
+    })
+
     const orders = getPurchaseOrders(modifiedBills, default_order_name)
     
     const sku_list = getSKUList(cart.cart)         // Los SKU del boletín en general
     const billProducts = getSKUList(products)
     
-    if (!orders.includes(purchase.order) && (sku_list !== billProducts)) {
+    debugger
+    
+    if (orders.includes(purchase.order) && (sku_list !== billProducts)) {
       handleAlert.open({
         type: "warning",
         title: "Restricción",

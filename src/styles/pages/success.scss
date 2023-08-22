@@ -1,0 +1,23 @@
+.BillingSuccess{
+  @apply bg-gray-200 h-screen flex justify-center items-center text-center p-4;
+  .main-container {
+    @apply bg-white px-10 sm:px-40 py-20 rounded-3xl grid justify-items-center gap-8 sm:gap-16;
+    
+    img{
+      width: 100%;
+        max-width: 10rem;
+      @screen sm{
+        max-width: 12.5rem;
+      }
+    }
+    
+    .title{
+      @apply font-bold text-3xl sm:text-6xl;
+    }
+    
+    button{
+      @apply bg-secondary hover:bg-sky-500 duration-100 font-bold text-base sm:text-xl px-8 py-4 text-white rounded-2xl;
+    }
+    
+  } 
+}

@@ -14,6 +14,8 @@ type Cart = {
   
   purchase: Purchase,
   setPurchase: Dispatch<SetStateAction<Purchase>>,
+  
+  resetCart: () => void,
 }
 
 const CartContext = React.createContext<Cart>({} as Cart)
