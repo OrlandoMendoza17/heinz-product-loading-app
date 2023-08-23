@@ -182,8 +182,8 @@ const Cart: NextPage = () => {
           console.log(error)
           handleAlert.open({
             type: "danger",
-            title: "Producto sin Stock",
-            message: ``,
+            title: "Error",
+            message: `Ha ocurrido un error generando la previsualización del boletín. Intentelo de nuevo`,
           })
           setLoading(false)
         }

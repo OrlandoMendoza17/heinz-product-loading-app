@@ -135,7 +135,7 @@ const Billing = () => {
       
       setTimeout(() => {
         saveToSStorage<boolean>("bills-confirmation", true)
-        router.push("/")
+        router.push("/factura/success")
       }, 5000);
       
     } catch (error) {
