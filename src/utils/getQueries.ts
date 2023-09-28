@@ -3,23 +3,21 @@ export type BulletinsFormat = {
   info: BulletinInfo;
 }[]
 
-const getSQLValue = (value: string | number) => { 
+export const getSQLValue = (value: string | number) => { 
   return (typeof value === "string") ? `'${value}'` : value
 }
 
 export const getBulletinHeadersQuery = (bulletins: BulletinsFormat) => {
-  const headers = bulletins.map(({ headers }) => headers)
-
-  const listOfValues = headers.map((item) => {
-    const header = item[0]
-    const values = `(${
-      Object.values(header).map(value => getSQLValue(value)).join(", ")
-    })`
-    return values
-  })
-
-  const keys = `(${Object.keys(headers[0][0]).map(key => `[${key}]`).join(", ")})`
-  const values = listOfValues.join(",\n")
+  
+  const keys = `(${Object.keys(bulletins[0].headers[0]).map(key => `[${key}]`).join(", ")})`
+  const values = bulletins.map(({ headers })=>{
+    const values = headers.map((header) => {
+      return `(${Object.values(header).map(value => getSQLValue(value)).join(", ")})`
+    })
+    return values.join(",\n")
+  }).join(",\n")
+  
+  debugger
   
   return `
     INSERT INTO [HCRM01].[dbo].[F9011]\n${keys}

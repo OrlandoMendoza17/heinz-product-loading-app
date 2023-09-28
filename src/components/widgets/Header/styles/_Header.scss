@@ -27,7 +27,7 @@
 
       @screen sm {
         display: grid;
-        grid-template-columns: repeat(4, auto);
+        grid-template-columns: repeat(5, auto);
         justify-content: start;
         gap: 20px;
       }
@@ -35,7 +35,8 @@
 
     a,
     li,
-    span {
+    span, 
+    button {
       // padding: 0 10px;
       @apply text-xs;
 

@@ -9,7 +9,7 @@ type Props = {
   closeButton?: boolean,
   transparent?: boolean,
   children: ReactNode,
-  className: string,
+  className?: string,
 }
 
 const Modal = ({ showModal, setModal, closeButton = true, transparent = false, className = "", children }: Props) => {

@@ -30,11 +30,9 @@ const BillItem = ({ bill: billItem, modify = false }: Props) => {
 
   const { employee, products, purchase } = bill
 
-  const notificationProps = useNotification()
-  const { notification, handleNotification } = notificationProps
+  const [notification, handleNotification] = useNotification()
 
-  const alertProps = useNotification()
-  const { handleNotification: handleAlert } = alertProps
+  const [alert, handleAlert] = useNotification()
 
   const boxQuantity = getBoxQuantity(products)
   const total = formatMoney(getTotalFromProducts(products))
@@ -179,8 +177,9 @@ const BillItem = ({ bill: billItem, modify = false }: Props) => {
               </thead>
               <tbody>
                 {
-                  products.map((product,) =>
+                  products.map((product, i) =>
                     <BillProductRow
+                      key={i}
                       bill={bill}
                       modify={modify}
                       product={product}
@@ -206,13 +205,13 @@ const BillItem = ({ bill: billItem, modify = false }: Props) => {
         </div>
       </div>
       <ConfirmModal
-        {...notificationProps}
+        notificationProps={[notification, handleNotification]}
         acceptAction={() => {
           deleteBill(employee.ficha)
           router.push("/factura")
         }}
       />
-      <NotificationModal {...alertProps} />
+      <NotificationModal alertProps={[alert, handleAlert]} />
     </>
   )
 }

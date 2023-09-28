@@ -22,9 +22,8 @@ const BillProductRow = ({ product, employee, modify, bill, setBill }: Props) => 
   const MIN_VALUE = 0.25
   const stock = useAvailableStock(available)
 
-  const notificationProps = useNotification()
-  const { notification, handleNotification } = notificationProps
-
+  const [notification, handleNotification] = useNotification()
+  
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     const quantity = parseFloat(target.value)
 
@@ -92,7 +91,7 @@ const BillProductRow = ({ product, employee, modify, bill, setBill }: Props) => 
         }
       </tr>
       <ConfirmModal
-        {...notificationProps}
+        notificationProps={[notification, handleNotification]}
         acceptAction={() => {
           deleteProduct(product.sku)
         }}

@@ -14,6 +14,7 @@ import NotificationModal from '@/components/widgets/NotificationModal'
 import BillsContext from '@/context/BillsContext'
 import { getBulletinNextNumber } from '@/services/boletin'
 import { getAvailableStock } from '@/utils'
+import useAuth from '@/hooks/useAuth'
 
 const fields = [
   "SKU",
@@ -25,19 +26,19 @@ const fields = [
   // "Editar",
 ]
 
-const Cart: NextPage = () => {
+const Cart = () => {
 
   const router = useRouter()
+  const [renderPage, credentials] = useAuth({})
+  
   const [loading, setLoading] = useState<boolean>(false)
 
   const { setBills } = useContext(BillsContext)
   const { cart, selectedEmployees, purchase, emptyCart, deleteGroup, setCart } = useContext(CartContext)
 
-  const notificationProps = useNotification()
-  const { handleNotification } = notificationProps
+  const [notification, handleNotification] = useNotification()
 
-  const alertProps = useNotification()
-  const { handleNotification: handleAlert } = alertProps
+  const [alert, handleAlert ] = useNotification()
 
   useEffect(() => {
     const products = cart.map((product) => {
@@ -196,6 +197,7 @@ const Cart: NextPage = () => {
   const bill = formatMoney(getTotalFromProducts(cart))
 
   return (
+    renderPage &&
     <>
       <div className="Layout">
         <Header />
@@ -284,9 +286,9 @@ const Cart: NextPage = () => {
       </div >
       <ConfirmModal
         acceptAction={handleDelete}
-        {...notificationProps}
+        notificationProps={[notification, handleNotification]}
       />
-      <NotificationModal {...alertProps} />
+      <NotificationModal alertProps={[alert, handleAlert ]} />
     </>
   )
 }

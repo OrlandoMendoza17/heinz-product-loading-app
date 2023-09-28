@@ -8,6 +8,7 @@ import MyOrdersTable from '@/components/pages/mis-ordenes/MyOrdersTable'
 import MyOrdersForm from '@/components/pages/mis-ordenes/MyOrdersForm'
 import BulletinDetailsModal from '@/components/pages/mis-ordenes/BulletinDetailsModal'
 import { BulletinHeader } from '../api/boletin/info'
+import useAuth from '@/hooks/useAuth'
 
 export enum OPTIONS {
   DATE = 1,
@@ -22,6 +23,8 @@ export type Dates = {
 const { DATE, BOLETIN_NUMBER } = OPTIONS
 
 const MyOrders = () => {
+  
+  const [renderPage, credentials] = useAuth({})
 
   const [loading, setLoading] = useState<boolean>(false)
   const [showModal, setModal] = useState<boolean>(false)
@@ -31,10 +34,10 @@ const MyOrders = () => {
   const [bulletins, setBulletins] = useState<Bulletin[]>([])
   const [bulletinDetails, setBulletinDetails] = useState<BulletinHeader[]>([])
 
-  const NotificationProps = useNotification()
-  const { handleNotification } = NotificationProps
+  const [notification, handleNotification] = useNotification()
 
   return (
+    renderPage &&
     <div className="SelectEmployees Layout MyOrders">
       <Header />
       <main className="pt-10 xl:px-60">
@@ -77,7 +80,7 @@ const MyOrders = () => {
         </section>
       </main>
 
-      <NotificationModal {...NotificationProps} />
+      <NotificationModal alertProps={[notification, handleNotification]} />
       <BulletinDetailsModal {...{ setModal, showModal, bulletinDetails }} />
 
     </div>

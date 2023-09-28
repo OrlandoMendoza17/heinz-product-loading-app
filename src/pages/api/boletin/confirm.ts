@@ -27,7 +27,10 @@ const handleBulletins = async (
     })
 
   } catch (error: unknown) {
-    response.status(400).json(error)
+    response.status(400).json({
+      error,
+      message: "Error en la petición cabecera"
+    })
   }
 }
 

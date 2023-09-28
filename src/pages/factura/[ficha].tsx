@@ -4,9 +4,12 @@ import Header from '@/components/widgets/Header/Header'
 import CartContext from '@/context/CartContext'
 import BillsContext from '@/context/BillsContext'
 import { useRouter } from 'next/router'
+import useAuth from '@/hooks/useAuth'
 
 const EmployeeID = () => {
 
+  const [renderPage, credentials] = useAuth({})
+  
   const { findBill } = useContext(BillsContext)
   const [bill, setBill] = useState<Bill | undefined>()
 
@@ -33,6 +36,7 @@ const EmployeeID = () => {
   }, [router])
 
   return (
+    renderPage &&
     <div className="Layout">
       <Header />
       <main className="Bill xl:px-60">

@@ -5,6 +5,7 @@ import EmployeeItem from './EmployeeItem'
 type Props = {
   employees: Employee[],
   selectedList: boolean,
+  handleSelectAll?: () => void,
   title: ReactNode,
   handleClean?: () => void,
   showDeleteButton?: boolean,
@@ -12,7 +13,7 @@ type Props = {
   setSelectedEmployees: Dispatch<SetStateAction<Employee[]>>
 }
 
-const Employees = ({ employees, title, handleClean, showDeleteButton = false, ...employeesProps }: Props) => {
+const Employees = ({ employees, title, handleClean, showDeleteButton = false, handleSelectAll, ...employeesProps }: Props) => {
 
   // condition = condition ?? Boolean(products.length)
 
@@ -22,10 +23,16 @@ const Employees = ({ employees, title, handleClean, showDeleteButton = false, ..
         <h2 className="text-xl font-semibold">
           {title}
         </h2>
-        {
-          Boolean(handleClean) && showDeleteButton &&
-          <Button color="gray" className="!py-2" onClick={handleClean}>Limpiar</Button>
-        }
+        <div className="flex gap-4">
+          {
+            Boolean(handleSelectAll) &&
+            <Button color="info" className="!py-2" onClick={handleSelectAll}>Todos</Button>
+          }
+          {
+            Boolean(handleClean) && showDeleteButton &&
+            <Button color="gray" className="!py-2" onClick={handleClean}>Limpiar</Button>
+          }
+        </div>
       </div>
       <div className="main_container">
         {

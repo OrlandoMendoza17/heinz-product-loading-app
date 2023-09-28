@@ -4,15 +4,17 @@ import MassivelyActivate from '@/components/pages/activar-ficha/MassivelyActivat
 import SingleActivate from '@/components/pages/activar-ficha/SingleActivate'
 import NotificationModal from '@/components/widgets/NotificationModal'
 import useNotification from '@/hooks/useNotification'
+import useAuth from '@/hooks/useAuth'
 
 const ActivateEmployeesID = () => {
 
-  const notificationProps = useNotification()
-  const { handleNotification } = notificationProps
+  const [renderPage, credentials] = useAuth({})
+  const [notification, handleNotification] = useNotification()
 
   const props = { handleNotification }
   
   return (
+    renderPage &&
     <>
       <div className="SelectEmployees Layout">
         <Header />
@@ -25,7 +27,7 @@ const ActivateEmployeesID = () => {
           </section>
         </main>
       </div>
-      <NotificationModal {...notificationProps}/>
+      <NotificationModal alertProps={[notification, handleNotification]}/>
     </>
   )
 }

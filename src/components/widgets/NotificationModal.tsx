@@ -13,16 +13,15 @@ import { HandleNotification, NotificationProps } from '@/hooks/useNotification';
 // }
 
 type Props = {
-  notification: NotificationProps,
-  handleNotification: HandleNotification,
+  alertProps: [NotificationProps, HandleNotification],
 }
 
 // { notification, handleNotification }: Props
 
-const NotificationModal = ({notification, handleNotification}: Props) => {
+const NotificationModal = ({ alertProps: [notification, handleNotification] }: Props) => {
 
   const { show, type, title = "", message } = notification
-  
+
   const states = {
     success: "modal_green",
     warning: "modal_yellow",

@@ -1,131 +1,118 @@
-import React, { useEffect, useState } from 'react'
-import { NextPage } from 'next'
-import Header from "@/components/widgets/Header/Header";
-import NotificationModal from '@/components/widgets/NotificationModal';
-import ProductFinder from '@/components/pages/ProductFinder';
-import Products from '@/components/pages/Products';
-import ProductSkeleton from '@/components/pages/ProductSkeleton';
-import useNotification from '@/hooks/useNotification';
-import { getProducts } from '@/services/products-id';
-import { getFromSStorage, saveToSStorage } from '@/utils/sessionStorage';
+import React, { ChangeEventHandler, FormEventHandler, useRef, useState } from 'react'
+import Input from '@/components/widgets/Input'
+import Button from '@/components/widgets/Button'
+import Form from '@/components/widgets/Form'
+import useNotification from '@/hooks/useNotification'
+import NotificationModal from '@/components/widgets/NotificationModal'
+import AuthService from '@/services/auth'
+import { saveToSStorage } from '@/utils/sessionStorage'
+import { useRouter } from 'next/router'
+import { AxiosError } from 'axios'
 
-const Home: NextPage = () => {
+const auth = new AuthService()
 
-  const [products, setProducts] = useState<Product[]>([])
+const LogIn = (): JSX.Element => {
 
-  const [searching, setSearching] = useState<boolean>(false)
-  const [searchedProducts, setSearchedProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
-  const [loading, setLoading] = useState(true)
-  
-  const notificationProps = useNotification()
-  const { handleNotification } = notificationProps
+  const [enabledPassword, setEnabledPassword] = useState<boolean>(false)
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  })
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true)
+  const [modal, handleModal] = useNotification()
 
-      const products = getFromSStorage<Product[]>("products")
+  const router = useRouter()
 
-      const logUndefinedPrices = (products: Product[]) => {
-        console.log(products.filter((item) => item.price === -100))
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+    setLoading(true)
+    try {
+
+      const credentials = await auth.login(enabledPassword ? user : { email: user.email })
+      saveToSStorage<AuthCredentials>("temp-login", credentials)
+
+      if(enabledPassword) saveToSStorage<boolean>("login-by-password", true)
+      
+      router.push("/login/two-factor-auth")
+
+    } catch (error) {
+      setLoading(false)
+      console.error(error)
+
+      let message = "Ha habido un error intentando loguearse"
+
+      if (error instanceof AxiosError) {
+        message = error.response?.data?.message
       }
 
-      if (products) {
-        logUndefinedPrices(products)
+      handleModal.open({
+        type: "danger",
+        title: "Error",
+        message,
+      })
+    }
+  }
 
-        setProducts(products)
-        setLoading(false)
-
-      } else {
-        try {
-
-          const products = await getProducts()
-          logUndefinedPrices(products)
-
-          saveToSStorage("products", products)
-
-          setProducts(products)
-          setLoading(false)
-
-        } catch (error) {
-          console.log(error)
-          setLoading(false)
-
-          handleNotification.open({
-            type: "danger",
-            title: "Carga de productos ❌",
-            message: `Ha ocurrido un error al intentar traer los productos, recargue la pagina e intentelo de nuevo`
-          })
-        }
-      }
-
-    })()
-  }, [])
-
-  const skelentonProducts = new Array(12).fill(0)
-
-  const NO_PRODUCTS = !Boolean(products.length)
-  const NOT_FOUND_PRODUCTS = (searching && !Boolean(searchedProducts.length))
-
-  const DINT_FIND_PRODUCTS = (NO_PRODUCTS || NOT_FOUND_PRODUCTS)
+  const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+    const { name, value } = target
+    setUser({
+      ...user, [name]: value
+    })
+  }
 
   return (
-    <div className="Home Layout">
-      <Header products={products} />
+    <main className="LogIn">
+      {/* <img src="https://i.imgur.com/hkIgVIM.png" alt="" /> */}
+      <img src="https://i.imgur.com/yoGBPON.png" alt="" />
 
-      <ProductFinder
-        {...{
-          loading,
-          products,
-          setSearching,
-          setSearchedProducts,
-          DINT_FIND_PRODUCTS,
-        }}
-      />
+      <Form onSubmit={handleSubmit}>
 
-      <main className="pt-8">
-        {/* <p className="pb-8">Se ha encontrado 1 item(s) por el SKU: 15297</p> */}
-        <div className="main_container">
+        <h1>Inicio de Sesión</h1>
+        <p>Carga de Productos VEMP</p>
+        {/* <p>Carga de Información de Pedidos Comunicados Heinz</p> */}
 
-          {/* <Aside /> */}
-
-          <section>
-            {
-              loading &&
-              skelentonProducts.map((item, i) =>
-                <ProductSkeleton key={i} />
-              )
-            }
-
-            {
-              !searching ?
-                <Products
-                  loading={loading}
-                  products={products}
-                />
-                :
-                <Products
-                  loading={loading}
-                  products={searchedProducts}
-                />
-            }
-
-            <Products
-              loading={false}
-              products={products}
-              condition={DINT_FIND_PRODUCTS}
+        <div className="mt-8 grid gap-10">
+          <Input
+            title="Usuario"
+            id="email"
+            type="email"
+            onChange={handleChange}
+            placeholder="user@kraftheinz.com"
+            value={user.email}
+          />
+          {
+            enabledPassword &&
+            <Input
+              title="Contraseña"
+              id="password"
+              type="password"
+              onChange={handleChange}
+              placeholder="Your Password"
+              value={user.password}
             />
+          }
 
-          </section>
+          <Button loading={loading} type="submit" color="secondary">
+            Iniciar sesión
+          </Button>
 
-          <NotificationModal {...notificationProps}/>
-
+          <button
+            type="button"
+            className="text-secondary text-sm"
+            onClick={() => {
+              setEnabledPassword(!enabledPassword)
+            }}
+          >
+            {enabledPassword ? "Login sin contraseña" : "Login con contraseña"}
+          </button>
         </div>
-      </main>
-      <footer></footer>
-    </div>
+      </Form>
+
+      <NotificationModal alertProps={[modal, handleModal]} />
+    </main>
   )
 }
 
-export default Home
+export default LogIn

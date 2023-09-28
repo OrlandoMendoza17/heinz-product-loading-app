@@ -17,6 +17,7 @@ import { FaArrowRight } from 'react-icons/fa6'
 import { getEmployees } from '@/services/employees'
 import Spinner from '@/components/widgets/Spinner'
 import { getRandomID } from '@/utils/getRandomID'
+import useAuth from '@/hooks/useAuth'
 
 type HandleFormProps = {
 	submit: FormEventHandler<HTMLFormElement>,
@@ -30,10 +31,31 @@ const filesAllowed = [
 	}
 ]
 
+enum EMPLOYEES_LIST {
+	TODOS = "0",
+	SAN_JOAQUÍN = "752",
+	OBREROS_SAN_JOAQUIN = "751",
+	LAS_MERCEDES = "753",
+	LA_CALIFORNIA = "754",
+	BARCELONA = "755",
+	PUERTO_ORDAZ = "756",
+	BAQUISIMETO = "757",
+	MARACAIBO = "758",
+	SAN_CRISTOBAL = "759",
+	OBREROS_DISTRIBUCION = "760",
+	PASANTES = "761",
+}
+
+const { SAN_JOAQUÍN, LAS_MERCEDES, LA_CALIFORNIA, BARCELONA } = EMPLOYEES_LIST
+const { PUERTO_ORDAZ, BAQUISIMETO, MARACAIBO, SAN_CRISTOBAL } = EMPLOYEES_LIST
+const { OBREROS_SAN_JOAQUIN, OBREROS_DISTRIBUCION, PASANTES, TODOS } = EMPLOYEES_LIST
+
 const SelectEmployees = () => {
 
 	const router = useRouter()
 	const context = useContext(CartContext)
+	
+  const [renderPage, credentials] = useAuth({})
 
 	const { cart, purchase, setPurchase } = context
 	const { selectedEmployees, setSelectedEmployees } = context
@@ -43,27 +65,29 @@ const SelectEmployees = () => {
 
 
 	const [employees, setEmployees] = useState<Employee[]>([])
+	const [employeesGroup, setEmployeesGroup] = useState<Employee[]>([])
+
 	const [searching, setSearching] = useState<boolean>(false)
 	const [searchedEmployees, setSearchedEmployees] = useState<Employee[]>([])
 	// const [selectedEmployees, setSelectedEmployees] = useState<WorkerEmployee[]>([])
 
 	const [search, setSearch] = useState<number | string>("")
 
-	const notificationProps = useNotification()
-	const { handleNotification } = notificationProps
+	const [alert, handleAlert] = useNotification()
 
 	useEffect(() => {
 		(async () => {
 			try {
 				setLoading(true)
-				
+
 				setPurchase({
-					...purchase, 
+					...purchase,
 					id: getRandomID(),
 				})
-				
+
 				const employees = await getEmployees()
 				setEmployees(employees)
+				setEmployeesGroup(employees)
 
 				setLoading(false)
 
@@ -91,7 +115,7 @@ const SelectEmployees = () => {
 
 		},
 		invalid: () => {
-			handleNotification.open({
+			handleAlert.open({
 				type: "danger",
 				title: "Faltan campos",
 				message: "Debes llenar los campos resaltados y seleccionar al menos 1 empleado para poder avanzar",
@@ -102,13 +126,13 @@ const SelectEmployees = () => {
 	const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = ({ target }) => {
 
 		const { name, value } = target
-		
+
 		if (name !== "ficha-search") {
-			
+
 			setPurchase({
 				...purchase, [name]: value
 			})
-			
+
 		} else {
 			if (target.value === "") {
 
@@ -184,8 +208,36 @@ const SelectEmployees = () => {
 		}
 	}
 
+	const handleChangeList: ChangeEventHandler<HTMLSelectElement> = ({ currentTarget }) => {
+		const { value } = currentTarget
+		
+		const filteredEmployees = (value: string) => {
+			const filtered = employees.filter(employee => employee.type === value)
+			return filtered;
+		}
+
+		if (value === OBREROS_SAN_JOAQUIN) {
+			
+			const obreros = filteredEmployees(OBREROS_SAN_JOAQUIN)
+			const obreros_distribucion = filteredEmployees(OBREROS_DISTRIBUCION)
+			setEmployeesGroup([...obreros, ...obreros_distribucion])
+			
+		} else {
+			const filtered = filteredEmployees(value)
+			setEmployeesGroup(value === TODOS ? employees : filtered)
+		}
+	}
+
+	const handleSelectAll = () => {
+		const filtered = employeesGroup.filter((employee) => {
+			const found = selectedEmployees.find((selected) => selected.ficha === employee.ficha)
+			return Boolean(!found) // Se sacan de la lista los que ya estaban seleccionados para que salgan repetidos
+		})
+		setSelectedEmployees([...selectedEmployees, ...filtered])
+	}
+
 	const employeeListTitle = (
-		<>Lista de empleados <small>({searching ? searchedEmployees.length : employees.length})</small></>
+		<>Lista de empleados <small>({searching ? searchedEmployees.length : employeesGroup.length})</small></>
 	)
 
 	const employeesProps = {
@@ -203,7 +255,55 @@ const SelectEmployees = () => {
 		handleFiles,
 	}
 
+	const employeesGroups = [
+		{
+			name: "TODOS",
+			value: TODOS
+		},
+		{
+			name: "Empleados San Joaquín",
+			value: SAN_JOAQUÍN
+		},
+		{
+			name: "Emp. Suc. Las Mercedes",
+			value: LAS_MERCEDES
+		},
+		{
+			name: "Emp. Suc. La California",
+			value: LA_CALIFORNIA
+		},
+		{
+			name: "Emp. Suc. Barcelona",
+			value: BARCELONA
+		},
+		{
+			name: "Emp. Suc. Puerto Ordaz",
+			value: PUERTO_ORDAZ
+		},
+		{
+			name: "Emp. Suc. Baquisimeto",
+			value: BAQUISIMETO
+		},
+		{
+			name: "Emp. Suc. Maracaibo",
+			value: MARACAIBO
+		},
+		{
+			name: "Emp. Suc. San Cristobal",
+			value: SAN_CRISTOBAL
+		},
+		{
+			name: "Obreros",
+			value: OBREROS_SAN_JOAQUIN
+		},
+		{
+			name: "Pasantes",
+			value: PASANTES
+		},
+	]
+
 	return (
+		renderPage &&
 		<>
 			<div className="SelectEmployees Layout">
 				<Header />
@@ -216,7 +316,7 @@ const SelectEmployees = () => {
 							{
 								!loading ?
 									<>
-										<div className="grid pb-8">
+										<div className="grid grid-cols-2 gap-8 pb-8">
 											<Input
 												id="ficha-search"
 												title="Buscar por"
@@ -225,12 +325,22 @@ const SelectEmployees = () => {
 												onChange={handleChange}
 												required={false}
 											/>
+
+											<Select
+												id="order"
+												title="Filtrar por tipo"
+												defaultOption="Lista de empleados"
+												onChange={handleChangeList}
+												options={employeesGroups}
+											/>
 										</div>
+
 										<div className="Employee-grid">
 											{
 												searching ?
 													// Siempre aparecerá el botón de limpiar
 													<Employees
+														// handleSelectAll={() => { }}
 														showDeleteButton={true}
 														title={employeeListTitle}
 														handleClean={handleClean.search}
@@ -240,8 +350,9 @@ const SelectEmployees = () => {
 													:
 													// No aparecerá el botón de limpiar
 													<Employees
+														handleSelectAll={handleSelectAll}
 														title={employeeListTitle}
-														employees={employees}
+														employees={employeesGroup}
 														{...employeesProps}
 													/>
 											}
@@ -293,7 +404,6 @@ const SelectEmployees = () => {
 									onChange={handleChange}
 								/>
 
-								{/* <Select id="order" title="Filtrar por tipo" defaultOption="-" options={[{ name: "", value: "" }]} /> */}
 								{/* <Select id="date" title="Filtrar por sub-tipo" defaultOption="-" options={[{ name: "", value: "" }]} /> */}
 							</div>
 
@@ -324,8 +434,7 @@ const SelectEmployees = () => {
 				<footer></footer>
 			</div>
 
-			<NotificationModal {...notificationProps} />
-
+			<NotificationModal alertProps={[alert, handleAlert]} />
 		</>
 	)
 }

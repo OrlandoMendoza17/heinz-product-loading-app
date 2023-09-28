@@ -45,12 +45,20 @@ const BulletinInfo = async (request: NextApiRequest, response: NextApiResponse) 
     return {
       number: bulletin.ODEDOC,
       product: {
-        sku: parseInt(bulletin.ODLITM),
+        sku: bulletin.ODLITM,
         name: bulletin.ODDSC1,
         quantity: bulletin.ODSOQS,
         price: bulletin.ODUPRC,
         available: 0,
         image: `/product-images/${bulletin.ODLITM}.png`,
+        details: { // Valor innecesario en esta parte del código
+          UMCONV: 0,
+          IBITM: 0,
+          IMSRP1: "",
+          IMSRP2: "",
+          IMSRP3: "",
+          IMSRP4: "",
+        }
       },
       // Total (Precio Base x Cantidad de Cajas): bulletin.ODAMXT,
       store: bulletin.ODMCU.trim(),

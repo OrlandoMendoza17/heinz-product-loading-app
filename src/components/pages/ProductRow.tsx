@@ -15,11 +15,7 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
 
   const { selectedEmployees, updateProduct, removeProduct } = useContext(CartContext)
 
-  const notificationProps = useNotification()
-  const { handleNotification } = notificationProps
-
-  const alertProps = useNotification()
-  const { handleNotification: handleAlert } = alertProps
+  const [notification, handleNotification] = useNotification()
 
   const { name, price, sku, quantity, available } = product
 
@@ -99,9 +95,8 @@ const ProductRow = ({ product, handleCheckbox }: Props) => {
       </tr>
       <ConfirmModal
         acceptAction={handleAccept}
-        {...notificationProps}
+        notificationProps={[notification, handleNotification]}
       />
-      <NotificationModal {...alertProps} />
     </>
   )
 }

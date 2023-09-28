@@ -3,6 +3,7 @@ import Select from '../widgets/Select'
 import Input from '../widgets/Input'
 import { filterByNumbers } from '@/utils'
 import Button from '../widgets/Button'
+import useAuth from '@/hooks/useAuth'
 
 type Props = {
   loading: boolean,
@@ -13,6 +14,9 @@ type Props = {
 }
 
 const ProductFinder = ({ loading, products, setSearching, setSearchedProducts, DINT_FIND_PRODUCTS }: Props) => {
+
+  const [renderPage, credentials] = useAuth({})
+  const { nombre } = credentials.user
 
   const [search, setSearch] = useState<number | "">("")
 
@@ -33,7 +37,7 @@ const ProductFinder = ({ loading, products, setSearching, setSearchedProducts, D
       if (products.length) {
         setSearchedProducts(
           products.filter(product =>
-            product.sku.toString().includes(value.toString())
+            product.sku.includes(value.toString())
           )
         )
       }
@@ -74,7 +78,7 @@ const ProductFinder = ({ loading, products, setSearching, setSearchedProducts, D
             </Button>
           }
         </div>
-        <span>Bienvenido <strong className="text-cyan-600">Orlando</strong></span>
+        <span>Bienvenido <strong className="text-cyan-600">{nombre.split(" ")[0]}</strong></span>
       </form>
 
       {

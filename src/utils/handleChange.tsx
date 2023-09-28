@@ -6,9 +6,10 @@ type params = {
   MIN_VALUE: number,
 }
 
-export const handleQuantity = ({ stock, value, MIN_VALUE }: params) => {
+export const handleQuantity = ({ stock, value, MIN_VALUE }: params) =>  {
   const quantity = parseFloat(value)
   if (quantity <= stock) {
     return (quantity >= 0.25) ? quantity : MIN_VALUE
   }
+  return
 }

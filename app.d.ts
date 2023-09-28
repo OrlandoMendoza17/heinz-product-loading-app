@@ -1,6 +1,6 @@
 type Product = {
   name: string, // IMDSC1 | STOCKCOD
-  sku: number,  // IMLITM
+  sku: string,  // IMLITM
   available: number, // STOCKCANT
   price: number, // ?
   image?: string, // Se va a eliminar porque obtendrá en una carpeta local dependiendo del sku del producto
@@ -15,6 +15,22 @@ type Product = {
   }
 }
 
+type User = {
+  id: number,
+  nombre: string,
+  email: string,
+  password: string,
+  ficha: string,
+  two_factor_auth: string,
+  is_admin: boolean,
+  password_login_available: boolean,
+}
+
+type AuthCredentials = {
+  user: User,
+  token: string,
+}
+
 type Employee = {
   name: string;
   CI: string;
@@ -24,6 +40,7 @@ type Employee = {
   address: string;
   birthState: string;
   birthNeighborhood: string;
+  type: string;
 }
 
 type Purchase = {
@@ -57,7 +74,7 @@ type BulletinHeader = {
   ODJOBN: string;
   ODUSER: string;
   ODEDOC: number;
-  ODLITM: number;
+  ODLITM: string;
   ODDSC1: string;
   ODSOQS: number;
   ODUPRC: number;

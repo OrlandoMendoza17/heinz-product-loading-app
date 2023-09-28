@@ -37,8 +37,8 @@ const BulletinDetailsModal = ({ bulletinDetails, ...modalProps }: Props) => {
         </thead>
         <tbody>
           {
-            bulletinDetails.map(({product}) =>
-              <tr>
+            bulletinDetails.map(({product}, i) =>
+              <tr key={`${product.sku}-${i}`}>
                 <th>
                   <span>{product.sku}</span>
                 </th>

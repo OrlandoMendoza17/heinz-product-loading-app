@@ -40,9 +40,9 @@ const CartContextProvider = ({ children }: Props) => {
     )
   }
 
-  const deleteGroup = (productGroup: string[]) => {
+  const deleteGroup = (productGroup: Product["sku"][]) => {
     const filteredCart = cart.filter(product => {
-      return !productGroup.includes(product.sku.toString())
+      return !productGroup.includes(product.sku)
     })
     setCart(filteredCart)
   }

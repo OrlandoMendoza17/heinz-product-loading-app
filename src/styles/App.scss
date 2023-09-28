@@ -10,8 +10,11 @@
 @import "./pages/factura";
 @import "./pages/success.scss";
 @import "./pages/seleccionar-empleados";
+@import "./pages/two-factor-auth";
+@import "./pages/usuarios";
 
 // components
+@import "../components/pages/login/styles/OTPInput";
 @import "../components/pages/styles/ProductItem";
 @import "../components/pages/styles/ProductFinder";
 @import "../components/pages/styles/ProductSkeleton";

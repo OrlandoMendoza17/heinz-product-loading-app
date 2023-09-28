@@ -1,8 +1,13 @@
 import Header from '@/components/widgets/Header/Header'
+import useAuth from '@/hooks/useAuth'
 import React from 'react'
 
 const ActivateProduct = () => {
+  
+  const [renderPage, credentials] = useAuth({})
+  
   return (
+    renderPage &&
     <div className="SelectEmployees Layout">
       <Header />
       <main className="pt-10 xl:px-80">

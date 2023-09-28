@@ -19,9 +19,6 @@ const Select = (props: Props) => {
 
   const selectsOptions = [...options]
 
-  // Añade un elemento por defecto al inicio del select
-  selectsOptions.unshift({ name: defaultOption, value: "" })
-
   return (
     <label htmlFor={name} className={`Input ${className}`}>
       {
@@ -31,7 +28,7 @@ const Select = (props: Props) => {
         </span>
       }
       <select name={name} id={name} required={required} {...rest}>
-        <option disabled value="">
+        <option disabled value="" className="bg-slate-200 text-slate-600 font-semibold">
           {defaultOption}
         </option>
         {

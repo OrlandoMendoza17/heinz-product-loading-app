@@ -5,18 +5,19 @@ import Portal from './Portal'
 type TargetProps = EventTarget & HTMLElement
 
 interface Props {
-  notification: NotificationProps,
+  notificationProps: [NotificationProps, HandleNotification],
   button1?: boolean,
   button2?: boolean,
   acceptAction: () => void,
-  handleNotification: HandleNotification,
 }
 
 const LOREM = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus, amet!"
 
 const ConfirmModal = (props: Props) => {
 
-  const { acceptAction, handleNotification, button1 = true, button2 = true, notification } = props
+  const { acceptAction, notificationProps, button1 = true, button2 = true } = props
+  const [notification, handleNotification] = notificationProps
+  
   const { title = "Title", message = LOREM } = notification
 
   const handleClick: MouseEventHandler<HTMLDivElement> = ({ target, currentTarget }) => {

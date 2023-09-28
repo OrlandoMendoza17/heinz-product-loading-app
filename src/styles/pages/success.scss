@@ -1,18 +1,31 @@
 .BillingSuccess{
-  @apply bg-gray-200 h-screen flex justify-center items-center text-center p-4;
+  @apply bg-gray-200 h-screen px-4 lg:px-24;
+  overflow-y: auto;
+  position: relative;
+  
   .main-container {
-    @apply bg-white px-10 sm:px-40 py-20 rounded-3xl grid justify-items-center gap-8 sm:gap-16;
+    @apply bg-white my-12 px-10 sm:px-20 py-12 rounded-3xl grid justify-items-center gap-8;
     
     img{
       width: 100%;
-        max-width: 10rem;
-      @screen sm{
-        max-width: 12.5rem;
-      }
+      max-width: 8rem;
     }
     
     .title{
-      @apply font-bold text-3xl sm:text-6xl;
+      @apply font-bold text-3xl sm:text-4xl;
+    }
+    
+    table{
+      thead{
+        @apply bg-slate-200;
+      }
+      th, td{
+        @apply text-start px-4 py-2;
+        @apply border-r border-b border-slate-200;
+        &:first-of-type{
+         @apply border-l;
+        }
+      }
     }
     
     button{

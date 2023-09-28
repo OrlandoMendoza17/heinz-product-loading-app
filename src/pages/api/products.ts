@@ -29,7 +29,7 @@ type ProductPrices = {
 }
 
 type BodyProps = {
-  productIDs?: number[]
+  productIDs?: Product["sku"][]
 }
 
 const products = async (request: NextApiRequest, response: NextApiResponse) => {
@@ -125,7 +125,7 @@ const products = async (request: NextApiRequest, response: NextApiResponse) => {
     const price = data3.find((product) => product.ADLITM === IMLITM)?.ADFVTR
 
     const product = {
-      sku: parseInt(IMLITM),
+      sku: IMLITM,
       name: IMDSC1,
       image: `/product-images/${IMLITM}.png`,
       available: 0,   // Valor por defecto

@@ -14,7 +14,7 @@ export type HandleNotification = {
 
 export type OpenProps = Omit<NotificationProps, "show">
 
-const useNotification = () => {
+const useNotification = (): [NotificationProps, HandleNotification] => {
 
   const [timeoutID, setTimeoutID] = useState<NodeJS.Timeout>()
 
@@ -38,10 +38,7 @@ const useNotification = () => {
     },
   }
 
-  return {
-    notification,
-    handleNotification,
-  }
+  return [notification, handleNotification]
 }
 
 export default useNotification;

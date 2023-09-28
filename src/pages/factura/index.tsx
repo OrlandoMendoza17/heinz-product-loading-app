@@ -11,27 +11,27 @@ import ConfirmModal from '@/components/widgets/ConfirmModal'
 import Button from '@/components/widgets/Button'
 import { sendBulletin } from '@/services/boletin'
 import { saveToSStorage } from '@/utils/sessionStorage'
+import NotificationModal from '@/components/widgets/NotificationModal'
+import useAuth from '@/hooks/useAuth'
 
 const Billing = () => {
 
   const router = useRouter()
-
+  const [renderPage, credentials] = useAuth({})
+  
   const { cart, selectedEmployees, purchase } = useContext(CartContext)
   const { bills, setBills } = useContext(BillsContext)
 
   const [loading, setLoading] = useState<boolean>(false)
 
-  const notifificationProps = useNotification()
-  const { notification, handleNotification } = notifificationProps
-
-  const alertProps = useNotification()
-  const { handleNotification: handleAlert } = alertProps
+  const [notification, handleNotification] = useNotification()
+  const [alert, handleAlert] = useNotification()
 
   useEffect(() => {
     (async () => {
 
       if (!bills.length) {
-        router.push("/")
+        router.push("/productos")
       }
 
     })()
@@ -60,7 +60,7 @@ const Billing = () => {
   const handleConfirm = async () => {
     try {
       setLoading(true)
-      
+
       const bulletins: BulletinsFormat = bills.map((bill) => {
 
         const { purchase, employee, products } = bill
@@ -68,57 +68,57 @@ const Billing = () => {
         const headers = products.map(({ sku, name, price, quantity, details }): BulletinHeader => {
           const { IBITM, UMCONV, IMSRP1, IMSRP2, IMSRP3, IMSRP4 } = details
           return {
-            ODJOBN: purchase.id, // ID de el Boletín
-            ODUSER: "CXK8279",   // ⬜ Usuario ("CXK8279" | "MLUCENA")
             ODEDOC: bill.number,
+            ODEDCT: "BV",
+            ODMCU: "        VE03", // Almacén
+            ODEKCO: "07200",
+            ODAN8: employee.ficha,
+            ODITM: IBITM,
             ODLITM: sku,
             ODDSC1: name,
-            ODSOQS: quantity,
-            ODUPRC: price,
-            ODAMXT: parseDecimals(price * quantity),
-            ODEDCT: "BV",
-            ODEKCO: "07200",
-            ODMCU: "VE03", // Almacén
-            ODLTTR: "999", // Estado (999 = No concretado | 010 = Concretado)
-            ODNXTR: "999", // Estado (999 = No concretado | 020 = Concretado)
-            ODTMST: purchase.date,
-            ODAN8: employee.ficha,
-            ODAC03: employee.zone,
-            ODITM: IBITM,
-            ODCONV: UMCONV, // Factor de conversión
             ODSRP1: IMSRP1, // Codigos de categoria y línea de producto
             ODSRP2: IMSRP2, // Codigos de categoria y línea de producto
             ODSRP3: IMSRP3, // Codigos de categoria y línea de producto
             ODSRP4: IMSRP4, // Codigos de categoria y línea de producto
             ODPRGR: IMSRP1, // Codigos de categoria y línea de producto
-            ODZON: "",  // Valor siempre vacío
-            ODASN: "",  // Valor siempre vacío
+            ODAC03: employee.zone,
+            ODZON: "",   // Valor siempre vacío
+            ODSOQS: quantity,
+            ODUPRC: price,
             ODFVTR: 0.0000, // Tipo de conversión (valor fijo)
+            ODAMXT: parseDecimals(price * quantity),
+            ODCONV: UMCONV, // Factor de conversión
+            ODASN: " ",  // Valor con un ESPACIO EN BLANCO (NO CAMBIAR ❌)
+            ODNXTR: "010", // Estado (010 = Por Concretar | 020 = Concretado | 999 = No concretado )
+            ODLTTR: "000", // Estado (000 = Por Concretar | 010 = Concretado | 999 = No concretado )
+            ODUSER: "MLUCENA",   // ⬜ Usuario ("CXK8279" | "MLUCENA")
+            ODJOBN: purchase.id, // ID de el Boletín
+            ODTMST: purchase.date,
           }
         })
 
         const info: BulletinInfo = {
-          WOJOBN: purchase.id, // ID de Boletin 
-          WOUSER: "CXK8279",   // ⬜ Usuario ("CXK8279" | "MLUCENA")
           WOEDOC: bill.number,
+          WOEDCT: "BV",          // Tipo de documento
+          WOMCU: "        VE03", // Almacén "❌ NO QUITARLE EL ESPACIO QUE LE SOBRE AL STRING ❌"
+          WOEKCO: "07200",       // Código de la compáñia heinz
           WOAN8: employee.ficha,
           WOALPH: employee.name,
+          WOASN: "VTASUBCL",     // Ventas sub clasificadas
+          WOCPGP: "", // Valor siempre vacío
           WOADD1: employee.address.slice(0, 40), //Este campo en la BD tiene maximo 40 caracteres
           WOAC03: employee.zone,
           WOAC05: employee.clientType,
+          WOZON: "",  // Valor siempre vacío
           WOVR01: purchase.order,
           WODEL1: purchase.details,
           WOTRDJ: purchase.date,
-          WOURDT: purchase.date,  // Fecha igual a WOTRDJ
-          WOTMSTP: purchase.date, // Fecha igual a WOTRDJ pero con tiempo espec�fico de la creaci�n
           WODRQJ: purchase.date,  // Otra Fecha 🟨
-          WOMCU: "        VE03",  // Almacén "❌ NO QUITARLE EL ESPACIO QUE LE SOBRE AL STRING ❌"
-          WOEDCT: "BV",      // Tipo de documento
-          WOEKCO: "07200",   // Código de la compáñia heinz
-          WOASN: "VTASUBCL", // Ventas sub clasificadas
+          WOURDT: purchase.date,  // Fecha igual a WOTRDJ
           WOAAT1: "Z1",
-          WOCPGP: "", // Valor siempre vacío
-          WOZON: "",  // Valor siempre vacío
+          WOTMSTP: purchase.date, // Fecha igual a WOTRDJ pero con tiempo espec�fico de la creaci�n
+          WOUSER: "MLUCENA",   // ⬜ Usuario ("CXK8279" | "MLUCENA")
+          WOJOBN: purchase.id, // ID de Boletin 
         }
 
         return { headers, info }
@@ -126,18 +126,18 @@ const Billing = () => {
 
       const data = await sendBulletin(bulletins)
       console.log('data', data)
-      
+
       handleAlert.open({
         type: "success",
         title: "Creación de Boletín",
         message: "Se ha generado el boletín con éxito ✅"
       })
-      
+
       setTimeout(() => {
         saveToSStorage<boolean>("bills-confirmation", true)
         router.push("/factura/success")
       }, 5000);
-      
+
     } catch (error) {
       setLoading(false)
       handleAlert.open({
@@ -157,6 +157,7 @@ const Billing = () => {
   }
 
   return (
+    renderPage &&
     <>
       {
         Boolean(bills.length) &&
@@ -186,9 +187,15 @@ const Billing = () => {
           </main>
         </div >
       }
-      <ConfirmModal acceptAction={handleConfirm} {...{ notification, handleNotification }} />
+      <ConfirmModal
+        acceptAction={handleConfirm}
+        notificationProps={[notification, handleNotification]}
+      />
+      <NotificationModal alertProps={[alert, handleAlert ]} />
     </>
   )
 }
 
 export default Billing
+
+

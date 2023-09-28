@@ -23,13 +23,8 @@
     position: relative;
     max-width: 500px;
     
-    @apply rounded-3xl p-px;
-    @apply x_sm:bg-secondary dark:bg-gray-950;
-    @apply dark:from-gray-800 dark:to-transparent;
-    
-    .background{
-      @apply p-8 x_sm:px-16 x_sm:py-12 rounded-3xl bg-white dark:bg-gray-900;
-    }
+    @apply rounded-3xl p-px border border-secondary;
+    @apply p-8 x_sm:px-16 x_sm:py-12 rounded-3xl bg-white;
     
     h1{
       @apply text-xl pb-2 font-bold text-gray-800 dark:text-white;
