@@ -22,7 +22,7 @@ const QRCode = () => {
 
   const [renderPage, setRenderPage] = useState<boolean>(false)
   const [loginByPassword, setLoginByPassword] = useState<boolean>(false)
-  
+
   const [scannedCode, setScannedCode] = useState<boolean>(false)
   const [alreadySet2FA, setAlreadySet2FA] = useState<boolean>(false)
 
@@ -42,9 +42,9 @@ const QRCode = () => {
 
         const credentials = getFromSStorage<AuthCredentials>("temp-login")
         const loginByPassword = getFromSStorage<boolean>("login-by-password")
-        
+
         setLoginByPassword(Boolean(loginByPassword))
-        
+
         if (credentials) {
           const { user, token } = credentials
 
@@ -109,6 +109,7 @@ const QRCode = () => {
             setCookie("login", credentials, 1)
 
           } catch (error) {
+            setLoading(false)
             alert("No se pudo guardar su doble factor de autenticación, al iniciar se sesión de nuevo deberá volver a configurarlo")
           }
 
@@ -130,6 +131,7 @@ const QRCode = () => {
         }
 
       } catch (error) {
+        setLoading(false)
 
         handleModal.open({
           type: "danger",
@@ -137,8 +139,6 @@ const QRCode = () => {
           message: "Ha habido un error intentado validar el código, intelo de nuevo",
         })
 
-      } finally {
-        setLoading(false)
       }
     }
   }

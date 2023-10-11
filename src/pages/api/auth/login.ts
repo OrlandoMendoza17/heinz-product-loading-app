@@ -19,6 +19,8 @@ const LoginHandler = async (request: NextApiRequest, response: NextApiResponse) 
 
     const [data] = await sequelize.query(queryString) as [UserTable[], unknown]
 
+    console.log('data', data)
+    
     if (data.length) {
       const user = {
         ...data[0],
@@ -33,6 +35,9 @@ const LoginHandler = async (request: NextApiRequest, response: NextApiResponse) 
           is_admin: user,
         }
 
+        console.log('secret', secret)
+        console.log('payload', payload)
+        
         const token = jwt.sign(payload, secret)
         response.json({ user, token })
       }
@@ -67,7 +72,7 @@ const LoginHandler = async (request: NextApiRequest, response: NextApiResponse) 
       } else {
         
         if (user.two_factor_auth) {
-
+          console.log('user.two_factor_auth', user.two_factor_auth)
           generateJWT()
 
         } else {

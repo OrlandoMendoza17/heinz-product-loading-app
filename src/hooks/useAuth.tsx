@@ -19,21 +19,21 @@ const useAuth = ({ is_admin_route = false }: Params): [boolean, AuthCredentials]
   useEffect(() => {
     const credentials = getCookie<AuthCredentials>("login")
     if (credentials) {
-
+      debugger
       const { user } = credentials
 
-      if (is_admin_route && user.is_admin) {
-        
+      if (user.is_admin) {
+
         setCredentials(credentials)
         setRenderPage(true)
-        
+
+      } else if (!is_admin_route) {
+
+        setCredentials(credentials)
+        setRenderPage(true)
+
       } else {
         router.push("/productos")
-      }
-
-      if (!is_admin_route) {
-        setCredentials(credentials)
-        setRenderPage(true)
       }
 
     } else {
