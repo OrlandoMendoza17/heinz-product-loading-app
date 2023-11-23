@@ -8,6 +8,8 @@ import AuthService from '@/services/auth'
 import { saveToSStorage } from '@/utils/sessionStorage'
 import { useRouter } from 'next/router'
 import { AxiosError } from 'axios'
+// import LoginButtonTry from '@/components/LoginButtonTry'
+import LoginButton from '@/components/LoginButton'
 
 const auth = new AuthService()
 
@@ -109,6 +111,8 @@ const LogIn = (): JSX.Element => {
           </button>
         </div>
       </Form>
+
+      <LoginButton/>
 
       <NotificationModal alertProps={[modal, handleModal]} />
     </main>
