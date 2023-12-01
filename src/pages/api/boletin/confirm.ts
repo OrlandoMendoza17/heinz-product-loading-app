@@ -1,11 +1,11 @@
 import sequelize from "@/lib/mssql";
 import { NextApiRequest, NextApiResponse } from "next";
-import { BulletinsFormat, getBulletinDetailsQuery, getBulletinHeaderQuery } from "@/utils/getQueries";
+import { BulletinsFormat, getBulletinInfoQuery, getBulletinHeadersQuery } from "@/utils/getQueries";
 
 type ResponseData = unknown
 
 type BodyProps = {
-  bulletin: BulletinsFormat[]
+  bulletin: BulletinsFormat
 }
 
 const handleBulletins = async (
@@ -16,8 +16,8 @@ const handleBulletins = async (
     const { bulletin }: BodyProps = request.body
     console.log(bulletin)
     
-    const headersQuery = getBulletinDetailsQuery(bulletin)
-    const infoQuery = getBulletinHeaderQuery(bulletin)
+    const headersQuery = getBulletinInfoQuery(bulletin)
+    const infoQuery = getBulletinHeadersQuery(bulletin)
 
     await sequelize.query(headersQuery)
     await sequelize.query(infoQuery)

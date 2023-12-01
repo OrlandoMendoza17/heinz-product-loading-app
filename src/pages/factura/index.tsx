@@ -5,7 +5,7 @@ import formatMoney, { getTotalBoxesFromProducts, getTotalFromProducts, parseDeci
 import React, { useContext, useEffect, useState } from 'react'
 import BillsContext from '@/context/BillsContext'
 import { useRouter } from 'next/router'
-import { BulletinsFormat, getBulletinDetailsQuery, getBulletinHeaderQuery } from '@/utils/getQueries'
+import { BulletinsFormat } from '@/utils/getQueries'
 import useNotification from '@/hooks/useNotification'
 import ConfirmModal from '@/components/widgets/ConfirmModal'
 import Button from '@/components/widgets/Button'
@@ -13,15 +13,12 @@ import { sendBulletin } from '@/services/boletin'
 import { saveToSStorage } from '@/utils/sessionStorage'
 import NotificationModal from '@/components/widgets/NotificationModal'
 import useAuth from '@/hooks/useAuth'
-import { addDays } from 'date-fns'
-import getJDEdwardsJulianDate from '@/utils/parseDate/JDEdwardsDate'
-import { number } from 'zod'
 
 const Billing = () => {
 
   const router = useRouter()
   const [renderPage, credentials] = useAuth({})
-
+  
   const { cart, selectedEmployees, purchase } = useContext(CartContext)
   const { bills, setBills } = useContext(BillsContext)
 
@@ -64,381 +61,74 @@ const Billing = () => {
     try {
       setLoading(true)
 
-      const bulletins: BulletinsFormat[] = bills.map((bill) => {
+      const bulletins: BulletinsFormat = bills.map((bill) => {
 
         const { purchase, employee, products } = bill
 
-        const shipment_date = getJDEdwardsJulianDate(addDays(new Date(purchase.date), 5).toISOString())
-
-        const header: BulletinHeader = {
-          SYEDOC: bill.number,      // N° Orden
-          SYDOCO: bill.number,      // N° Orden
-          SYDEL1: purchase.details, // Observaciones
-          SYMCU: "        VE03",    // Almacén
-          SYVR01: purchase.order,   // Orden de compra
-          SYAN8: employee.ficha,    // FICHA DE EMPLEADO
-          SYSHAN: employee.ficha,   // FICHA DE EMPLEADO
-          SYDRQJ: shipment_date,    // Fecha 5 dias despues (Fecha de entrega) -> Date - Requested
-          SYTRDJ: getJDEdwardsJulianDate(purchase.date),    // Fecha Real -> Date - Order/Transaction
-          SYURDT: getJDEdwardsJulianDate(purchase.date),    // FECHA
-          SYUPMJ: getJDEdwardsJulianDate(purchase.date),    // FECHA
-          SYTDAY: 121854,           // -> Time of Day
-          SYCO: "07200",
-          SYEKCO: "07200",
-          SYKCOO: "07200",
-          SYEDCT: "V1",
-          SYDCTO: "V1",
-          SYEDER: "B",
-          SYURRF: "iWEB",
-          SYUSER: "VSJIT15",
-          SYJOBN: "HVEOW001",
-
-          SYPTC: "",
-          SYSUN: "",
-          SYMON: "",
-          SYTUE: "",
-          SYWED: "",
-          SYTHR: "",
-          SYFRI: "",
-          SYSAT: "",
-          SYASN: "",
-          SYNTR: "",
-          SYEDTY: "",
-          SYEDST: "",
-          SYEDFT: "",
-          SYEDSP: "", // "Y" -> Ya procesado
-          SYPNID: "",
-          SYOFRQ: "",
-          SYSFXO: "",
-          SYOKCO: "",
-          SYOORN: "",
-          SYOCTO: "",
-          SYRKCO: "",
-          SYRORN: "",
-          SYRCTO: "",
-          SYVR02: "",
-          SYDEL2: "",
-          SYINMG: "",
-          SYRYIN: "",
-          SYPRGP: "",
-          SYTXA1: "",
-          SYEXR1: "",
-          SYTXCT: "",
-          SYATXT: "",
-          SYBACK: "",
-          SYSBAL: "",
-          SYHOLD: "",
-          SYPLST: "",
-          SYMOT: "",
-          SYCOT: "",
-          SYZON: "",
-          SYAFT: "",
-          SYRCD: "",
-          SYPID: "",
-          SYROUT: "",
-          SYCNID: "",
-          SYFRTH: "",
-          SYSTOP: "",
-          SYFUF1: "",
-          SYFRTC: "",
-          SYMORD: "",
-          SYFUF2: "",
-          SYWUMD: "",
-          SYVUMD: "",
-          SYAUTN: "",
-          SYCACT: "",
-          SYSBLI: "",
-          SYCRMD: "",
-          SYCRRM: "",
-          SYCRCD: "",
-          SYLNGP: "",
-          SYORBY: "",
-          SYTKBY: "",
-          SYURCD: "",
-          SYPRIO: "0",
-          SYCRR: 0,
-          SYFAP: 0,
-          SYPA8: 0,
-          SYEDSQ: 0,
-          SYEDLN: 0,
-          SYEDDT: 0,
-          SYEDDL: 0,
-          SYNXDJ: 0,
-          SYSSDJ: 0,
-          SYPDDJ: 0,
-          SYOPDJ: 0,
-          SYADDJ: 0,
-          SYCNDJ: 0,
-          SYPEFJ: 0,
-          SYPPDJ: 0,
-          SYPSDJ: 0,
-          SYTRDC: 0,
-          SYPCRT: 0,
-          SYINVC: 0,
-          SYANBY: 0,
-          SYCARS: 0,
-          SYCMC1: 0,
-          SYCMR1: 0,
-          SYCMC2: 0,
-          SYCMR2: 0,
-          SYOTOT: 0,
-          SYTOTC: 0,
-          SYCEXP: 0,
-          SYFCST: 0,
-          SYURAT: 0,
-          SYURAB: 0,
-        }
-
-        const details: BulletinInfo[] = products.map(({ sku, name, price, quantity, details }, index) => {
+        const headers = products.map(({ sku, name, price, quantity, details }): BulletinHeader => {
+          const { IBITM, UMCONV, IMSRP1, IMSRP2, IMSRP3, IMSRP4 } = details
           return {
-            SZEDOC: bill.number,         // Numero Orden
-            SZDOCO: bill.number,         // Numero Orden
-            SZLITM: sku,                 // SKU
-            SZDSC1: "",                  // Nombre
-            SZDSC2: "",                  // Nombre
-            SZVR01: purchase.order,      // Descripcion boletin
-            SZUORG: quantity * 10000,    // Cajas / 100 ->	Units - Order/Transaction Quantity
-            SZSOQS: quantity * 10000,    // -> Quantity Shipped
-            SZMCU: "        VE03",
-            SZAN8: employee.ficha,       // FICHA DE EMPLEADO
-            SZSHAN: employee.ficha,      // FICHA DE EMPLEADO
-            SZITM: 0,                    //IMITM
-            SZPDDJ: 0,
-            SZCTRY: 0,
-            SZEKCO: "07200",
-            SZKCOO: "07200",
-            SZNXTR: "580",               // Tiene que ser "524"
-            SZLTTR: "520",               // Valor estático
-            SZEDLN: (index + 1) * 1000,  // Numero de linea
-            SZLNID: (index + 1) * 1000,  // Numero de linea
-            SZDRQJ: shipment_date,       // Fecha 5 dias despues (Fecha de entrega) -> Date - Requested
-            SZTRDJ: getJDEdwardsJulianDate(purchase.date),       // Fecha Real -> Date - Order/Transaction
-            SZUPMJ: getJDEdwardsJulianDate(purchase.date),       // Fecha de actualización
-            SZRSDJ: 0,                   // Fecha -> Date - Promised Delivery
-            SZPEFJ: 0,                   // Fecha -> Date - Price Effective Date
-            SZUPRC: 0,                   // -> Amount - Price per Unit
-            SZAEXP: 0,                   // -> EXP	Amount - Extended Price
-            SZUNCS: 0,                   // -> Amount - Unit Cost
-            SZECST: 0,                   // -> Amount - Extended Cost
-            SZITWT: 0,                   // -> Unit Weight	
-            SZTDAY: 121854,              // -> Time of Day	 // -> Time of Day
-            SZURDT: 0,       // User Reserved Date
-            SZSLSM: 0,
-            SZSLM2: 0,
-            SZUOM: "CJ",                 // IMUOM1 -> Unit of Measure as Input
-            SZPTC: "",                   // Payment Terms Code
-            SZPRIO: "0",                 // Valor estático
-            SZUSER: "VSJIT15",           // IMUSER
-            SZJOBN: "HVEOW001",          // IMJOBN
-            SZLNTY: "S",                 // IBLNTY
-            SZCOMM: "S",
-            SZEDCT: "V1",
-            SZDCTO: "V1",                // Tiene que ser siempre "V1"
-            SZBALU: "N",
-            SZEDER: "B",
-            SZCO: "07200",
-            SZURRF: "iWEB",
-
-            SZAITM: "", // SKU
-            SZSTOP: "",
-            SZZON: "",
-            SZRATT: "",
-            SZWTUM: "",            // IMUWUM
-            SZLT: "",
-            SZASN: "",
-            SZTORG: "",
-            SZPID: "",             // IMPID
-            SZPROV: "",
-            SZCSTO: "",
-            SZCMGL: "",
-            SZSTTS: "",
-            SZUNCD: "",
-            SZEDSP: "",            // "Y" -> Ya trasferido
-            SZTAX1: "",
-            SZBACK: "",            //IBBACK
-            SZSBAL: "",
-            SZAPTS: "",
-            SZAFT: "",
-            SZFUF1: "",
-            SZSO03: "",
-            SZACOM: "",
-            SZEDTY: "",
-            SZEDST: "",
-            SZEDFT: "",
-            SZPNID: "",
-            SZSFXO: "",
-            SZOKCO: "",
-            SZOORN: "",
-            SZOCTO: "",
-            SZRKCO: "",
-            SZRORN: "",
-            SZRCTO: "",
-            SZDMCT: "",
-            SZVR02: "",
-            SZLOCN: "",
-            SZLOTN: "",
-            SZFRGD: "",
-            SZTHGD: "",
-            SZEMCU: "",
-            SZRLIT: "",
-            SZSRP1: "",
-            SZSRP2: "",
-            SZSRP3: "",
-            SZSRP4: "",
-            SZSRP5: "",
-            SZPRP1: "",
-            SZPRP2: "",
-            SZPRP3: "",
-            SZPRP4: "",
-            SZPRP5: "",
-            SZPRGR: "",
-            SZCLVL: "",
-            SZDSFT: "",
-            SZFAPP: "",
-            SZKCO: "",
-            SZDCT: "",
-            SZODCT: "",
-            SZOKC: "",
-            SZPRMO: "",
-            SZTXA1: "",
-            SZEXR1: "",
-            SZATXT: "",
-            SZRESL: "",
-            SZOTQY: "",
-            SZTPC: "",
-            SZAPUM: "",
-            SZINMG: "", // IBINMG
-            SZRYIN: "",
-            SZDTBS: "",
-            SZCNID: "",
-            SZFRTH: "",
-            SZLOB: "",
-            SZEUSE: "",
-            SZDTYS: "",
-            SZCDCD: "",
-            SZNTR: "",
-            SZMOT: "",
-            SZCOT: "",
-            SZROUT: "",
-            SZFRTC: "",
-            SZFRAT: "",
-            SZSHCM: "",
-            SZSHCN: "",
-            SZSERN: "",
-            SZUOM1: "",
-            SZUOM2: "",
-            SZUOM4: "",
-            SZVLUM: "",
-            SZRPRC: "", // IBRPRC
-            SZORPR: "", // IBORPR
-            SZORP: "",
-            SZCMGP: "",
-            SZGLC: "",
-            SZSO01: "",
-            SZSO02: "",
-            SZSO04: "",
-            SZSO05: "",
-            SZSO06: "",
-            SZSO07: "",
-            SZSO08: "",
-            SZSO09: "",
-            SZSO10: "",
-            SZSO11: "",
-            SZSO12: "",
-            SZSO13: "",
-            SZSO14: "",
-            SZSO15: "",
-            SZCMCG: "", // IBCMCG
-            SZRCD: "",
-            SZGWUM: "",
-            SZANI: "",
-            SZAID: "",
-            SZOMCU: "",
-            SZOBJ: "",
-            SZSUB: "",
-            SZSBL: "",
-            SZSBLT: "",
-            SZLCOD: "",
-            SZUPC1: "",
-            SZUPC2: "",
-            SZUPC3: "",
-            SZSWMS: "",
-            SZCRMD: "",
-            SZCRCD: "",
-            SZURCD: "", // IMURCD
-            SZEDSQ: 0,
-            SZEDDT: 0,
-            SZEDDL: 0,
-            SZOGNO: 0,
-            SZRLLN: 0,
-            SZDMCS: 0,
-            SZPA8: 0,
-            SZOPDJ: 0,
-            SZADDJ: 0,
-            SZIVD: 0,
-            SZCNDJ: 0,
-            SZDGL: 0,
-            SZPPDJ: 0,
-            SZPSDJ: 0,
-            SZFRMP: 0, // IBFRMP
-            SZTHRP: 0, // IBTHRP
-            SZEXDP: 0,
-            SZKTLN: 0,
-            SZCPNT: 0,
-            SZRKIT: 0,
-            SZKTP: 0,
-            SZSOBK: 0,
-            SZSOCN: 0,
-            SZSONE: 0,
-            SZUOPN: 0,
-            SZQTYT: 0,
-            SZQRLV: 0,
-            SZAOPN: 0,
-            SZLPRC: 0,
-            SZTCST: 0,
-            SZTRDC: 0,
-            SZFUN2: 0,
-            SZDSPR: 0,
-            SZCADC: 0,
-            SZDOC: 0,
-            SZODOC: 0,
-            SZPSN: 0,
-            SZDELN: 0,
-            SZDFTN: 0,
-            SZVEND: 0, // IBVEND
-            SZANBY: 0,
-            SZCARS: 0,
-            SZPQOR: 0,
-            SZSQOR: 0,
-            SZITVL: 0,
-            SZFY: 0,
-            SZSLCM: 0,
-            SZSLC2: 0,
-            SZGRWT: 0,
-            SZCRR: 0.0000000,
-            SZFPRC: 0,
-            SZFUP: 0,
-            SZFEA: 0,
-            SZFUC: 0,
-            SZFEC: 0,
-            SZURAT: 0, // IMURAT
-            SZURAB: 0, // IMURAB
+            ODEDOC: bill.number,
+            ODEDCT: "BV",
+            ODMCU: "        VE03", // Almacén
+            ODEKCO: "07200",
+            ODAN8: employee.ficha,
+            ODITM: IBITM,
+            ODLITM: sku,
+            ODDSC1: name,
+            ODSRP1: IMSRP1, // Codigos de categoria y línea de producto
+            ODSRP2: IMSRP2, // Codigos de categoria y línea de producto
+            ODSRP3: IMSRP3, // Codigos de categoria y línea de producto
+            ODSRP4: IMSRP4, // Codigos de categoria y línea de producto
+            ODPRGR: IMSRP1, // Codigos de categoria y línea de producto
+            ODAC03: employee.zone,
+            ODZON: "",   // Valor siempre vacío
+            ODSOQS: quantity,
+            ODUPRC: price,
+            ODFVTR: 0.0000, // Tipo de conversión (valor fijo)
+            ODAMXT: parseDecimals(price * quantity),
+            ODCONV: UMCONV, // Factor de conversión
+            ODASN: " ",  // Valor con un ESPACIO EN BLANCO (NO CAMBIAR ❌)
+            ODNXTR: "010", // Estado (010 = Por Concretar | 020 = Concretado | 999 = No concretado )
+            ODLTTR: "000", // Estado (000 = Por Concretar | 010 = Concretado | 999 = No concretado )
+            ODUSER: "MLUCENA",   // ⬜ Usuario ("CXK8279" | "MLUCENA")
+            ODJOBN: purchase.id, // ID de el Boletín
+            ODTMST: purchase.date,
           }
-
         })
 
-        return { header, details }
+        const info: BulletinInfo = {
+          WOEDOC: bill.number,
+          WOEDCT: "BV",          // Tipo de documento
+          WOMCU: "        VE03", // Almacén "❌ NO QUITARLE EL ESPACIO QUE LE SOBRE AL STRING ❌"
+          WOEKCO: "07200",       // Código de la compáñia heinz
+          WOAN8: employee.ficha,
+          WOALPH: employee.name,
+          WOASN: "VTASUBCL",     // Ventas sub clasificadas
+          WOCPGP: "", // Valor siempre vacío
+          WOADD1: employee.address.slice(0, 40), //Este campo en la BD tiene maximo 40 caracteres
+          WOAC03: employee.zone,
+          WOAC05: employee.clientType,
+          WOZON: "",  // Valor siempre vacío
+          WOVR01: purchase.order,
+          WODEL1: purchase.details,
+          WOTRDJ: purchase.date,
+          WODRQJ: purchase.date,  // Otra Fecha 🟨
+          WOURDT: purchase.date,  // Fecha igual a WOTRDJ
+          WOAAT1: "Z1",
+          WOTMSTP: purchase.date, // Fecha igual a WOTRDJ pero con tiempo espec�fico de la creaci�n
+          WOUSER: "MLUCENA",   // ⬜ Usuario ("CXK8279" | "MLUCENA")
+          WOJOBN: purchase.id, // ID de Boletin 
+        }
+
+        return { headers, info }
       })
 
-      
-      console.log('Headers query', getBulletinHeaderQuery(bulletins))
-      console.log('Details query', getBulletinDetailsQuery(bulletins))
-      
-      // const data = await sendBulletin(bulletins)
-      // console.log('data', data)
-      
       debugger
       
+      const data = await sendBulletin(bulletins)
+      console.log('data', data)
+
       handleAlert.open({
         type: "success",
         title: "Creación de Boletín",
@@ -503,7 +193,7 @@ const Billing = () => {
         acceptAction={handleConfirm}
         notificationProps={[notification, handleNotification]}
       />
-      <NotificationModal alertProps={[alert, handleAlert]} />
+      <NotificationModal alertProps={[alert, handleAlert ]} />
     </>
   )
 }
